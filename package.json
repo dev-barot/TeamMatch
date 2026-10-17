@@ -1,0 +1,24 @@
+{
+  "name": "teammatch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AI-Assisted Team Formation Platform",
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "check:docs": "node scripts/check-docs.js"
+  },
+  "keywords": [
+    "team-formation",
+    "matching",
+    "clean-architecture",
+    "hexagonal-architecture"
+  ],
+  "author": "dev-barot",
+  "license": "ISC"
+}
