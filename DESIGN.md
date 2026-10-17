@@ -24,15 +24,15 @@ Uses only terms from [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md). Every `fi
 - Why changed: <e.g. adding the Working Style rule meant editing six places>
 
 ### D3 — Use cases depend on ports (candidate; Dependency Inversion)
-- Principle: <DIP>
-- Where: `<file:line>` (port) and `<file:line>` (use case using it)
-- Before: <e.g. use case imported Mongoose model directly> (commit `<sha>`)
-- Why changed: <e.g. tests needed a database and ran in 40s>
+- Principle: Dependency Inversion Principle (DIP)
+- Where: `server/src/ports/PasswordHasher.js:5` (port) and `server/src/application/identity/LogIn.js:3` (use case using it)
+- Before: Use cases imported bcrypt and jwt directly into the business logic.
+- Why changed: Coupling use cases to external libraries prevented fast deterministic in-memory testing and leaked infrastructure into application layers.
 
 ## Boundary
 Core logic (`server/src/domain`, `server/src/application`) stops at the `ports/` folder. Outside: Express, MongoDB/Mongoose, email provider, Socket.IO, clock, bcrypt.
-It protects us from: **<Mongoose/MongoDB — and what concretely would have changed>**.
-Enforced at: `<.eslintrc file:line>`.
+It protects us from: **Mongoose/MongoDB and Express — changes in storage or transport frameworks do not impact domain rules or use cases**.
+Enforced at: `server/eslint.config.js:22`.
 
 ## AI use
 - Tools used and for what: <tool → tasks>
