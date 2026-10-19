@@ -91,7 +91,16 @@ export function createApp(customDeps = {}) {
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
-  // Mount HTTP routes
+  // Base routes
+  app.get('/', (req, res) => {
+    res.status(200).json({
+      name: 'TeamMatch API Server',
+      status: 'active',
+      healthEndpoint: '/health',
+      frontendUrl: process.env.CLIENT_ORIGIN || 'http://localhost:5173',
+    });
+  });
+
   app.use('/health', healthRouter);
   app.use('/auth', createAuthRouter({
     signUpUseCase,

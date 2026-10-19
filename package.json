@@ -8,7 +8,7 @@
     "client"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces",
+    "dev": "concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm run dev -w server\" \"npm run dev -w client\"",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
     "check:docs": "node scripts/check-docs.js"
@@ -20,5 +20,8 @@
     "hexagonal-architecture"
   ],
   "author": "dev-barot",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^10.0.6"
+  }
 }
