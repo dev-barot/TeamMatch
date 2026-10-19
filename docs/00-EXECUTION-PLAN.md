@@ -10,39 +10,44 @@ Goal: **ceiling 10** = deployed + real outside users + evidence. Everything else
 5. **Keep AI log.** Append to `docs/AI-LOG.md` whenever you accept or reject an AI suggestion (feeds DESIGN.md "AI use").
 6. **Test names are rule names.** `it('R1: rejects a second Pending Application from the same Student')`.
 
-## Modules (build order)
-| # | Module | Delivers | Depends on | Suggested owner |
+## Modules (Iterative Full-Stack Build Order)
+Every feature module delivers both the **domain backend API** and its **interactive frontend UI** together as a vertical slice.
+
+| # | Module | Full-Stack Deliverables (Backend + Frontend) | Rules Owned | Depends on |
 |---|---|---|---|---|
-| M0 | Foundation & first deploy | repo, CI, live "hello" URL, boundary lint | – | all |
-| M1 | Identity | signup, verify, login, refresh, Profile | M0 | A |
-| M2 | Projects | create, browse, filter, Positions, status | M1 | B |
-| M3 | Applications | apply, invite, decide, withdraw, lifecycle rules | M2 | B |
-| M4 | Matching engine | pure Scoring Rules, Reasons, ranking | M1, M2 (M3 for Members) | C |
-| M5 | Messaging & notifications | Conversation, Message, Socket.IO, Notification | M1 | B |
-| M6 | Admin & moderation | deactivate, close, Reports | M1, M2 | A |
-| M7 | Frontend | all screens, mobile 375px | M1–M6 APIs | D |
-| M8 | Seed & matching test set | seed script, 20 hand-crafted cases | M4 | C |
-| M9 | Outside users & evidence | feedback form, analytics, user list | M0, M7 | all |
-| M10 | Docs & viva | file:line pass, check script, rehearsal | all | all |
+| **M0** | Foundation & Scaffold | Monorepo, CI, live `/health` endpoint, ESLint boundary lint, base React shell & design tokens | – | – |
+| **M1** | Identity & Profile | **Backend:** Auth API (signup, verify, login, refresh, reset), Profile aggregate, privacy DTOs<br>**Frontend:** Auth modals/forms (Sign Up, Log In, Verify notice), Profile Editor & Skills tagger | **R2**, **R5** | M0 |
+| **M2** | Projects & Positions | **Backend:** Project aggregate, Positions capacity, text search & filters<br>**Frontend:** Projects gallery, filter chips, Project details, Create Project with Positions builder | **R2**, **R3**, **R5** | M1 |
+| **M3** | Applications & Teams | **Backend:** Application aggregate, atomic concurrency, status transitions (apply, invite, decide, withdraw)<br>**Frontend:** "Apply" drawer, Student Application tracker, Creator Applicant review dashboard | **R1**, **R2**, **R3** | M2 |
+| **M4** | Matching Engine | **Backend:** Pluggable Scoring Rules, centralized `weights.js`, deterministic ranking<br>**Frontend:** Smart Matches tab showing Match Score + explicit top-5 Match Reasons breakdown | **R4** | M1, M2, M3 |
+| **M5** | Messaging & Notifications | **Backend:** Conversations, Messages, Socket.IO gateway, notification publisher<br>**Frontend:** Real-time 1-on-1 Chat drawer, in-app Notification bell with badge & toasts | – | M1 |
+| **M6** | Admin & Moderation | **Backend:** Report queues, account deactivation, project closing<br>**Frontend:** Admin moderation portal to review reports and take disciplinary action | **R2** | M1, M2 |
+| **M7** | Mobile Audit & Polish | 375px mobile responsiveness pass, unified theme polish, empty/loading states, feedback widget (feeds M9) | All | M1–M6 |
+| **M8** | Seed & Benchmark | Realistic seed generator (500 Students, 150 Projects) + 20 hand-crafted matching benchmark cases | **R4** | M4 |
+| **M9** | Outside Users & Evidence | Live deployment, ≥30 external student users, analytics, feedback log, `docs/EVIDENCE.md` | – | M0, M7 |
+| **M10**| Docs & Viva Defense | `scripts/check-docs.js` validation, file:line audits, banned-words check, viva drill rehearsal | All | All |
 
 ```
-M0 → M1 → M2 → M3 ─┐
-          └→ M4 ───┤→ M7 → M9 → M10
-     M1 → M5 ──────┤
-     M1,M2 → M6 ───┘      M4 → M8
+M0 (Foundation & Scaffold)
+ └─► M1 (Identity: API + UI)
+      ├─► M2 (Projects: API + UI) ──► M3 (Applications: API + UI) ──┐
+      │         └───────────────────► M4 (Matching Engine: API + UI) ─┤
+      ├─► M5 (Messaging/Chat: API + UI) ──────────────────────────────┼─► M7 (Mobile Polish & Audit) ──► M9 (Outside Users) ──► M10 (Viva)
+      └─► M6 (Admin: API + UI) ───────────────────────────────────────┘         ▲
+                                                                  M4 ──► M8 (Seed & Validation) ──────┘
 ```
 
-## Timeline (adjust to your end-sem date)
-| Weeks | Do |
+## Timeline (Iterative Delivery)
+| Weeks | Deliverable (Full-Stack Iteration) |
 |---|---|
-| 1 | M0 incl. live URL; fill UL + draft DESIGN rules |
-| 2–3 | M1, start M2 |
-| 3–5 | M2, M3, start M4 |
-| 5–7 | M4, M5 |
-| 6–8 | M7 screens as APIs land; M6 |
-| 8 | M8 seed; **start inviting outside users** |
-| 9–12 | M9 feedback loop, bug fixes, strengthen tests |
-| last 2 | M10; freeze; tag `project-final` |
+| 1 | **M0:** Monorepo, live `/health`, boundary lint active; UL & DESIGN stubs |
+| 2–3 | **M1:** Full Identity slice (Backend Auth API + Frontend Auth & Profile screens) |
+| 3–5 | **M2 & M3:** Projects & Applications slices (Backend + Browsing, Creation, Application dashboards) |
+| 5–7 | **M4 & M5:** Matching Engine (with visual Reasons UI) + Real-time Messaging & Alerts |
+| 7–8 | **M6 & M7:** Admin moderation portal + Mobile 375px responsiveness audit + feedback form |
+| 8 | **M8:** Seed data generated; **launch platform to outside users** |
+| 9–12 | **M9:** Outside user feedback loop, iteration, bug fixes, automated test hardening |
+| last 2 | **M10:** Feature freeze; `npm run check:docs`; viva rehearsal drill; tag `project-final` |
 
 ## PRD gaps to settle in Module 0 (write answers in DESIGN.md notes)
 1. **Applications embedded vs separate.** PRD embeds `applicants[]` in Project but also exposes `/api/applications/:id/respond` and admits Mongo can't enforce uniqueness inside an array. Recommendation: separate `applications` collection with a unique index on `(projectId, studentId, active)`. This is a strong DESIGN.md decision.
