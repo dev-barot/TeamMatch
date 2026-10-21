@@ -17,11 +17,12 @@ Uses only terms from [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md). Every `fi
 - Before: PRD §5.6 proposed embedding an `applicants[]` array inside the `Project` document with manual check-then-insert.
 - Why changed: MongoDB cannot enforce a unique partial index across embedded array elements under concurrent writes, risking duplicate live applications. Modeling `Application` as an independent aggregate isolates the application state machine (`Pending -> Accepted | Rejected | Withdrawn`), guarantees database-level enforcement of Rule R1 via a partial unique compound index on `(projectId, studentId)` where `status ∈ ['Pending', 'Accepted']`, and prevents document contention on the `Project` root during high-traffic application rushes. (Commit `6379588`).
 
-### D2 — Scoring Rules are pluggable (candidate; Open/Closed)
-- Principle: <OCP>
-- Where: `<file:line>` (engine) and `<file:line>` (rule list / weights)
-- Before: <e.g. one scoring function with if-chains and inline numbers> (commit `<sha>`)
-- Why changed: <e.g. adding the Working Style rule meant editing six places>
+### D2 — Scoring Rules are pluggable (Open/Closed Principle)
+- Principle: Open/Closed Principle (OCP)
+- Where: `server/src/domain/matching/MatchingEngine.js:28` (engine), `server/src/domain/matching/weights.js:11` (centralized weights), and `server/src/domain/matching/rules/index.js:22` (rule registry)
+- Before: Monolithic scoring function with nested if-else ladders and hardcoded inline points.
+- Why changed: Adding or tuning scoring criteria (e.g., course tags, hackathon badges, working style compatibility) required editing the core engine in multiple places and scattered magic numbers across the codebase. Separating an isolated `ScoringRule` interface with centralized `weights.js` enables adding arbitrary rules without modifying `MatchingEngine.js`, enforced by an automated check prohibiting numeric literals in rules (`server/test/unit/rules.test.js:16`) and plugin extensibility test (`server/test/unit/matching.test.js:174`). (Commit `08e9e4c` and `b762808`).
+
 
 ### D3 — Use cases depend on ports (candidate; Dependency Inversion)
 - Principle: Dependency Inversion Principle (DIP)

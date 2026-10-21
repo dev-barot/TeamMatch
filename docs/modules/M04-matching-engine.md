@@ -14,16 +14,16 @@
 | `workingStyleCompatible` | +10 only when ≥1 Member exists | "Working style complements the Team" |
 
 ## Steps
-1. [ ] **Domain:** `ScoringRule` interface: `evaluate(student, project, team) → {points, reason}|null`.
-2. [ ] Implement each rule as its own file with its own unit test (known input → exact points + reason).
-3. [ ] `weights.js` is the only file with numbers. A test greps rule files for numeric literals > 1 to fail the build if weights leak.
-4. [ ] **Engine:** `scoreMatch(student, project, team, rules)` sums points and collects Reasons; sorts Reasons by points desc; keeps top 5; no Reason without points, no points without Reason (R4).
-5. [ ] **Ranking:** `rankProjectsForStudent` (top 10), `rankStudentsForProject` (top 20). Tie-break: more overlapping Skills → more recent Profile update → alphabetical name. Same inputs → same output.
-6. [ ] Skill-Gap and style rules use **Members only** (Accepted), never Applicants.
-7. [ ] **Application layer:** `ComputeProjectMatches`, `ComputeStudentMatches`; excludes Projects the Student is Creator of or already has active Application on; excludes Filled/Closed.
-8. [ ] Optional caching: pre-compute normalized Skill sets on profile/project save (PRD performance note).
-9. [ ] Timing test at seed volume (500 Students, 150 Projects) < ~1s.
-10. [ ] HTTP: `/matching/projects`, `/matching/candidates/:projectId` (Creator only — R2).
+1. [x] **Domain:** `ScoringRule` interface: `evaluate(student, project, team) → {points, reason}|null`.
+2. [x] Implement each rule as its own file with its own unit test (known input → exact points + reason).
+3. [x] `weights.js` is the only file with numbers. A test greps rule files for numeric literals > 1 to fail the build if weights leak.
+4. [x] **Engine:** `scoreMatch(student, project, team, rules)` sums points and collects Reasons; sorts Reasons by points desc; keeps top 5; no Reason without points, no points without Reason (R4).
+5. [x] **Ranking:** `rankProjectsForStudent` (top 10), `rankStudentsForProject` (top 20). Tie-break: more overlapping Skills → more recent Profile update → alphabetical name. Same inputs → same output.
+6. [x] Skill-Gap and style rules use **Members only** (Accepted), never Applicants.
+7. [x] **Application layer:** `ComputeProjectMatches`, `ComputeStudentMatches`; excludes Projects the Student is Creator of or already has active Application on; excludes Filled/Closed.
+8. [x] Optional caching: pre-compute normalized Skill sets on profile/project save (PRD performance note).
+9. [x] Timing test at seed volume (500 Students, 150 Projects) < ~1s.
+10. [x] HTTP: `/matching/projects`, `/matching/candidates/:projectId` (Creator only — R2).
 
 ## Tests
 `R4: every point in Match Score has a Reason` · `R4: at most 5 Reasons, descending` · `R4: tie-break is deterministic` · `R4: Applicants do not affect Skill Gap` · each Scoring Rule isolated · the 20-case set from M8.
