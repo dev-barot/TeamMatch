@@ -5,6 +5,7 @@ import { createAuthRouter } from './routes/authRoutes.js';
 import { createStudentRouter } from './routes/studentRoutes.js';
 import { createProjectRouter } from './routes/projectRoutes.js';
 import { createApplicationRouter } from './routes/applicationRoutes.js';
+import { createMatchingRouter } from './routes/matchingRoutes.js';
 import { createRequireAuth } from './middleware/requireAuth.js';
 import { requireVerified } from './middleware/requireVerified.js';
 
@@ -39,6 +40,9 @@ import { RespondToInvitation } from '../application/applications/RespondToInvita
 import { WithdrawApplication } from '../application/applications/WithdrawApplication.js';
 import { GetProjectApplications } from '../application/applications/GetProjectApplications.js';
 import { GetStudentApplications } from '../application/applications/GetStudentApplications.js';
+
+import { FindMatchedProjectsForStudent } from '../application/matching/FindMatchedProjectsForStudent.js';
+import { FindMatchedStudentsForProject } from '../application/matching/FindMatchedStudentsForProject.js';
 
 export function createApp(customDeps = {}) {
   const app = express();
@@ -174,6 +178,19 @@ export function createApp(customDeps = {}) {
     applicationRepository: applicationRepo,
   });
 
+  // Application use cases: Matching Engine (M4)
+  const findMatchedProjectsUseCase = new FindMatchedProjectsForStudent({
+    studentRepository: studentRepo,
+    projectRepository: projectRepo,
+    applicationRepository: applicationRepo,
+  });
+
+  const findMatchedStudentsUseCase = new FindMatchedStudentsForProject({
+    projectRepository: projectRepo,
+    studentRepository: studentRepo,
+    applicationRepository: applicationRepo,
+  });
+
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
@@ -221,6 +238,11 @@ export function createApp(customDeps = {}) {
     getStudentApplicationsUseCase,
     requireAuth,
     requireVerified,
+  }));
+  app.use('/matching', createMatchingRouter({
+    findMatchedProjectsUseCase,
+    findMatchedStudentsUseCase,
+    requireAuth,
   }));
 
   // 404 fallback
