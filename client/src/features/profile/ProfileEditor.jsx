@@ -34,7 +34,7 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
             bio: data.profile.bio || '',
           });
         }
-      } catch (err) {
+      } catch {
         setErrorMessage('Failed to load profile.');
       } finally {
         setLoading(false);

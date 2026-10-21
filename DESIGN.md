@@ -29,6 +29,13 @@ Uses only terms from [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md). Every `fi
 - Before: Use cases imported bcrypt and jwt directly into the business logic.
 - Why changed: Coupling use cases to external libraries prevented fast deterministic in-memory testing and leaked infrastructure into application layers.
 
+### D4 — Project invariants encapsulated in aggregate (SRP & Information Expert)
+- Principle: Single Responsibility Principle (SRP) & Aggregate Encapsulation
+- Where: `server/src/domain/projects/Project.js:132` (assertCreator) and `server/src/domain/projects/Position.js:28` (headcount capacity)
+- Before: Express route handlers directly checked `req.user.id !== project.creatorId` and manually compared `filledCount < headcount`.
+- Why changed: Leaking invariants into HTTP controllers bypasses domain validation in other interfaces (e.g. CLI, seed scripts, background jobs) and scatters business rules across route files.
+
+
 ## Boundary
 Core logic (`server/src/domain`, `server/src/application`) stops at the `ports/` folder. Outside: Express, MongoDB/Mongoose, email provider, Socket.IO, clock, bcrypt.
 It protects us from: **Mongoose/MongoDB and Express — changes in storage or transport frameworks do not impact domain rules or use cases**.
