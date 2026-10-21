@@ -11,11 +11,11 @@ Uses only terms from [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md). Every `fi
 ## Three design decisions
 > Fill from real git history. If you didn't live the "before", don't write it.
 
-### D1 — Application is its own aggregate (candidate; SRP / aggregate boundary)
-- Principle: <Single Responsibility / aggregate boundary>
-- Where: `<file:line>`
-- Before: <e.g. applicants[] embedded in Project with check-then-insert> (commit `<sha>`)
-- Why changed: <e.g. duplicate under concurrent requests; Mongo cannot enforce uniqueness inside arrays>
+### D1 — Application is its own aggregate (SRP / Aggregate Boundary)
+- Principle: Single Responsibility Principle (SRP) & Aggregate Encapsulation
+- Where: `server/src/domain/applications/Application.js:29` (aggregate root) and `server/src/infrastructure/mongo/schemas/ApplicationModel.js:24` (partial unique index)
+- Before: PRD §5.6 proposed embedding an `applicants[]` array inside the `Project` document with manual check-then-insert.
+- Why changed: MongoDB cannot enforce a unique partial index across embedded array elements under concurrent writes, risking duplicate live applications. Modeling `Application` as an independent aggregate isolates the application state machine (`Pending -> Accepted | Rejected | Withdrawn`), guarantees database-level enforcement of Rule R1 via a partial unique compound index on `(projectId, studentId)` where `status ∈ ['Pending', 'Accepted']`, and prevents document contention on the `Project` root during high-traffic application rushes. (Commit `6379588`).
 
 ### D2 — Scoring Rules are pluggable (candidate; Open/Closed)
 - Principle: <OCP>
