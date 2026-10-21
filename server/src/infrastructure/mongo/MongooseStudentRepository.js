@@ -73,4 +73,16 @@ export class MongooseStudentRepository extends StudentRepository {
     const doc = await StudentModel.findOne({ resetPasswordToken: token }).lean();
     return this._toDomain(doc);
   }
+
+  async findAllVerified(filters = {}) {
+    const query = { isEmailVerified: true, isActive: true };
+    if (filters.excludeIds && filters.excludeIds.length > 0) {
+      query._id = { $nin: filters.excludeIds };
+    }
+    const docs = await StudentModel.find(query)
+      .limit(filters.limit || 100)
+      .lean();
+
+    return docs.map(d => this._toDomain(d));
+  }
 }

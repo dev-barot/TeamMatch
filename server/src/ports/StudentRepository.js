@@ -42,4 +42,13 @@ export class StudentRepository {
   async findByResetToken(_token) {
     throw new Error('Not implemented: StudentRepository.findByResetToken');
   }
+
+  /**
+   * Retrieves verified active students as matching candidates.
+   * @param {object} [_filters]
+   * @returns {Promise<import('../domain/identity/Student.js').Student[]>}
+   */
+  async findAllVerified(_filters = {}) {
+    throw new Error('Not implemented: StudentRepository.findAllVerified');
+  }
 }

@@ -52,3 +52,10 @@ export class InvalidProfileDataError extends DomainError {
     super(`Invalid profile data: ${message}`);
   }
 }
+
+export class StudentNotFoundError extends DomainError {
+  constructor(id) {
+    super(`Student with ID "${id}" was not found.`);
+  }
+}
+

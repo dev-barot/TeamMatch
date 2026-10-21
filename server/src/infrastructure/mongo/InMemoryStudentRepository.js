@@ -42,6 +42,20 @@ export class InMemoryStudentRepository extends StudentRepository {
     return null;
   }
 
+  async findAllVerified(filters = {}) {
+    const results = [];
+    const excludeIds = new Set((filters.excludeIds || []).map(String));
+
+    for (const student of this.students.values()) {
+      if (student.account.isEmailVerified && student.account.isActive) {
+        if (!excludeIds.has(String(student.id))) {
+          results.push(student);
+        }
+      }
+    }
+    return results;
+  }
+
   clear() {
     this.students.clear();
   }
