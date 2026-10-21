@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { projectApi } from '../../api/projectApi.js';
+import { matchingApi } from '../../api/matchingApi.js';
+import { MatchScoreBadge } from '../matching/MatchScoreBadge.jsx';
 
 const SPECIALTIES = ['All', 'Frontend', 'Backend', 'ML', 'DevOps', 'UI/UX', 'Other'];
 const COMMITMENTS = ['All', 'low', 'medium', 'high'];
@@ -14,6 +16,7 @@ export function ProjectsGallery({
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState('');
+  const [viewMode, setViewMode] = useState('all'); // 'all' | 'recommended'
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,20 +28,30 @@ export function ProjectsGallery({
     setLoading(true);
     setErrorMessage('');
     try {
-      const params = {
-        query: searchQuery.trim(),
-        specialty: selectedSpecialty !== 'All' ? selectedSpecialty : '',
-        commitment: selectedCommitment !== 'All' ? selectedCommitment : '',
-        category: selectedCategory !== 'All' ? selectedCategory : '',
-      };
-      const res = await projectApi.browseProjects(params);
-      setProjects(res.projects || []);
+      if (viewMode === 'recommended' && currentUser) {
+        const res = await matchingApi.getMatchedProjects(20);
+        // Normalize matched structure
+        const normalized = (res.matches || []).map(m => ({
+          ...m.project,
+          match: m.match,
+        }));
+        setProjects(normalized);
+      } else {
+        const params = {
+          query: searchQuery.trim(),
+          specialty: selectedSpecialty !== 'All' ? selectedSpecialty : '',
+          commitment: selectedCommitment !== 'All' ? selectedCommitment : '',
+          category: selectedCategory !== 'All' ? selectedCategory : '',
+        };
+        const res = await projectApi.browseProjects(params);
+        setProjects(res.projects || []);
+      }
     } catch (err) {
       setErrorMessage(err.message || 'Failed to load projects.');
     } finally {
       setLoading(false);
     }
-  }, [searchQuery, selectedSpecialty, selectedCommitment, selectedCategory]);
+  }, [viewMode, currentUser, searchQuery, selectedSpecialty, selectedCommitment, selectedCategory]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -70,29 +83,74 @@ export function ProjectsGallery({
               Explore Projects & Positions
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Discover open team seats by skill, specialty, and commitment level (M2)
+              Discover open team seats by skill, specialty, and commitment level with explainable AI matching (M4)
             </p>
           </div>
 
-          <button
-            onClick={onOpenCreateProject}
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              color: '#fff',
-              fontWeight: '700',
-              fontSize: '0.9rem',
-              boxShadow: 'var(--shadow-glow)',
-              cursor: 'pointer',
-              border: 'none',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-            }}
-          >
-            <span>+</span> Post a Project
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            {currentUser && (
+              <div style={{
+                display: 'inline-flex',
+                background: 'var(--bg-surface)',
+                borderRadius: 'var(--radius-md)',
+                padding: '3px',
+                border: '1px solid var(--border)',
+              }}>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('all')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 'var(--radius-sm)',
+                    border: 'none',
+                    background: viewMode === 'all' ? 'var(--primary)' : 'transparent',
+                    color: viewMode === 'all' ? '#fff' : 'var(--text-muted)',
+                    fontWeight: '700',
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  All Projects
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('recommended')}
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: 'var(--radius-sm)',
+                    border: 'none',
+                    background: viewMode === 'recommended' ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'transparent',
+                    color: viewMode === 'recommended' ? '#fff' : 'var(--text-muted)',
+                    fontWeight: '700',
+                    fontSize: '0.82rem',
+                    cursor: 'pointer',
+                  }}
+                >
+                  ⚡ AI Matches (R4)
+                </button>
+              </div>
+            )}
+
+            <button
+              onClick={onOpenCreateProject}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                color: '#fff',
+                fontWeight: '700',
+                fontSize: '0.9rem',
+                boxShadow: 'var(--shadow-glow)',
+                cursor: 'pointer',
+                border: 'none',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <span>+</span> Post a Project
+            </button>
+          </div>
         </div>
 
         {/* Search input */}
@@ -299,6 +357,9 @@ export function ProjectsGallery({
                       }}>
                         {project.category}
                       </span>
+                      {project.match && (
+                        <MatchScoreBadge match={project.match} compact={true} />
+                      )}
                       {project.courseTag?.courseCode && (
                         <span style={{
                           background: 'rgba(255, 255, 255, 0.05)',
