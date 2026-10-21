@@ -4,6 +4,7 @@ import { healthRouter } from './routes/health.js';
 import { createAuthRouter } from './routes/authRoutes.js';
 import { createStudentRouter } from './routes/studentRoutes.js';
 import { createProjectRouter } from './routes/projectRoutes.js';
+import { createApplicationRouter } from './routes/applicationRoutes.js';
 import { createRequireAuth } from './middleware/requireAuth.js';
 import { requireVerified } from './middleware/requireVerified.js';
 
@@ -12,6 +13,7 @@ import { JwtTokenSigner } from '../infrastructure/crypto/JwtTokenSigner.js';
 import { ConsoleMailer } from '../infrastructure/mail/ConsoleMailer.js';
 import { InMemoryStudentRepository } from '../infrastructure/mongo/InMemoryStudentRepository.js';
 import { InMemoryProjectRepository } from '../infrastructure/mongo/InMemoryProjectRepository.js';
+import { InMemoryApplicationRepository } from '../infrastructure/mongo/InMemoryApplicationRepository.js';
 import { Clock } from '../ports/Clock.js';
 
 import { SignUp } from '../application/identity/SignUp.js';
@@ -30,6 +32,14 @@ import { CloseProject } from '../application/projects/CloseProject.js';
 import { GetProject } from '../application/projects/GetProject.js';
 import { BrowseProjects } from '../application/projects/BrowseProjects.js';
 
+import { ApplyToProject } from '../application/applications/ApplyToProject.js';
+import { InviteStudent } from '../application/applications/InviteStudent.js';
+import { DecideApplication } from '../application/applications/DecideApplication.js';
+import { RespondToInvitation } from '../application/applications/RespondToInvitation.js';
+import { WithdrawApplication } from '../application/applications/WithdrawApplication.js';
+import { GetProjectApplications } from '../application/applications/GetProjectApplications.js';
+import { GetStudentApplications } from '../application/applications/GetStudentApplications.js';
+
 export function createApp(customDeps = {}) {
   const app = express();
 
@@ -42,6 +52,8 @@ export function createApp(customDeps = {}) {
   // Composition root defaults (can be injected for tests)
   const studentRepo = customDeps.studentRepository || new InMemoryStudentRepository();
   const projectRepo = customDeps.projectRepository || new InMemoryProjectRepository();
+  const applicationRepo = customDeps.applicationRepository || new InMemoryApplicationRepository();
+  const notificationPublisher = customDeps.notificationPublisher || null;
   const passwordHasher = customDeps.passwordHasher || new BcryptPasswordHasher();
   const tokenSigner = customDeps.tokenSigner || new JwtTokenSigner({
     accessSecret: process.env.JWT_ACCESS_SECRET || 'access_secret_test',
@@ -120,6 +132,48 @@ export function createApp(customDeps = {}) {
     projectRepository: projectRepo,
   });
 
+  // Application use cases: Applications & Team Formation (M3)
+  const applyToProjectUseCase = new ApplyToProject({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+    studentRepository: studentRepo,
+    notificationPublisher,
+  });
+
+  const inviteStudentUseCase = new InviteStudent({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+    studentRepository: studentRepo,
+    notificationPublisher,
+  });
+
+  const decideApplicationUseCase = new DecideApplication({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+    notificationPublisher,
+  });
+
+  const respondToInvitationUseCase = new RespondToInvitation({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+    notificationPublisher,
+  });
+
+  const withdrawApplicationUseCase = new WithdrawApplication({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+    notificationPublisher,
+  });
+
+  const getProjectApplicationsUseCase = new GetProjectApplications({
+    applicationRepository: applicationRepo,
+    projectRepository: projectRepo,
+  });
+
+  const getStudentApplicationsUseCase = new GetStudentApplications({
+    applicationRepository: applicationRepo,
+  });
+
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
@@ -154,6 +208,17 @@ export function createApp(customDeps = {}) {
     closeProjectUseCase,
     getProjectUseCase,
     browseProjectsUseCase,
+    requireAuth,
+    requireVerified,
+  }));
+  app.use('/applications', createApplicationRouter({
+    applyToProjectUseCase,
+    inviteStudentUseCase,
+    decideApplicationUseCase,
+    respondToInvitationUseCase,
+    withdrawApplicationUseCase,
+    getProjectApplicationsUseCase,
+    getStudentApplicationsUseCase,
     requireAuth,
     requireVerified,
   }));
