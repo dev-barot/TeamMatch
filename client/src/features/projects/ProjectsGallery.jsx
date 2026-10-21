@@ -8,6 +8,7 @@ export function ProjectsGallery({
   currentUser,
   onOpenCreateProject,
   onSelectProject,
+  onOpenApply,
   refreshTrigger = 0,
 }) {
   const [projects, setProjects] = useState([]);
@@ -402,11 +403,33 @@ export function ProjectsGallery({
                     {project.commitmentLevel} commitment
                   </span>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    {isCreator && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    {isCreator ? (
                       <span style={{ fontSize: '0.7rem', color: 'var(--secondary)', fontWeight: '700' }}>
                         👑 Creator (R2)
                       </span>
+                    ) : (
+                      currentUser && openSeats > 0 && project.status === 'open' && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (onOpenApply) onOpenApply(project);
+                          }}
+                          style={{
+                            padding: '3px 8px',
+                            background: 'rgba(99, 102, 241, 0.15)',
+                            border: '1px solid rgba(99, 102, 241, 0.35)',
+                            color: 'var(--primary)',
+                            borderRadius: 'var(--radius-sm)',
+                            fontSize: '0.75rem',
+                            fontWeight: '700',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Apply
+                        </button>
+                      )
                     )}
                     <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '700' }}>
                       View Details →

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onLogout }) {
+export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onOpenMyApplications, onLogout }) {
   return (
     <header style={{
       display: 'flex',
@@ -50,7 +50,7 @@ export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onLogout }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         {currentUser ? (
           <>
             <div style={{
@@ -77,15 +77,32 @@ export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onLogout }) {
             </div>
 
             <button
+              onClick={onOpenMyApplications}
+              style={{
+                padding: '0.5rem 0.9rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(99, 102, 241, 0.12)',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                color: 'var(--primary)',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+              }}
+            >
+              📋 My Applications
+            </button>
+
+            <button
               onClick={onOpenProfile}
               style={{
-                padding: '0.5rem 1rem',
+                padding: '0.5rem 0.9rem',
                 borderRadius: 'var(--radius-md)',
                 background: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid var(--border)',
                 color: 'var(--text-main)',
                 fontSize: '0.85rem',
                 fontWeight: '600',
+                cursor: 'pointer',
               }}
             >
               My Profile

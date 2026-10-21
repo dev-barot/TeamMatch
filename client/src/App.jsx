@@ -5,6 +5,9 @@ import { ProfileEditor } from './features/profile/ProfileEditor.jsx';
 import { ProjectsGallery } from './features/projects/ProjectsGallery.jsx';
 import { CreateProjectModal } from './features/projects/CreateProjectModal.jsx';
 import { ProjectDetailsModal } from './features/projects/ProjectDetailsModal.jsx';
+import { ApplyModal } from './features/applications/ApplyModal.jsx';
+import { MyApplicationsModal } from './features/applications/MyApplicationsModal.jsx';
+import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
 import { authApi } from './api/authApi.js';
 import { studentApi } from './api/studentApi.js';
 
@@ -15,6 +18,9 @@ export function App() {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [createProjectModalOpen, setCreateProjectModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [applyModalProject, setApplyModalProject] = useState(null);
+  const [manageApplicantsProject, setManageApplicantsProject] = useState(null);
+  const [myApplicationsModalOpen, setMyApplicationsModalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(() => currentUser?.profile || null);
   const [activeTab, setActiveTab] = useState('projects');
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
@@ -70,12 +76,26 @@ export function App() {
     setGalleryRefreshKey(k => k + 1);
   };
 
+  const handleOpenApply = (proj) => {
+    if (!currentUser) {
+      setAuthModalMode('login');
+      setAuthModalOpen(true);
+      return;
+    }
+    setApplyModalProject(proj);
+  };
+
+  const handleOpenManageApplicants = (proj) => {
+    setManageApplicantsProject(proj);
+  };
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar
         currentUser={currentUser}
         onOpenAuth={(mode) => { setAuthModalMode(mode); setAuthModalOpen(true); }}
         onOpenProfile={() => setProfileModalOpen(true)}
+        onOpenMyApplications={() => setMyApplicationsModalOpen(true)}
         onLogout={handleLogout}
       />
 
@@ -173,6 +193,7 @@ export function App() {
                 currentUser={currentUser}
                 onOpenCreateProject={handleOpenCreateProject}
                 onSelectProject={(proj) => setSelectedProject(proj)}
+                onOpenApply={handleOpenApply}
                 refreshTrigger={galleryRefreshKey}
               />
             </div>
@@ -311,6 +332,7 @@ export function App() {
                 currentUser={currentUser}
                 onOpenCreateProject={handleOpenCreateProject}
                 onSelectProject={(proj) => setSelectedProject(proj)}
+                onOpenApply={handleOpenApply}
                 refreshTrigger={galleryRefreshKey}
               />
             )}
@@ -431,6 +453,44 @@ export function App() {
           currentUser={currentUser}
           onClose={() => setSelectedProject(null)}
           onProjectUpdated={handleProjectUpdated}
+          onOpenApply={(proj) => {
+            setSelectedProject(null);
+            handleOpenApply(proj);
+          }}
+          onOpenManageApplicants={(proj) => {
+            setSelectedProject(null);
+            handleOpenManageApplicants(proj);
+          }}
+        />
+      )}
+
+      {applyModalProject && (
+        <ApplyModal
+          project={applyModalProject}
+          currentUser={currentUser}
+          onClose={() => setApplyModalProject(null)}
+          onSuccess={() => {
+            setGalleryRefreshKey(k => k + 1);
+          }}
+        />
+      )}
+
+      {manageApplicantsProject && (
+        <ManageApplicantsModal
+          project={manageApplicantsProject}
+          onClose={() => setManageApplicantsProject(null)}
+          onApplicantDecided={() => {
+            setGalleryRefreshKey(k => k + 1);
+          }}
+        />
+      )}
+
+      {myApplicationsModalOpen && (
+        <MyApplicationsModal
+          onClose={() => setMyApplicationsModalOpen(false)}
+          onApplicationWithdrawn={() => {
+            setGalleryRefreshKey(k => k + 1);
+          }}
         />
       )}
     </div>

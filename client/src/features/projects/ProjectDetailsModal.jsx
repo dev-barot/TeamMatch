@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { projectApi } from '../../api/projectApi.js';
 
-export function ProjectDetailsModal({ project, currentUser, onClose, onProjectUpdated }) {
+export function ProjectDetailsModal({ project, currentUser, onClose, onProjectUpdated, onOpenApply, onOpenManageApplicants }) {
   const [closing, setClosing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -259,50 +259,90 @@ export function ProjectDetailsModal({ project, currentUser, onClose, onProjectUp
           gap: '1rem',
         }}>
           {isCreator ? (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '0.75rem' }}>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 👑 You are the <strong>Creator</strong> of this Project (Rule R2).
               </div>
-              {!isClosed && (
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 <button
                   type="button"
-                  onClick={handleCloseProject}
-                  disabled={closing}
+                  onClick={() => onOpenManageApplicants && onOpenManageApplicants(project)}
                   style={{
                     padding: '0.65rem 1.25rem',
-                    background: 'rgba(239, 68, 68, 0.15)',
-                    border: '1px solid rgba(239, 68, 68, 0.35)',
-                    color: '#f87171',
+                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                    color: '#fff',
                     borderRadius: 'var(--radius-md)',
                     fontWeight: '700',
                     fontSize: '0.85rem',
-                    cursor: closing ? 'not-allowed' : 'pointer',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: 'var(--shadow-glow)',
                   }}
                 >
-                  {closing ? 'Closing...' : 'Close Project (R2/R3)'}
+                  👥 Manage Applicants
                 </button>
-              )}
+                {!isClosed && (
+                  <button
+                    type="button"
+                    onClick={handleCloseProject}
+                    disabled={closing}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      background: 'rgba(239, 68, 68, 0.15)',
+                      border: '1px solid rgba(239, 68, 68, 0.35)',
+                      color: '#f87171',
+                      borderRadius: 'var(--radius-md)',
+                      fontWeight: '700',
+                      fontSize: '0.85rem',
+                      cursor: closing ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    {closing ? 'Closing...' : 'Close Project (R2/R3)'}
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '0.75rem' }}>
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                Interested in joining? Applications and invitations unlock in Module M3.
+                {isClosed ? 'This project is closed.' : 'Ready to collaborate? Apply for an open position (Rule R1).'}
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                style={{
-                  padding: '0.65rem 1.5rem',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
-                  borderRadius: 'var(--radius-md)',
-                  fontWeight: '600',
-                  cursor: 'pointer',
-                }}
-              >
-                Close View
-              </button>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                {!isClosed && (
+                  <button
+                    type="button"
+                    onClick={() => onOpenApply && onOpenApply(project)}
+                    style={{
+                      padding: '0.65rem 1.5rem',
+                      background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                      color: '#fff',
+                      borderRadius: 'var(--radius-md)',
+                      fontWeight: '700',
+                      fontSize: '0.85rem',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: 'var(--shadow-glow)',
+                    }}
+                  >
+                    Apply Now →
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  style={{
+                    padding: '0.65rem 1.5rem',
+                    background: 'var(--bg-surface)',
+                    border: '1px solid var(--border)',
+                    color: 'var(--text-main)',
+                    borderRadius: 'var(--radius-md)',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                  }}
+                >
+                  Close View
+                </button>
+              </div>
             </div>
           )}
         </div>
