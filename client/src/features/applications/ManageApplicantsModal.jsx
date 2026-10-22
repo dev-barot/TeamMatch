@@ -3,7 +3,7 @@ import { applicationApi } from '../../api/applicationApi.js';
 import { matchingApi } from '../../api/matchingApi.js';
 import { MatchScoreBadge } from '../matching/MatchScoreBadge.jsx';
 
-export function ManageApplicantsModal({ project, onClose, onApplicantDecided }) {
+export function ManageApplicantsModal({ project, onClose, onApplicantDecided, onMessageApplicant }) {
   const [activeTab, setActiveTab] = useState('applicants'); // 'applicants' | 'recommendations'
   const [applications, setApplications] = useState([]);
   const [candidates, setCandidates] = useState([]);
@@ -246,39 +246,64 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided }) 
                     )}
                   </div>
 
-                  {app.status === 'Pending' && (
-                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    {onMessageApplicant && (
                       <button
-                        onClick={() => handleDecision(app.id, 'reject')}
-                        disabled={actionLoading === app.id}
+                        type="button"
+                        onClick={() => onMessageApplicant({
+                          id: app.studentId,
+                          name: 'Applicant',
+                          specialty: app.specialty,
+                        })}
                         style={{
-                          padding: '0.5rem 1rem',
+                          padding: '0.5rem 0.85rem',
                           borderRadius: 'var(--radius-md)',
-                          background: 'rgba(239, 68, 68, 0.1)',
-                          border: '1px solid rgba(239, 68, 68, 0.3)',
-                          color: '#f87171',
+                          background: 'rgba(99, 102, 241, 0.1)',
+                          border: '1px solid rgba(99, 102, 241, 0.3)',
+                          color: 'var(--primary)',
                           fontSize: '0.85rem',
                           fontWeight: '600',
+                          cursor: 'pointer',
                         }}
                       >
-                        Reject
+                        💬 Message
                       </button>
-                      <button
-                        onClick={() => handleDecision(app.id, 'accept')}
-                        disabled={actionLoading === app.id}
-                        style={{
-                          padding: '0.5rem 1.25rem',
-                          borderRadius: 'var(--radius-md)',
-                          background: 'linear-gradient(135deg, var(--success), #059669)',
-                          color: '#fff',
-                          fontSize: '0.85rem',
-                          fontWeight: '700',
-                        }}
-                      >
-                        Accept Member (R3)
-                      </button>
-                    </div>
-                  )}
+                    )}
+
+                    {app.status === 'Pending' && (
+                      <>
+                        <button
+                          onClick={() => handleDecision(app.id, 'reject')}
+                          disabled={actionLoading === app.id}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            borderRadius: 'var(--radius-md)',
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            border: '1px solid rgba(239, 68, 68, 0.3)',
+                            color: '#f87171',
+                            fontSize: '0.85rem',
+                            fontWeight: '600',
+                          }}
+                        >
+                          Reject
+                        </button>
+                        <button
+                          onClick={() => handleDecision(app.id, 'accept')}
+                          disabled={actionLoading === app.id}
+                          style={{
+                            padding: '0.5rem 1.25rem',
+                            borderRadius: 'var(--radius-md)',
+                            background: 'linear-gradient(135deg, var(--success), #059669)',
+                            color: '#fff',
+                            fontSize: '0.85rem',
+                            fontWeight: '700',
+                          }}
+                        >
+                          Accept Member (R3)
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -342,24 +367,48 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided }) 
                     )}
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handleInvite(cand.id, cand.profile?.specialty || project.positions[0]?.specialty)}
-                    disabled={actionLoading === cand.id}
-                    style={{
-                      padding: '0.55rem 1.25rem',
-                      borderRadius: 'var(--radius-md)',
-                      background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                      color: '#fff',
-                      fontWeight: '700',
-                      fontSize: '0.85rem',
-                      border: 'none',
-                      cursor: 'pointer',
-                      boxShadow: 'var(--shadow-glow)',
-                    }}
-                  >
-                    {actionLoading === cand.id ? 'Inviting...' : 'Invite to Team →'}
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
+                    {onMessageApplicant && (
+                      <button
+                        type="button"
+                        onClick={() => onMessageApplicant({
+                          id: cand.id,
+                          name: cand.name || 'Candidate',
+                          specialty: cand.profile?.specialty || 'General',
+                        })}
+                        style={{
+                          padding: '0.55rem 0.85rem',
+                          borderRadius: 'var(--radius-md)',
+                          background: 'rgba(99, 102, 241, 0.1)',
+                          border: '1px solid rgba(99, 102, 241, 0.3)',
+                          color: 'var(--primary)',
+                          fontSize: '0.85rem',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        💬 Message
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleInvite(cand.id, cand.profile?.specialty || project.positions[0]?.specialty)}
+                      disabled={actionLoading === cand.id}
+                      style={{
+                        padding: '0.55rem 1.25rem',
+                        borderRadius: 'var(--radius-md)',
+                        background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                        color: '#fff',
+                        fontWeight: '700',
+                        fontSize: '0.85rem',
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: 'var(--shadow-glow)',
+                      }}
+                    >
+                      {actionLoading === cand.id ? 'Inviting...' : 'Invite to Team →'}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

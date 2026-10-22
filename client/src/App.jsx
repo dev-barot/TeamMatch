@@ -8,6 +8,8 @@ import { ProjectDetailsModal } from './features/projects/ProjectDetailsModal.jsx
 import { ApplyModal } from './features/applications/ApplyModal.jsx';
 import { MyApplicationsModal } from './features/applications/MyApplicationsModal.jsx';
 import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
+import { ChatModal } from './features/messaging/ChatModal.jsx';
+import { connectSocket, disconnectSocket } from './api/socketClient.js';
 import { authApi } from './api/authApi.js';
 import { studentApi } from './api/studentApi.js';
 
@@ -21,6 +23,8 @@ export function App() {
   const [applyModalProject, setApplyModalProject] = useState(null);
   const [manageApplicantsProject, setManageApplicantsProject] = useState(null);
   const [myApplicationsModalOpen, setMyApplicationsModalOpen] = useState(false);
+  const [chatModalOpen, setChatModalOpen] = useState(false);
+  const [chatInitialCounterparty, setChatInitialCounterparty] = useState(null);
   const [userProfile, setUserProfile] = useState(() => currentUser?.profile || null);
   const [activeTab, setActiveTab] = useState('projects');
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
@@ -32,9 +36,12 @@ export function App() {
         .then((data) => {
           setCurrentUser(data);
           setUserProfile(data.profile);
+          const token = localStorage.getItem('tm_access_token');
+          if (token) connectSocket(token);
         })
         .catch(() => {
           authApi.logout();
+          disconnectSocket();
           setCurrentUser(null);
           setUserProfile(null);
         });
@@ -42,15 +49,29 @@ export function App() {
   }, []);
 
   const handleLogout = () => {
+    disconnectSocket();
     authApi.logout();
     setCurrentUser(null);
     setUserProfile(null);
+    setChatModalOpen(false);
   };
 
   const handleAuthSuccess = (student) => {
     setCurrentUser(student);
     setUserProfile(student.profile);
     setGalleryRefreshKey(k => k + 1);
+    const token = localStorage.getItem('tm_access_token');
+    if (token) connectSocket(token);
+  };
+
+  const handleOpenChat = (counterparty = null) => {
+    if (!currentUser) {
+      setAuthModalMode('login');
+      setAuthModalOpen(true);
+      return;
+    }
+    setChatInitialCounterparty(counterparty);
+    setChatModalOpen(true);
   };
 
   const handleProfileUpdated = (updatedStudent) => {
@@ -96,6 +117,8 @@ export function App() {
         onOpenAuth={(mode) => { setAuthModalMode(mode); setAuthModalOpen(true); }}
         onOpenProfile={() => setProfileModalOpen(true)}
         onOpenMyApplications={() => setMyApplicationsModalOpen(true)}
+        onOpenMessages={() => handleOpenChat(null)}
+        onNavigateToLink={() => handleOpenChat(null)}
         onLogout={handleLogout}
       />
 
@@ -461,6 +484,10 @@ export function App() {
             setSelectedProject(null);
             handleOpenManageApplicants(proj);
           }}
+          onMessageCreator={(creator) => {
+            setSelectedProject(null);
+            handleOpenChat(creator);
+          }}
         />
       )}
 
@@ -482,6 +509,10 @@ export function App() {
           onApplicantDecided={() => {
             setGalleryRefreshKey(k => k + 1);
           }}
+          onMessageApplicant={(applicant) => {
+            setManageApplicantsProject(null);
+            handleOpenChat(applicant);
+          }}
         />
       )}
 
@@ -491,6 +522,18 @@ export function App() {
           onApplicationWithdrawn={() => {
             setGalleryRefreshKey(k => k + 1);
           }}
+        />
+      )}
+
+      {chatModalOpen && (
+        <ChatModal
+          isOpen={chatModalOpen}
+          onClose={() => {
+            setChatModalOpen(false);
+            setChatInitialCounterparty(null);
+          }}
+          currentStudent={currentUser}
+          initialCounterparty={chatInitialCounterparty}
         />
       )}
     </div>

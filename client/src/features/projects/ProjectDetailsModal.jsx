@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import { projectApi } from '../../api/projectApi.js';
 
-export function ProjectDetailsModal({ project, currentUser, onClose, onProjectUpdated, onOpenApply, onOpenManageApplicants }) {
+export function ProjectDetailsModal({
+  project,
+  currentUser,
+  onClose,
+  onProjectUpdated,
+  onOpenApply,
+  onOpenManageApplicants,
+  onMessageCreator,
+}) {
   const [closing, setClosing] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -307,7 +315,29 @@ export function ProjectDetailsModal({ project, currentUser, onClose, onProjectUp
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                 {isClosed ? 'This project is closed.' : 'Ready to collaborate? Apply for an open position (Rule R1).'}
               </div>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                {currentUser && project.creatorId && (
+                  <button
+                    type="button"
+                    onClick={() => onMessageCreator && onMessageCreator({
+                      id: project.creatorId,
+                      name: 'Project Creator',
+                      specialty: 'Creator',
+                    })}
+                    style={{
+                      padding: '0.65rem 1.25rem',
+                      background: 'rgba(99, 102, 241, 0.15)',
+                      border: '1px solid rgba(99, 102, 241, 0.35)',
+                      color: 'var(--primary)',
+                      borderRadius: 'var(--radius-md)',
+                      fontWeight: '700',
+                      fontSize: '0.85rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    💬 Message Creator
+                  </button>
+                )}
                 {!isClosed && (
                   <button
                     type="button"

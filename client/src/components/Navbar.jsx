@@ -1,6 +1,15 @@
 import React from 'react';
+import { NotificationBell } from '../features/notifications/NotificationBell.jsx';
 
-export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onOpenMyApplications, onLogout }) {
+export function Navbar({
+  currentUser,
+  onOpenAuth,
+  onOpenProfile,
+  onOpenMyApplications,
+  onOpenMessages,
+  onNavigateToLink,
+  onLogout,
+}) {
   return (
     <header style={{
       display: 'flex',
@@ -89,8 +98,26 @@ export function Navbar({ currentUser, onOpenAuth, onOpenProfile, onOpenMyApplica
                 cursor: 'pointer',
               }}
             >
-              📋 My Applications
+              📋 Applications
             </button>
+
+            <button
+              onClick={onOpenMessages}
+              style={{
+                padding: '0.5rem 0.9rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'rgba(99, 102, 241, 0.12)',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                color: 'var(--primary)',
+                fontSize: '0.85rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+              }}
+            >
+              💬 Messages
+            </button>
+
+            <NotificationBell onNavigateToLink={onNavigateToLink} />
 
             <button
               onClick={onOpenProfile}
