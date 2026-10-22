@@ -39,8 +39,15 @@ Uses only terms from [UBIQUITOUS_LANGUAGE.md](UBIQUITOUS_LANGUAGE.md). Every `fi
 
 ## Boundary
 Core logic (`server/src/domain`, `server/src/application`) stops at the `ports/` folder. Outside: Express, MongoDB/Mongoose, email provider, Socket.IO, clock, bcrypt.
-It protects us from: **Mongoose/MongoDB and Express — changes in storage or transport frameworks do not impact domain rules or use cases**.
+It protects us from: **Mongoose/MongoDB, Express, and Socket.IO — changes in storage or transport frameworks do not impact domain rules or use cases**.
 Enforced at: `server/eslint.config.js:22`.
+
+### Boundary Note — Realtime Messaging & Socket.IO Encapsulation
+- Principle: Dependency Inversion Principle (DIP) & Hexagonal Isolation
+- Where: `server/src/ports/RealtimePublisher.js:1` (port) and `server/src/infrastructure/socket/SocketGateway.js:11` (adapter)
+- Core invariant: Neither `Conversation`, `Message`, nor any application use case (`SendMessage`, `ListMessages`) imports or depends directly on `socket.io`.
+- Socket.IO lives strictly in `server/src/infrastructure/socket/`.
+- Viva Answer: If we swap Socket.IO for SSE or WebPush, only the adapter in `infrastructure/` changes; 0 lines of domain or use case code change.
 
 ## AI use
 - Tools used and for what: <tool → tasks>

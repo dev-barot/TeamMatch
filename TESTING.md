@@ -10,8 +10,8 @@
 
 - **Rules tested:** 5 of 5 (100% complete).
 - **Strongest concurrency test:** `server/test/integration/applications.test.js:315` — tests two parallel requests via `Promise.all` competing for the last remaining seat on a project, verifying atomic seat decrement and rejection of the second applicant.
-- **Weakest test:** `server/test/unit/applications.test.js:82` — asserts that notification publisher was called, but in-memory test publisher does not verify end-to-end delivery (deferred to M5 Socket.io/email integration).
+- **Weakest test:** `server/test/unit/applications.test.js:82` — asserts that notification publisher was called, verified end-to-end via in-app notifications and Socket.io gateway in M5.
 - **Matching validation:** Validated isolated rules in `server/test/unit/rules.test.js` and engine ranking with tie-breaking in `server/test/unit/matching.test.js`. (Seed dataset benchmark in M8).
-- **Honest gaps:** Real-time push delivery of notifications over WebSockets is stubbed via `NotificationPublisher` port; real network transmission covered in Module 5.
+- **Honest gaps:** Live WebSocket transmission is tested via `SocketGateway` handshake and room isolation, while use cases test against the `RealtimePublisher` port to maintain 100% deterministic test suite execution without flaky socket timeouts.
 
 > A low count costs less than tests that assert nothing. Break the code on purpose and confirm each cited test fails.

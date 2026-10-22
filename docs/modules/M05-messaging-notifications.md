@@ -4,14 +4,15 @@
 **Rules owned:** none of R1–R5 (candidate extra rule: "a Conversation has exactly two distinct Students").
 
 ## Steps
-1. [ ] **Domain:** `Conversation` (two sorted distinct participantIds, lastMessageAt), `Message` (≤2000 chars, non-empty).
-2. [ ] Get-or-create Conversation idempotent for the same pair regardless of order.
-3. [ ] **Use cases:** `SendMessage`, `ListConversations`, `ListMessages`, `MarkRead`, `ListNotifications`, `MarkNotificationRead`.
-4. [ ] Only participants can read or send (403 otherwise).
-5. [ ] **Socket.IO gateway** in `infrastructure/socket/`: authenticate handshake with the JWT, join per-Student room, emit `message:new`. The use case calls a `RealtimePublisher` port, not Socket.IO.
-6. [ ] `NotificationPublisher` implementation: stores a Notification and emits to the Student's room.
+1. [x] **Domain:** `Conversation` (two sorted distinct participantIds, lastMessageAt), `Message` (≤2000 chars, non-empty).
+2. [x] Get-or-create Conversation idempotent for the same pair regardless of order.
+3. [x] **Use cases:** `SendMessage`, `ListConversations`, `ListMessages`, `MarkRead`, `ListNotifications`, `MarkNotificationRead`, `MarkAllNotificationsRead`.
+4. [x] Only participants can read or send (403 otherwise).
+5. [x] **Socket.IO gateway** in `infrastructure/socket/`: authenticate handshake with the JWT, join per-Student room, emit `message:new`. The use case calls a `RealtimePublisher` port, not Socket.IO.
+6. [x] `NotificationPublisher` implementation: stores a Notification and emits to the Student's room.
 7. [ ] **Report:** `ReportStudent` / `ReportConversation` use case (admin review in M6).
-8. [ ] Deploy host must support WebSockets; test on the live URL.
+8. [x] **Frontend UI Slice:** Real-time `NotificationBell` with badge and dropdown, live 1-on-1 `ChatModal`, direct messaging actions from Project and Applicant views.
+9. [ ] Deploy host must support WebSockets; test on the live URL.
 
 ## Tests
 Participants-only access · idempotent get-or-create · length limits · unit test using a fake `RealtimePublisher` · one integration test with two socket clients.
