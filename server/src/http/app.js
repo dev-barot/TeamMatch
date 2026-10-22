@@ -6,6 +6,8 @@ import { createStudentRouter } from './routes/studentRoutes.js';
 import { createProjectRouter } from './routes/projectRoutes.js';
 import { createApplicationRouter } from './routes/applicationRoutes.js';
 import { createMatchingRouter } from './routes/matchingRoutes.js';
+import { createMessagingRouter } from './routes/messagingRoutes.js';
+import { createNotificationRouter } from './routes/notificationRoutes.js';
 import { createRequireAuth } from './middleware/requireAuth.js';
 import { requireVerified } from './middleware/requireVerified.js';
 
@@ -15,6 +17,10 @@ import { ConsoleMailer } from '../infrastructure/mail/ConsoleMailer.js';
 import { InMemoryStudentRepository } from '../infrastructure/mongo/InMemoryStudentRepository.js';
 import { InMemoryProjectRepository } from '../infrastructure/mongo/InMemoryProjectRepository.js';
 import { InMemoryApplicationRepository } from '../infrastructure/mongo/InMemoryApplicationRepository.js';
+import { InMemoryConversationRepository } from '../infrastructure/mongo/InMemoryConversationRepository.js';
+import { InMemoryMessageRepository } from '../infrastructure/mongo/InMemoryMessageRepository.js';
+import { InMemoryNotificationRepository } from '../infrastructure/mongo/InMemoryNotificationRepository.js';
+import { RealtimeNotificationPublisher } from '../infrastructure/notifications/RealtimeNotificationPublisher.js';
 import { Clock } from '../ports/Clock.js';
 
 import { SignUp } from '../application/identity/SignUp.js';
@@ -44,6 +50,14 @@ import { GetStudentApplications } from '../application/applications/GetStudentAp
 import { FindMatchedProjectsForStudent } from '../application/matching/FindMatchedProjectsForStudent.js';
 import { FindMatchedStudentsForProject } from '../application/matching/FindMatchedStudentsForProject.js';
 
+import { GetOrCreateConversation } from '../application/messaging/GetOrCreateConversation.js';
+import { SendMessage } from '../application/messaging/SendMessage.js';
+import { ListConversations } from '../application/messaging/ListConversations.js';
+import { ListMessages } from '../application/messaging/ListMessages.js';
+import { ListNotifications } from '../application/messaging/ListNotifications.js';
+import { MarkNotificationRead } from '../application/messaging/MarkNotificationRead.js';
+import { MarkAllNotificationsRead } from '../application/messaging/MarkAllNotificationsRead.js';
+
 export function createApp(customDeps = {}) {
   const app = express();
 
@@ -57,7 +71,14 @@ export function createApp(customDeps = {}) {
   const studentRepo = customDeps.studentRepository || new InMemoryStudentRepository();
   const projectRepo = customDeps.projectRepository || new InMemoryProjectRepository();
   const applicationRepo = customDeps.applicationRepository || new InMemoryApplicationRepository();
-  const notificationPublisher = customDeps.notificationPublisher || null;
+  const conversationRepo = customDeps.conversationRepository || new InMemoryConversationRepository();
+  const messageRepo = customDeps.messageRepository || new InMemoryMessageRepository();
+  const notificationRepo = customDeps.notificationRepository || new InMemoryNotificationRepository();
+  const realtimePublisher = customDeps.realtimePublisher || null;
+  const notificationPublisher = customDeps.notificationPublisher || new RealtimeNotificationPublisher({
+    notificationRepository: notificationRepo,
+    realtimePublisher,
+  });
   const passwordHasher = customDeps.passwordHasher || new BcryptPasswordHasher();
   const tokenSigner = customDeps.tokenSigner || new JwtTokenSigner({
     accessSecret: process.env.JWT_ACCESS_SECRET || 'access_secret_test',
@@ -191,6 +212,45 @@ export function createApp(customDeps = {}) {
     applicationRepository: applicationRepo,
   });
 
+  // Application use cases: Messaging & Notifications (M5)
+  const getOrCreateConversationUseCase = new GetOrCreateConversation({
+    conversationRepository: conversationRepo,
+    studentRepository: studentRepo,
+  });
+
+  const sendMessageUseCase = new SendMessage({
+    conversationRepository: conversationRepo,
+    messageRepository: messageRepo,
+    realtimePublisher,
+    notificationPublisher,
+    clock,
+  });
+
+  const listConversationsUseCase = new ListConversations({
+    conversationRepository: conversationRepo,
+    studentRepository: studentRepo,
+  });
+
+  const listMessagesUseCase = new ListMessages({
+    conversationRepository: conversationRepo,
+    messageRepository: messageRepo,
+    clock,
+  });
+
+  const listNotificationsUseCase = new ListNotifications({
+    notificationRepository: notificationRepo,
+  });
+
+  const markNotificationReadUseCase = new MarkNotificationRead({
+    notificationRepository: notificationRepo,
+    clock,
+  });
+
+  const markAllNotificationsReadUseCase = new MarkAllNotificationsRead({
+    notificationRepository: notificationRepo,
+    clock,
+  });
+
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
@@ -242,6 +302,19 @@ export function createApp(customDeps = {}) {
   app.use('/matching', createMatchingRouter({
     findMatchedProjectsUseCase,
     findMatchedStudentsUseCase,
+    requireAuth,
+  }));
+  app.use('/conversations', createMessagingRouter({
+    getOrCreateConversationUseCase,
+    sendMessageUseCase,
+    listConversationsUseCase,
+    listMessagesUseCase,
+    requireAuth,
+  }));
+  app.use('/notifications', createNotificationRouter({
+    listNotificationsUseCase,
+    markNotificationReadUseCase,
+    markAllNotificationsReadUseCase,
     requireAuth,
   }));
 
