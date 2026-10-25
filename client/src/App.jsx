@@ -9,6 +9,7 @@ import { ApplyModal } from './features/applications/ApplyModal.jsx';
 import { MyApplicationsModal } from './features/applications/MyApplicationsModal.jsx';
 import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
 import { ChatModal } from './features/messaging/ChatModal.jsx';
+import { AdminPortal } from './features/admin/AdminPortal.jsx';
 import { connectSocket, disconnectSocket } from './api/socketClient.js';
 import { authApi } from './api/authApi.js';
 import { studentApi } from './api/studentApi.js';
@@ -25,6 +26,7 @@ export function App() {
   const [myApplicationsModalOpen, setMyApplicationsModalOpen] = useState(false);
   const [chatModalOpen, setChatModalOpen] = useState(false);
   const [chatInitialCounterparty, setChatInitialCounterparty] = useState(null);
+  const [adminPortalOpen, setAdminPortalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(() => currentUser?.profile || null);
   const [activeTab, setActiveTab] = useState('projects');
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
@@ -118,6 +120,7 @@ export function App() {
         onOpenProfile={() => setProfileModalOpen(true)}
         onOpenMyApplications={() => setMyApplicationsModalOpen(true)}
         onOpenMessages={() => handleOpenChat(null)}
+        onOpenAdmin={() => setAdminPortalOpen(true)}
         onNavigateToLink={() => handleOpenChat(null)}
         onLogout={handleLogout}
       />
@@ -534,6 +537,14 @@ export function App() {
           }}
           currentStudent={currentUser}
           initialCounterparty={chatInitialCounterparty}
+        />
+      )}
+
+      {/* M6: Admin Moderation Portal — only accessible for admin accounts (R2) */}
+      {adminPortalOpen && currentUser?.accountType === 'admin' && (
+        <AdminPortal
+          currentUser={currentUser}
+          onClose={() => setAdminPortalOpen(false)}
         />
       )}
     </div>

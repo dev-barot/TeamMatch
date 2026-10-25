@@ -7,6 +7,7 @@ export function Navbar({
   onOpenProfile,
   onOpenMyApplications,
   onOpenMessages,
+  onOpenAdmin,
   onNavigateToLink,
   onLogout,
 }) {
@@ -116,6 +117,29 @@ export function Navbar({
             >
               💬 Messages
             </button>
+
+            {currentUser.accountType === 'admin' && (
+              <button
+                onClick={onOpenAdmin}
+                id="navbar-admin-portal"
+                style={{
+                  padding: '0.5rem 0.9rem',
+                  borderRadius: 'var(--radius-md)',
+                  background: 'rgba(99,102,241,0.18)',
+                  border: '1px solid rgba(99,102,241,0.5)',
+                  color: 'var(--primary)',
+                  fontSize: '0.85rem',
+                  fontWeight: '700',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  boxShadow: '0 0 12px rgba(99,102,241,0.25)',
+                }}
+              >
+                🛡️ Admin
+              </button>
+            )}
 
             <NotificationBell onNavigateToLink={onNavigateToLink} />
 
