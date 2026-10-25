@@ -56,6 +56,15 @@ export class InMemoryStudentRepository extends StudentRepository {
     return results;
   }
 
+  async findAll(filters = {}) {
+    const results = Array.from(this.students.values());
+    // Sort newest first by account createdAt
+    results.sort((a, b) => b.account.createdAt - a.account.createdAt);
+    const offset = filters.offset || 0;
+    const limit = filters.limit || 50;
+    return results.slice(offset, offset + limit);
+  }
+
   clear() {
     this.students.clear();
   }

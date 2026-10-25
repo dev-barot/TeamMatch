@@ -51,4 +51,13 @@ export class StudentRepository {
   async findAllVerified(_filters = {}) {
     throw new Error('Not implemented: StudentRepository.findAllVerified');
   }
+
+  /**
+   * Admin: retrieves ALL accounts (verified or not, active or not) for moderation.
+   * @param {{ limit?: number, offset?: number }} [_filters]
+   * @returns {Promise<import('../domain/identity/Student.js').Student[]>}
+   */
+  async findAll(_filters = {}) {
+    throw new Error('Not implemented: StudentRepository.findAll');
+  }
 }
