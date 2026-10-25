@@ -85,4 +85,19 @@ export class MongooseStudentRepository extends StudentRepository {
 
     return docs.map(d => this._toDomain(d));
   }
+
+  /**
+   * Admin: list ALL accounts (any status) with pagination.
+   */
+  async findAll(filters = {}) {
+    const offset = filters.offset || 0;
+    const limit = Math.min(filters.limit || 50, 100);
+    const docs = await StudentModel.find({})
+      .sort({ createdAt: -1 })
+      .skip(offset)
+      .limit(limit)
+      .lean();
+    return docs.map(d => this._toDomain(d));
+  }
 }
+
