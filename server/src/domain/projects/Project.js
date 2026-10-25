@@ -213,6 +213,14 @@ export class Project {
     this.transitionStatus(ProjectStatus.CLOSED);
   }
 
+  /**
+   * Admin-initiated close. Bypasses assertCreator since Admin is not the Creator.
+   * Rule R2: Admin-only check is enforced in the AdminCloseProject use case.
+   */
+  forceClose() {
+    this.transitionStatus(ProjectStatus.CLOSED);
+  }
+
   toJSON() {
     return {
       id: this.id,
