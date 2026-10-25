@@ -46,7 +46,7 @@ function makeReport(overrides = {}) {
     reporterId: overrides.reporterId || 'student_001',
     targetType: overrides.targetType || REPORT_TARGET_TYPE.STUDENT,
     targetId: overrides.targetId || 'student_002',
-    reason: overrides.reason || 'Harassment and inappropriate messaging.',
+    reason: overrides.reason !== undefined ? overrides.reason : 'Harassment and inappropriate messaging.',
     status: overrides.status || REPORT_STATUS.PENDING,
   });
 }
