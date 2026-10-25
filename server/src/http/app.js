@@ -8,8 +8,11 @@ import { createApplicationRouter } from './routes/applicationRoutes.js';
 import { createMatchingRouter } from './routes/matchingRoutes.js';
 import { createMessagingRouter } from './routes/messagingRoutes.js';
 import { createNotificationRouter } from './routes/notificationRoutes.js';
+import { createAdminRouter } from './routes/adminRoutes.js';
+import { createModerationRouter } from './routes/moderationRoutes.js';
 import { createRequireAuth } from './middleware/requireAuth.js';
 import { requireVerified } from './middleware/requireVerified.js';
+import { requireAdmin } from './middleware/requireAdmin.js';
 
 import { BcryptPasswordHasher } from '../infrastructure/crypto/BcryptPasswordHasher.js';
 import { JwtTokenSigner } from '../infrastructure/crypto/JwtTokenSigner.js';
@@ -20,6 +23,7 @@ import { InMemoryApplicationRepository } from '../infrastructure/mongo/InMemoryA
 import { InMemoryConversationRepository } from '../infrastructure/mongo/InMemoryConversationRepository.js';
 import { InMemoryMessageRepository } from '../infrastructure/mongo/InMemoryMessageRepository.js';
 import { InMemoryNotificationRepository } from '../infrastructure/mongo/InMemoryNotificationRepository.js';
+import { InMemoryReportRepository } from '../infrastructure/mongo/InMemoryReportRepository.js';
 import { RealtimeNotificationPublisher } from '../infrastructure/notifications/RealtimeNotificationPublisher.js';
 import { Clock } from '../ports/Clock.js';
 
@@ -50,6 +54,14 @@ import { GetStudentApplications } from '../application/applications/GetStudentAp
 import { FindMatchedProjectsForStudent } from '../application/matching/FindMatchedProjectsForStudent.js';
 import { FindMatchedStudentsForProject } from '../application/matching/FindMatchedStudentsForProject.js';
 
+import { ListAccounts } from '../application/moderation/ListAccounts.js';
+import { DeactivateAccount } from '../application/moderation/DeactivateAccount.js';
+import { AdminCloseProject } from '../application/moderation/AdminCloseProject.js';
+import { ListReports } from '../application/moderation/ListReports.js';
+import { MarkReportReviewed } from '../application/moderation/MarkReportReviewed.js';
+import { ReportStudent } from '../application/moderation/ReportStudent.js';
+import { ReportConversation } from '../application/moderation/ReportConversation.js';
+
 import { GetOrCreateConversation } from '../application/messaging/GetOrCreateConversation.js';
 import { SendMessage } from '../application/messaging/SendMessage.js';
 import { ListConversations } from '../application/messaging/ListConversations.js';
@@ -74,6 +86,7 @@ export function createApp(customDeps = {}) {
   const conversationRepo = customDeps.conversationRepository || new InMemoryConversationRepository();
   const messageRepo = customDeps.messageRepository || new InMemoryMessageRepository();
   const notificationRepo = customDeps.notificationRepository || new InMemoryNotificationRepository();
+  const reportRepo = customDeps.reportRepository || new InMemoryReportRepository();
   const realtimePublisher = customDeps.realtimePublisher || null;
   const notificationPublisher = customDeps.notificationPublisher || new RealtimeNotificationPublisher({
     notificationRepository: notificationRepo,
@@ -251,6 +264,39 @@ export function createApp(customDeps = {}) {
     clock,
   });
 
+  // Application use cases: Admin & Moderation (M6)
+  const listAccountsUseCase = new ListAccounts({
+    studentRepository: studentRepo,
+  });
+
+  const deactivateAccountUseCase = new DeactivateAccount({
+    studentRepository: studentRepo,
+  });
+
+  const adminCloseProjectUseCase = new AdminCloseProject({
+    projectRepository: projectRepo,
+    applicationRepository: applicationRepo,
+    notificationPublisher,
+  });
+
+  const listReportsUseCase = new ListReports({
+    reportRepository: reportRepo,
+  });
+
+  const markReportReviewedUseCase = new MarkReportReviewed({
+    reportRepository: reportRepo,
+  });
+
+  const reportStudentUseCase = new ReportStudent({
+    studentRepository: studentRepo,
+    reportRepository: reportRepo,
+  });
+
+  const reportConversationUseCase = new ReportConversation({
+    conversationRepository: conversationRepo,
+    reportRepository: reportRepo,
+  });
+
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
@@ -316,6 +362,23 @@ export function createApp(customDeps = {}) {
     markNotificationReadUseCase,
     markAllNotificationsReadUseCase,
     requireAuth,
+  }));
+  // M6: Admin moderation portal (protected by requireAdmin)
+  app.use('/admin', createAdminRouter({
+    listAccountsUseCase,
+    deactivateAccountUseCase,
+    adminCloseProjectUseCase,
+    listReportsUseCase,
+    markReportReviewedUseCase,
+    requireAuth,
+    requireAdmin,
+  }));
+  // M6: Student-facing report filing
+  app.use('/moderation', createModerationRouter({
+    reportStudentUseCase,
+    reportConversationUseCase,
+    requireAuth,
+    requireVerified,
   }));
 
   // 404 fallback

@@ -8,11 +8,12 @@ import { InMemoryApplicationRepository } from './infrastructure/mongo/InMemoryAp
 import { InMemoryConversationRepository } from './infrastructure/mongo/InMemoryConversationRepository.js';
 import { InMemoryMessageRepository } from './infrastructure/mongo/InMemoryMessageRepository.js';
 import { InMemoryNotificationRepository } from './infrastructure/mongo/InMemoryNotificationRepository.js';
+import { InMemoryReportRepository } from './infrastructure/mongo/InMemoryReportRepository.js';
 import { JwtTokenSigner } from './infrastructure/crypto/JwtTokenSigner.js';
 import { SocketGateway } from './infrastructure/socket/SocketGateway.js';
 import { createHandcraftedProjects } from './infrastructure/mongo/seedM02.js';
 import { Student } from './domain/identity/Student.js';
-import { Account } from './domain/identity/Account.js';
+import { Account, ACCOUNT_TYPES } from './domain/identity/Account.js';
 import { Profile } from './domain/identity/Profile.js';
 
 dotenv.config();
@@ -26,6 +27,7 @@ const applicationRepository = new InMemoryApplicationRepository();
 const conversationRepository = new InMemoryConversationRepository();
 const messageRepository = new InMemoryMessageRepository();
 const notificationRepository = new InMemoryNotificationRepository();
+const reportRepository = new InMemoryReportRepository();
 
 const tokenSigner = new JwtTokenSigner({
   accessSecret: process.env.JWT_ACCESS_SECRET || 'access_secret_test',
@@ -50,6 +52,28 @@ const demoCreator = new Student({
 });
 await studentRepository.save(demoCreator);
 
+// Seed Admin account from env vars (M6 step 1 — no public signup path to admin)
+// Set ADMIN_EMAIL and ADMIN_PASSWORD_HASH in .env to enable the admin account.
+if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD_HASH) {
+  const adminAccount = new Account({
+    email: process.env.ADMIN_EMAIL,
+    passwordHash: process.env.ADMIN_PASSWORD_HASH,
+    accountType: ACCOUNT_TYPES.ADMIN,
+    isEmailVerified: true,
+    isActive: true,
+  });
+  const adminStudent = new Student({
+    id: 'admin_seed_001',
+    name: process.env.ADMIN_NAME || 'Platform Admin',
+    account: adminAccount,
+    profile: new Profile({ specialty: 'Other' }),
+  });
+  await studentRepository.save(adminStudent);
+  console.log(`Admin account seeded for: ${process.env.ADMIN_EMAIL}`);
+} else {
+  console.log('No ADMIN_EMAIL/ADMIN_PASSWORD_HASH set — admin seeding skipped (dev mode).');
+}
+
 // Seed 3 handcrafted projects for eyeball inspection (Step 8 of M02)
 for (const project of createHandcraftedProjects(demoCreator.id)) {
   await projectRepository.save(project);
@@ -65,6 +89,7 @@ const app = createApp({
   conversationRepository,
   messageRepository,
   notificationRepository,
+  reportRepository,
   realtimePublisher: socketGateway,
   tokenSigner,
 });
