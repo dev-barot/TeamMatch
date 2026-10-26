@@ -88,28 +88,8 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(5, 7, 12, 0.75)',
-      backdropFilter: 'blur(8px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 100,
-      padding: '1.5rem',
-    }}>
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        maxWidth: '600px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: 'var(--shadow-lg)',
-        padding: '2rem',
-      }}>
+    <div className="modal-overlay" style={{ zIndex: 100 }}>
+      <div className="modal-sheet" style={{ maxWidth: '600px', padding: '1.75rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <div>
             <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>Student Profile</h2>

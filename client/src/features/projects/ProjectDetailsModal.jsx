@@ -36,29 +36,8 @@ export function ProjectDetailsModal({
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(5, 7, 15, 0.85)',
-      backdropFilter: 'blur(8px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '1.5rem',
-      overflowY: 'auto',
-    }}>
-      <div style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        maxWidth: '720px',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: 'var(--shadow-glow)',
-        padding: '2.5rem',
-      }}>
+    <div className="modal-overlay" style={{ zIndex: 1000 }}>
+      <div className="modal-sheet" style={{ maxWidth: '720px', padding: '1.75rem', boxShadow: 'var(--shadow-glow)' }}>
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
           <div>

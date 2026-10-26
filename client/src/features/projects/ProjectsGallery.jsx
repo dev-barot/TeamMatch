@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { projectApi } from '../../api/projectApi.js';
 import { matchingApi } from '../../api/matchingApi.js';
 import { MatchScoreBadge } from '../matching/MatchScoreBadge.jsx';
+import { LoadingSpinner, EmptyState, ErrorBanner } from '../../components/ui/States.jsx';
 
 const SPECIALTIES = ['All', 'Frontend', 'Backend', 'ML', 'DevOps', 'UI/UX', 'Other'];
 const COMMITMENTS = ['All', 'low', 'medium', 'high'];
@@ -155,11 +156,14 @@ export function ProjectsGallery({
 
         {/* Search input */}
         <div style={{ marginBottom: '1.25rem' }}>
+          <label htmlFor="projects-search" style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden', clip: 'rect(0,0,0,0)' }}>Search projects</label>
           <input
-            type="text"
+            id="projects-search"
+            type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search projects by title, description, or tech stack (e.g. React, Node, AI)..."
+            aria-label="Search projects"
             style={{
               width: '100%',
               padding: '0.85rem 1.25rem',
@@ -249,67 +253,38 @@ export function ProjectsGallery({
         </div>
       </div>
 
-      {/* Error message */}
+      {/* Error state */}
       {errorMessage && (
-        <div style={{
-          background: 'rgba(239, 68, 68, 0.1)',
-          border: '1px solid rgba(239, 68, 68, 0.3)',
-          borderRadius: 'var(--radius-md)',
-          padding: '1rem',
-          color: '#f87171',
-          fontSize: '0.9rem',
-        }}>
-          {errorMessage}
-        </div>
+        <ErrorBanner message={errorMessage} onRetry={fetchProjects} />
       )}
 
       {/* Loading state */}
-      {loading && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
-          <div style={{ display: 'inline-block', width: '28px', height: '28px', border: '3px solid rgba(99, 102, 241, 0.2)', borderTopColor: 'var(--primary)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-          <p style={{ marginTop: '0.75rem', fontSize: '0.9rem' }}>Searching projects...</p>
-        </div>
-      )}
+      {loading && <LoadingSpinner label="Searching projects…" />}
 
       {/* Empty State */}
-      {!loading && projects.length === 0 && (
-        <div style={{
-          background: 'var(--bg-surface)',
-          border: '1px dashed var(--border)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '4rem 2rem',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🔍</div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: '700', marginBottom: '0.5rem' }}>No projects found</h3>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', maxWidth: '420px', margin: '0 auto 1.5rem auto' }}>
-            Try adjusting your search keywords, clearing specialty filters, or be the first to post a new project!
-          </p>
-          <button
-            onClick={onOpenCreateProject}
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              color: '#fff',
-              fontWeight: '700',
-              fontSize: '0.9rem',
-              border: 'none',
-              cursor: 'pointer',
-            }}
-          >
-            Post a Project
-          </button>
-        </div>
+      {!loading && projects.length === 0 && !errorMessage && (
+        <EmptyState
+          icon="🔍"
+          title="No projects found"
+          message="Try adjusting your search, clearing specialty filters, or be the first to post a project!"
+          action={
+            <button
+              onClick={onOpenCreateProject}
+              style={{
+                padding: '0.75rem 1.5rem',
+                borderRadius: 'var(--radius-md)',
+                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+                color: '#fff', fontWeight: '700', fontSize: '0.9rem',
+                border: 'none', cursor: 'pointer', minHeight: '44px',
+              }}
+            >Post a Project</button>
+          }
+        />
       )}
 
-      {/* Projects Grid */}
+      {/* Projects Grid — responsive via CSS class (1col mobile → 2col tablet → 3col desktop) */}
       {!loading && projects.length > 0 && (
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
-          gap: '1.5rem',
-        }}>
+        <div className="grid-responsive">
           {projects.map((project) => {
             const totalHeadcount = project.positions.reduce((acc, p) => acc + p.headcount, 0);
             const totalFilled = project.positions.reduce((acc, p) => acc + p.filledCount, 0);

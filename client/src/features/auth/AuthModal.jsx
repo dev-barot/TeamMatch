@@ -50,26 +50,8 @@ export function AuthModal({ initialMode = 'login', onClose, onSuccess }) {
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(5, 7, 12, 0.75)',
-      backdropFilter: 'blur(8px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 100,
-      padding: '1rem',
-    }}>
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        maxWidth: '440px',
-        boxShadow: 'var(--shadow-lg)',
-        overflow: 'hidden',
-      }}>
+    <div className="modal-overlay" style={{ zIndex: 100 }}>
+      <div className="modal-sheet" style={{ maxWidth: '440px', overflow: 'hidden' }}>
         {/* Modal Header Tabs */}
         <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
           <button
