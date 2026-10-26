@@ -17,6 +17,7 @@ export class Account {
     accountType = ACCOUNT_TYPES.STUDENT,
     isEmailVerified = false,
     isActive = true,
+    isSeed = false,
     verificationToken = null,
     verificationTokenExpiresAt = null,
     resetPasswordToken = null,
@@ -36,6 +37,7 @@ export class Account {
     this.accountType = accountType;
     this.isEmailVerified = Boolean(isEmailVerified);
     this.isActive = Boolean(isActive);
+    this.isSeed = Boolean(isSeed);
     this.verificationToken = verificationToken;
     this.verificationTokenExpiresAt = verificationTokenExpiresAt ? new Date(verificationTokenExpiresAt) : null;
     this.resetPasswordToken = resetPasswordToken;
