@@ -1,5 +1,9 @@
+import fs from 'fs';
 import { buildSeedDataset } from '../../src/infrastructure/mongo/seedM08.js';
-import matchingCases from '../fixtures/matching-cases.json' with { type: 'json' };
+
+const matchingCases = JSON.parse(
+  fs.readFileSync(new URL('../fixtures/matching-cases.json', import.meta.url), 'utf8')
+);
 
 describe('Module 8: Seed & Matching Validation', () => {
   it('M8: buildSeedDataset produces a realistic full dataset', () => {
