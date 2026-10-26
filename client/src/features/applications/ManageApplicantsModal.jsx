@@ -78,28 +78,8 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(5, 7, 12, 0.75)',
-      backdropFilter: 'blur(8px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 110,
-      padding: '1.5rem',
-    }}>
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)',
-        width: '100%',
-        maxWidth: '720px',
-        maxHeight: '85vh',
-        overflowY: 'auto',
-        boxShadow: 'var(--shadow-lg)',
-        padding: '2rem',
-      }}>
+    <div className="modal-overlay" style={{ zIndex: 110 }}>
+      <div className="modal-sheet" style={{ maxWidth: '720px', padding: '1.75rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
           <div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800' }}>Manage Applicants</h2>
@@ -107,7 +87,7 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
               Project: <span style={{ color: 'var(--text-main)', fontWeight: '600' }}>{project?.title}</span> (Rule R2 Creator Access)
             </p>
           </div>
-          <button onClick={onClose} style={{ color: 'var(--text-muted)', fontSize: '1.25rem' }}>✕</button>
+          <button onClick={onClose} aria-label="Close applicants panel" style={{ color: 'var(--text-muted)', fontSize: '1.25rem', minHeight: '44px', minWidth: '44px' }}>✕</button>
         </div>
 
         {/* Tab switch */}
