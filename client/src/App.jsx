@@ -10,6 +10,7 @@ import { MyApplicationsModal } from './features/applications/MyApplicationsModal
 import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
 import { ChatModal } from './features/messaging/ChatModal.jsx';
 import { AdminPortal } from './features/admin/AdminPortal.jsx';
+import { FeedbackWidget } from './components/ui/FeedbackWidget.jsx';
 import { connectSocket, disconnectSocket } from './api/socketClient.js';
 import { authApi } from './api/authApi.js';
 import { studentApi } from './api/studentApi.js';
@@ -125,7 +126,7 @@ export function App() {
         onLogout={handleLogout}
       />
 
-      <main style={{ flex: 1, maxWidth: '1180px', margin: '0 auto', width: '100%', padding: '2.5rem 1.5rem' }}>
+      <main id="main-content" role="main" style={{ flex: 1, maxWidth: '1180px', margin: '0 auto', width: '100%', padding: '2rem 1rem' }}>
         {!currentUser ? (
           /* Landing Hero for Visitors */
           <section style={{ textAlign: 'center', padding: '2rem 1rem 3rem 1rem' }}>
@@ -547,6 +548,9 @@ export function App() {
           onClose={() => setAdminPortalOpen(false)}
         />
       )}
+
+      {/* M7: Feedback widget — every page (step 7) */}
+      <FeedbackWidget />
     </div>
   );
 }
