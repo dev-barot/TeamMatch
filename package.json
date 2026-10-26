@@ -11,6 +11,7 @@
     "dev": "concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm run dev -w server\" \"npm run dev -w client\"",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
+    "seed": "npm run seed -w server",
     "check:docs": "node scripts/check-docs.js"
   },
   "keywords": [
