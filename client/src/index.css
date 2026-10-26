@@ -100,3 +100,185 @@ input:focus, select:focus, textarea:focus {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--primary);
 }
+
+/* ─── M7: Mobile-First Responsive System ─────────────────────────────────── */
+
+/* Breakpoint reference (use in JS / components):
+   xs: 375px  (iPhone SE / smallest phone)
+   sm: 640px  (large phone / small tablet)
+   md: 768px  (tablet portrait)
+   lg: 1024px (tablet landscape / small desktop)
+   xl: 1280px (desktop) */
+
+/* Responsive container */
+.container {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+@media (min-width: 640px) {
+  .container { padding: 0 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .container { padding: 0 2rem; }
+}
+
+/* Responsive grid utilities */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .grid-responsive { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+}
+@media (min-width: 1024px) {
+  .grid-responsive { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+}
+
+/* Fluid typography scale */
+h1 { font-size: clamp(1.5rem, 5vw, 2.5rem); font-weight: 800; line-height: 1.15; }
+h2 { font-size: clamp(1.25rem, 4vw, 1.875rem); font-weight: 700; line-height: 1.2; }
+h3 { font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 600; line-height: 1.3; }
+
+/* Touch-friendly tap targets (WCAG 2.5.5 — min 44×44px) */
+button, [role="button"] {
+  min-height: 44px;
+}
+
+/* Mobile-safe modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;   /* sheet from bottom on mobile */
+  justify-content: center;
+  padding: 0;
+}
+@media (min-width: 640px) {
+  .modal-overlay {
+    align-items: center;
+    padding: 1rem;
+  }
+}
+
+/* Mobile-safe modal sheet */
+.modal-sheet {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+@media (min-width: 640px) {
+  .modal-sheet {
+    border-radius: var(--radius-lg);
+    max-width: 560px;
+    max-height: 88vh;
+  }
+}
+@media (min-width: 1024px) {
+  .modal-sheet {
+    max-width: 720px;
+  }
+}
+
+/* Responsive flex row → column on mobile */
+.flex-row-mobile-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .flex-row-mobile-col {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* Hide on mobile / show on desktop */
+.hide-mobile { display: none; }
+@media (min-width: 768px) {
+  .hide-mobile { display: initial; }
+}
+.show-mobile { display: initial; }
+@media (min-width: 768px) {
+  .show-mobile { display: none; }
+}
+
+/* Accessible focus ring */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Accessible label */
+label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+/* Skip-to-content link (accessibility) */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 0;
+  background: var(--primary);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 0 0 var(--radius-md) 0;
+  font-weight: 700;
+  z-index: 9999;
+}
+.skip-link:focus {
+  top: 0;
+}
+
+/* Feedback widget */
+.feedback-widget {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 50;
+}
+@media (max-width: 639px) {
+  .feedback-widget {
+    bottom: 0.75rem;
+    right: 0.75rem;
+  }
+}
+
+/* Keyframes shared across components */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
