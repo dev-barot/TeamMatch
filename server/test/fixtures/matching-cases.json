@@ -1,0 +1,462 @@
+[
+  {
+    "id": "case-01",
+    "student": {
+      "id": "s-01",
+      "profile": {
+        "skills": ["react", "node.js", "postgresql"],
+        "specialty": "Backend",
+        "weeklyAvailability": 14,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-01",
+      "requiredSkills": ["react", "node.js"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Backend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open Backend position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-02",
+    "student": {
+      "id": "s-02",
+      "profile": {
+        "skills": ["docker", "kubernetes", "linux"],
+        "specialty": "DevOps",
+        "weeklyAvailability": 16,
+        "timezone": "UTC",
+        "workingStyle": "independent"
+      }
+    },
+    "project": {
+      "id": "p-02",
+      "requiredSkills": ["docker", "kubernetes"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "DevOps", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open DevOps position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-03",
+    "student": {
+      "id": "s-03",
+      "profile": {
+        "skills": ["python", "pytorch", "sql"],
+        "specialty": "ML",
+        "weeklyAvailability": 12,
+        "timezone": "UTC",
+        "workingStyle": "fast-paced"
+      }
+    },
+    "project": {
+      "id": "p-03",
+      "requiredSkills": ["python", "pytorch", "sql"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "ML", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 3 of 3 required skills", "Fills open ML position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-04",
+    "student": {
+      "id": "s-04",
+      "profile": {
+        "skills": ["react", "figma", "accessibility"],
+        "specialty": "Frontend",
+        "weeklyAvailability": 10,
+        "timezone": "UTC",
+        "workingStyle": "detail-oriented"
+      }
+    },
+    "project": {
+      "id": "p-04",
+      "requiredSkills": ["react", "figma"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Frontend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open Frontend position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-05",
+    "student": {
+      "id": "s-05",
+      "profile": {
+        "skills": ["html", "css", "figma"],
+        "specialty": "UI/UX",
+        "weeklyAvailability": 9,
+        "timezone": "UTC",
+        "workingStyle": "detail-oriented"
+      }
+    },
+    "project": {
+      "id": "p-05",
+      "requiredSkills": ["react", "figma"],
+      "commitmentLevel": "low",
+      "positions": [{ "specialty": "UI/UX", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Fills skill gap: React"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-06",
+    "student": {
+      "id": "s-06",
+      "profile": {
+        "skills": ["python", "sql"],
+        "specialty": "Backend",
+        "weeklyAvailability": 8,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-06",
+      "requiredSkills": ["python", "sql", "pandas"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Backend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Pandas"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-07",
+    "student": {
+      "id": "s-07",
+      "profile": {
+        "skills": ["react", "node.js"],
+        "specialty": "Backend",
+        "weeklyAvailability": 6,
+        "timezone": "UTC-5",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-07",
+      "requiredSkills": ["react", "node.js"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Backend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Timezone within 2 hours", "Has 2 of 2 required skills"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-08",
+    "student": {
+      "id": "s-08",
+      "profile": {
+        "skills": ["react", "typescript"],
+        "specialty": "Frontend",
+        "weeklyAvailability": 12,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-08",
+      "requiredSkills": ["react", "typescript", "next.js"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Frontend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Next.js"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-09",
+    "student": {
+      "id": "s-09",
+      "profile": {
+        "skills": ["pandas", "python", "sql"],
+        "specialty": "ML",
+        "weeklyAvailability": 15,
+        "timezone": "UTC",
+        "workingStyle": "fast-paced"
+      }
+    },
+    "project": {
+      "id": "p-09",
+      "requiredSkills": ["python", "pandas"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "ML", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open ML position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-10",
+    "student": {
+      "id": "s-10",
+      "profile": {
+        "skills": ["python", "docker", "aws"],
+        "specialty": "DevOps",
+        "weeklyAvailability": 8,
+        "timezone": "UTC",
+        "workingStyle": "independent"
+      }
+    },
+    "project": {
+      "id": "p-10",
+      "requiredSkills": ["docker", "aws", "kubernetes"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "DevOps", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Kubernetes"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-11",
+    "student": {
+      "id": "s-11",
+      "profile": {
+        "skills": ["figma", "accessibility", "ux research"],
+        "specialty": "UI/UX",
+        "weeklyAvailability": 11,
+        "timezone": "UTC",
+        "workingStyle": "detail-oriented"
+      }
+    },
+    "project": {
+      "id": "p-11",
+      "requiredSkills": ["figma", "ux research"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "UI/UX", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open UI/UX position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-12",
+    "student": {
+      "id": "s-12",
+      "profile": {
+        "skills": ["node.js", "sql"],
+        "specialty": "Backend",
+        "weeklyAvailability": 6,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-12",
+      "requiredSkills": ["node.js", "sql", "redis"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Backend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Redis"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-13",
+    "student": {
+      "id": "s-13",
+      "profile": {
+        "skills": ["react", "next.js", "typescript"],
+        "specialty": "Frontend",
+        "weeklyAvailability": 18,
+        "timezone": "America/New_York",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-13",
+      "requiredSkills": ["react", "next.js"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "Frontend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "America/Los_Angeles"
+    },
+    "team": [],
+    "expectedTopReasons": ["Timezone within 2 hours", "Has 2 of 2 required skills"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-14",
+    "student": {
+      "id": "s-14",
+      "profile": {
+        "skills": ["python", "pytorch", "docker"],
+        "specialty": "ML",
+        "weeklyAvailability": 12,
+        "timezone": "UTC",
+        "workingStyle": "fast-paced"
+      }
+    },
+    "project": {
+      "id": "p-14",
+      "requiredSkills": ["python", "pytorch", "mlflow"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "ML", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: MLflow"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-15",
+    "student": {
+      "id": "s-15",
+      "profile": {
+        "skills": ["react", "node.js", "docker"],
+        "specialty": "Backend",
+        "weeklyAvailability": 20,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-15",
+      "requiredSkills": ["react", "node.js", "docker"],
+      "commitmentLevel": "high",
+      "positions": [{ "specialty": "Backend", "headcount": 2, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 3 of 3 required skills", "Fills open Backend position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-16",
+    "student": {
+      "id": "s-16",
+      "profile": {
+        "skills": ["kubernetes", "docker"],
+        "specialty": "DevOps",
+        "weeklyAvailability": 10,
+        "timezone": "UTC",
+        "workingStyle": "independent"
+      }
+    },
+    "project": {
+      "id": "p-16",
+      "requiredSkills": ["docker", "kubernetes", "ci/cd"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "DevOps", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: CI/CD"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-17",
+    "student": {
+      "id": "s-17",
+      "profile": {
+        "skills": ["figma", "react", "accessibility"],
+        "specialty": "Frontend",
+        "weeklyAvailability": 13,
+        "timezone": "UTC",
+        "workingStyle": "detail-oriented"
+      }
+    },
+    "project": {
+      "id": "p-17",
+      "requiredSkills": ["figma", "accessibility"],
+      "commitmentLevel": "low",
+      "positions": [{ "specialty": "UI/UX", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open UI/UX position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-18",
+    "student": {
+      "id": "s-18",
+      "profile": {
+        "skills": ["java", "spring boot"],
+        "specialty": "Backend",
+        "weeklyAvailability": 9,
+        "timezone": "UTC",
+        "workingStyle": "collaborative"
+      }
+    },
+    "project": {
+      "id": "p-18",
+      "requiredSkills": ["java", "spring boot", "redis"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "Backend", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Redis"],
+    "expectedRank": 2
+  },
+  {
+    "id": "case-19",
+    "student": {
+      "id": "s-19",
+      "profile": {
+        "skills": ["python", "sql", "pandas"],
+        "specialty": "ML",
+        "weeklyAvailability": 14,
+        "timezone": "UTC",
+        "workingStyle": "fast-paced"
+      }
+    },
+    "project": {
+      "id": "p-19",
+      "requiredSkills": ["python", "sql"],
+      "commitmentLevel": "medium",
+      "positions": [{ "specialty": "ML", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 2 required skills", "Fills open ML position"],
+    "expectedRank": 1
+  },
+  {
+    "id": "case-20",
+    "student": {
+      "id": "s-20",
+      "profile": {
+        "skills": ["figma", "ux research"],
+        "specialty": "UI/UX",
+        "weeklyAvailability": 7,
+        "timezone": "UTC",
+        "workingStyle": "detail-oriented"
+      }
+    },
+    "project": {
+      "id": "p-20",
+      "requiredSkills": ["figma", "ux research", "prototyping"],
+      "commitmentLevel": "low",
+      "positions": [{ "specialty": "UI/UX", "headcount": 1, "filledCount": 0 }],
+      "timezone": "UTC"
+    },
+    "team": [],
+    "expectedTopReasons": ["Has 2 of 3 required skills", "Fills skill gap: Prototyping"],
+    "expectedRank": 2
+  }
+]
