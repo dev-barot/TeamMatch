@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
@@ -34,45 +35,67 @@ const tokenSigner = new JwtTokenSigner({
   refreshSecret: process.env.JWT_REFRESH_SECRET || 'refresh_secret_test',
 });
 
-// Seed verified student creator for local demo
+// Standard bcrypt hashes for testing credentials
+const studentPasswordHash = bcrypt.hashSync('StudentPass123!', 10);
+const adminPasswordHash = bcrypt.hashSync('AdminPass123!', 10);
+
+// 1. Seed Verified Student Creator
 const demoCreator = new Student({
   id: 'student_seed_creator',
   name: 'Sarah Connor',
   account: new Account({
     email: 'sarah.creator@university.edu',
-    passwordHash: 'seeded_hash',
+    passwordHash: studentPasswordHash,
     isEmailVerified: true,
+    accountType: ACCOUNT_TYPES.STUDENT,
   }),
   profile: new Profile({
     specialty: 'Backend',
-    skills: ['python', 'node.js', 'docker'],
+    skills: ['Python', 'Node.js', 'Docker'],
     weeklyAvailability: 20,
     bio: 'CS Senior passionate about robotics, distributed systems, and team leadership.',
   }),
 });
 await studentRepository.save(demoCreator);
 
-// Seed Admin account from env vars (M6 step 1 — no public signup path to admin)
-// Set ADMIN_EMAIL and ADMIN_PASSWORD_HASH in .env to enable the admin account.
-if (process.env.ADMIN_EMAIL && process.env.ADMIN_PASSWORD_HASH) {
-  const adminAccount = new Account({
-    email: process.env.ADMIN_EMAIL,
-    passwordHash: process.env.ADMIN_PASSWORD_HASH,
-    accountType: ACCOUNT_TYPES.ADMIN,
-    isEmailVerified: true,
-    isActive: true,
-  });
-  const adminStudent = new Student({
-    id: 'admin_seed_001',
-    name: process.env.ADMIN_NAME || 'Platform Admin',
-    account: adminAccount,
-    profile: new Profile({ specialty: 'Other' }),
-  });
-  await studentRepository.save(adminStudent);
-  console.log(`Admin account seeded for: ${process.env.ADMIN_EMAIL}`);
-} else {
-  console.log('No ADMIN_EMAIL/ADMIN_PASSWORD_HASH set — admin seeding skipped (dev mode).');
-}
+// 2. Seed Unverified Student (for testing Rule R5 email verification workflow)
+const unverifiedStudent = new Student({
+  id: 'student_seed_unverified',
+  name: 'Alex Rivera',
+  account: new Account({
+    email: 'alex.unverified@university.edu',
+    passwordHash: studentPasswordHash,
+    isEmailVerified: false,
+    accountType: ACCOUNT_TYPES.STUDENT,
+  }),
+  profile: new Profile({
+    specialty: 'Frontend',
+    skills: ['React', 'CSS', 'Figma'],
+    weeklyAvailability: 15,
+    bio: 'Junior studying interaction design and responsive frontend apps.',
+  }),
+});
+await studentRepository.save(unverifiedStudent);
+
+// 3. Seed Platform Admin (Rule R2: No public signup path to admin)
+const adminEmail = process.env.ADMIN_EMAIL || 'admin@teammatch.edu';
+const adminAccount = new Account({
+  email: adminEmail,
+  passwordHash: process.env.ADMIN_PASSWORD_HASH ? process.env.ADMIN_PASSWORD_HASH : adminPasswordHash,
+  accountType: ACCOUNT_TYPES.ADMIN,
+  isEmailVerified: true,
+  isActive: true,
+});
+const adminStudent = new Student({
+  id: 'admin_seed_001',
+  name: process.env.ADMIN_NAME || 'Platform Admin',
+  account: adminAccount,
+  profile: new Profile({ specialty: 'Other' }),
+});
+await studentRepository.save(adminStudent);
+console.log(`[Seed] Admin account ready: ${adminEmail} (password: AdminPass123!)`);
+console.log(`[Seed] Verified student ready: sarah.creator@university.edu (password: StudentPass123!)`);
+console.log(`[Seed] Unverified student ready: alex.unverified@university.edu (password: StudentPass123!)`);
 
 // Seed 3 handcrafted projects for eyeball inspection (Step 8 of M02)
 for (const project of createHandcraftedProjects(demoCreator.id)) {

@@ -71,6 +71,18 @@ function AccountsTab() {
 
   useEffect(() => { load(); }, [load]);
 
+  const handleVerify = async (studentId, name) => {
+    try {
+      await adminApi.verifyAccount(studentId);
+      showToast(`Account for "${name}" verified successfully.`);
+      setAccounts((prev) =>
+        prev.map((a) => a.id === studentId ? { ...a, isEmailVerified: true } : a),
+      );
+    } catch (err) {
+      showToast(err.message || 'Failed to verify account.', 'error');
+    }
+  };
+
   const handleDeactivate = async (studentId, name) => {
     if (!window.confirm(`Deactivate account for "${name}"? They will not be able to log in.`)) return;
     setDeactivating(studentId);
@@ -144,16 +156,28 @@ function AccountsTab() {
                 <td style={{ padding: '10px 12px', color: 'var(--text-dim)', fontSize: '0.82rem' }}>
                   {new Date(acc.createdAt).toLocaleDateString()}
                 </td>
-                <td style={{ padding: '10px 12px' }}>
+                <td style={{ padding: '10px 12px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {acc.accountType !== 'admin' && !acc.isEmailVerified && (
+                    <button
+                      onClick={() => handleVerify(acc.id, acc.name)}
+                      id={`verify-${acc.id}`}
+                      style={{
+                        padding: '4px 10px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 700,
+                        background: '#ecfdf5', color: '#059669',
+                        border: '1px solid #a7f3d0', cursor: 'pointer',
+                      }}>
+                      ✓ Verify (R5)
+                    </button>
+                  )}
                   {acc.accountType !== 'admin' && acc.isActive && (
                     <button
                       onClick={() => handleDeactivate(acc.id, acc.name)}
                       disabled={deactivating === acc.id}
                       id={`deactivate-${acc.id}`}
                       style={{
-                        padding: '4px 12px', borderRadius: '6px', fontSize: '0.8rem', fontWeight: 600,
-                        background: 'rgba(239,68,68,0.1)', color: '#f87171',
-                        border: '1px solid rgba(239,68,68,0.3)', cursor: 'pointer',
+                        padding: '4px 10px', borderRadius: '6px', fontSize: '0.78rem', fontWeight: 600,
+                        background: '#fef2f2', color: '#dc2626',
+                        border: '1px solid #fecaca', cursor: 'pointer',
                         opacity: deactivating === acc.id ? 0.5 : 1,
                       }}>
                       {deactivating === acc.id ? '…' : 'Deactivate'}

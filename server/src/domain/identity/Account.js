@@ -78,6 +78,13 @@ export class Account {
     this.updatedAt = new Date();
   }
 
+  markVerified() {
+    this.isEmailVerified = true;
+    this.verificationToken = null;
+    this.verificationTokenExpiresAt = null;
+    this.updatedAt = new Date();
+  }
+
   setResetPasswordToken(token, expiresAt) {
     this.resetPasswordToken = token;
     this.resetPasswordTokenExpiresAt = new Date(expiresAt);

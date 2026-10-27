@@ -370,6 +370,7 @@ export function createApp(customDeps = {}) {
     adminCloseProjectUseCase,
     listReportsUseCase,
     markReportReviewedUseCase,
+    studentRepository: studentRepo,
     requireAuth,
     requireAdmin,
   }));

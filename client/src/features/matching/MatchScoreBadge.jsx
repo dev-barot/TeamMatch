@@ -12,29 +12,29 @@ export function MatchScoreBadge({ match, compact = false }) {
   const score = match.totalScore;
   const reasons = match.reasons || [];
 
-  // Color tiering
+  // Color tiering - Clean University SaaS
   const getBadgeColors = () => {
     if (score >= 60) {
       return {
-        bg: 'rgba(16, 185, 129, 0.15)',
-        border: 'rgba(16, 185, 129, 0.35)',
-        text: '#34d399',
-        glow: '0 0 12px rgba(16, 185, 129, 0.3)',
+        bg: '#ecfdf5',
+        border: '#a7f3d0',
+        text: '#059669',
+        glow: '0 1px 2px rgba(5, 150, 105, 0.1)',
       };
     }
     if (score >= 35) {
       return {
-        bg: 'rgba(99, 102, 241, 0.15)',
-        border: 'rgba(99, 102, 241, 0.35)',
-        text: '#818cf8',
-        glow: '0 0 12px rgba(99, 102, 241, 0.3)',
+        bg: '#eff6ff',
+        border: '#bfdbfe',
+        text: '#1d4ed8',
+        glow: '0 1px 2px rgba(37, 99, 235, 0.1)',
       };
     }
     return {
-      bg: 'rgba(234, 179, 8, 0.15)',
-      border: 'rgba(234, 179, 8, 0.35)',
-      text: '#fbbf24',
-      glow: '0 0 12px rgba(234, 179, 8, 0.3)',
+      bg: '#fffbeb',
+      border: '#fde68a',
+      text: '#b45309',
+      glow: '0 1px 2px rgba(217, 119, 6, 0.1)',
     };
   };
 
@@ -117,10 +117,11 @@ export function MatchScoreBadge({ match, compact = false }) {
                   }}
                 >
                   <span style={{
-                    color: '#34d399',
+                    color: '#059669',
                     fontWeight: '700',
-                    background: 'rgba(16, 185, 129, 0.1)',
-                    padding: '1px 5px',
+                    background: '#ecfdf5',
+                    border: '1px solid #a7f3d0',
+                    padding: '1px 6px',
                     borderRadius: 'var(--radius-sm)',
                     fontSize: '0.7rem',
                     whiteSpace: 'nowrap',

@@ -26,6 +26,7 @@ export function createAdminRouter({
   adminCloseProjectUseCase,
   listReportsUseCase,
   markReportReviewedUseCase,
+  studentRepository,
   requireAuth,
   requireAdmin,
 }) {
@@ -82,6 +83,27 @@ export function createAdminRouter({
         return res.status(409).json({ error: err.message });
       }
       res.status(500).json({ error: err.message || 'Failed to deactivate account.' });
+    }
+  });
+
+  // PATCH /admin/accounts/:id/verify — Admin manually verifies a student profile (Rule R5)
+  router.patch('/accounts/:id/verify', async (req, res) => {
+    try {
+      if (!studentRepository) {
+        return res.status(500).json({ error: 'Student repository not available.' });
+      }
+      const student = await studentRepository.findById(req.params.id);
+      if (!student) {
+        return res.status(404).json({ error: 'Student account not found.' });
+      }
+      student.account.markVerified();
+      await studentRepository.save(student);
+      res.status(200).json({
+        message: `Account for "${student.name}" has been verified.`,
+        student: student.toPrivateView(),
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message || 'Failed to verify account.' });
     }
   });
 

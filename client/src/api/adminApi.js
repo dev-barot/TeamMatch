@@ -17,6 +17,10 @@ export const adminApi = {
   deactivateAccount: (studentId) =>
     apiRequest(`/admin/accounts/${studentId}/deactivate`, { method: 'PATCH', body: {} }),
 
+  /** Verify a student profile (Rule R5) */
+  verifyAccount: (studentId) =>
+    apiRequest(`/admin/accounts/${studentId}/verify`, { method: 'PATCH', body: {} }),
+
   /** Force-close a project and reject all pending applications */
   adminCloseProject: (projectId) =>
     apiRequest(`/admin/projects/${projectId}/close`, { method: 'POST', body: {} }),

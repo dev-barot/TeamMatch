@@ -162,23 +162,34 @@ export function ProjectsGallery({
             type="search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search projects by title, description, or tech stack (e.g. React, Node, AI)..."
+            placeholder="Search projects by title, description, or tech stack (e.g. React, Python, AI, Docker)..."
             aria-label="Search projects"
             style={{
               width: '100%',
-              padding: '0.85rem 1.25rem',
+              padding: '0.9rem 1.25rem',
               borderRadius: 'var(--radius-md)',
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border)',
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
               color: 'var(--text-main)',
               fontSize: '0.95rem',
+              boxShadow: '0 1px 2px rgba(15, 23, 42, 0.05)',
+              outline: 'none',
+              transition: 'border-color 0.15s, box-shadow 0.15s',
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = 'var(--primary)';
+              e.target.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.12)';
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = '#cbd5e1';
+              e.target.style.boxShadow = '0 1px 2px rgba(15, 23, 42, 0.05)';
             }}
           />
         </div>
 
         {/* Filter Chips: Specialties */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600', marginRight: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px', marginRight: '6px' }}>
             Specialty:
           </span>
           {SPECIALTIES.map((spec) => {
@@ -189,14 +200,15 @@ export function ProjectsGallery({
                 type="button"
                 onClick={() => setSelectedSpecialty(spec)}
                 style={{
-                  padding: '5px 12px',
+                  padding: '6px 14px',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.8rem',
-                  fontWeight: '600',
+                  fontSize: '0.82rem',
+                  fontWeight: active ? '700' : '600',
                   cursor: 'pointer',
-                  border: active ? '1px solid var(--primary)' : '1px solid var(--border)',
-                  background: active ? 'rgba(99, 102, 241, 0.25)' : 'var(--bg-surface)',
-                  color: active ? '#fff' : 'var(--text-muted)',
+                  border: active ? '1px solid #2563eb' : '1px solid #e2e8f0',
+                  background: active ? '#2563eb' : '#ffffff',
+                  color: active ? '#ffffff' : '#475569',
+                  boxShadow: active ? '0 2px 4px rgba(37, 99, 235, 0.2)' : 'none',
                   transition: 'all 0.15s ease',
                 }}
               >
@@ -209,17 +221,18 @@ export function ProjectsGallery({
         {/* Secondary Filters: Commitment & Category */}
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Commitment:</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600' }}>Commitment:</span>
             <select
               value={selectedCommitment}
               onChange={(e) => setSelectedCommitment(e.target.value)}
               style={{
-                padding: '4px 8px',
+                padding: '6px 10px',
                 borderRadius: 'var(--radius-sm)',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-main)',
-                fontSize: '0.8rem',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#0f172a',
+                fontSize: '0.82rem',
+                fontWeight: '500',
               }}
             >
               {COMMITMENTS.map(c => (
@@ -229,17 +242,18 @@ export function ProjectsGallery({
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Category:</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: '600' }}>Category:</span>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
               style={{
-                padding: '4px 8px',
+                padding: '6px 10px',
                 borderRadius: 'var(--radius-sm)',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-main)',
-                fontSize: '0.8rem',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#0f172a',
+                fontSize: '0.82rem',
+                fontWeight: '500',
               }}
             >
               <option value="All">All Categories</option>
@@ -270,12 +284,11 @@ export function ProjectsGallery({
           action={
             <button
               onClick={onOpenCreateProject}
+              className="btn-primary"
               style={{
                 padding: '0.75rem 1.5rem',
-                borderRadius: 'var(--radius-md)',
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                color: '#fff', fontWeight: '700', fontSize: '0.9rem',
-                border: 'none', cursor: 'pointer', minHeight: '44px',
+                fontSize: '0.9rem',
+                minHeight: '44px',
               }}
             >Post a Project</button>
           }
@@ -296,39 +309,43 @@ export function ProjectsGallery({
                 key={project.id}
                 onClick={() => onSelectProject(project)}
                 style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
                   borderRadius: 'var(--radius-lg)',
                   padding: '1.5rem',
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  boxShadow: 'var(--shadow-sm)',
+                  boxShadow: '0 1px 3px rgba(15, 23, 42, 0.05)',
                   cursor: 'pointer',
-                  transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease',
+                  transition: 'all 0.2s ease',
+                  position: 'relative',
+                  overflow: 'hidden',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'translateY(-3px)';
-                  e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.4)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
+                  e.currentTarget.style.borderColor = '#93c5fd';
+                  e.currentTarget.style.boxShadow = '0 10px 20px -5px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.03)';
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'var(--border)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(15, 23, 42, 0.05)';
                 }}
               >
                 <div>
                   {/* Top Badges */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem' }}>
                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center', flexWrap: 'wrap' }}>
                       <span style={{
-                        background: 'rgba(99, 102, 241, 0.1)',
-                        color: 'var(--primary)',
-                        padding: '2px 8px',
+                        background: '#eff6ff',
+                        color: '#1d4ed8',
+                        border: '1px solid #dbeafe',
+                        padding: '3px 10px',
                         borderRadius: 'var(--radius-full)',
-                        fontSize: '0.75rem',
+                        fontSize: '0.72rem',
                         fontWeight: '700',
+                        letterSpacing: '0.3px',
                       }}>
                         {project.category}
                       </span>
@@ -337,36 +354,64 @@ export function ProjectsGallery({
                       )}
                       {project.courseTag?.courseCode && (
                         <span style={{
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          color: 'var(--text-muted)',
-                          padding: '2px 6px',
+                          background: '#f1f5f9',
+                          color: '#475569',
+                          padding: '2px 8px',
                           borderRadius: 'var(--radius-sm)',
                           fontSize: '0.7rem',
+                          fontFamily: 'var(--font-mono)',
+                          border: '1px solid #e2e8f0',
+                          fontWeight: '600',
                         }}>
                           {project.courseTag.courseCode}
                         </span>
                       )}
                     </div>
 
-                    <span style={{
-                      fontSize: '0.75rem',
-                      fontWeight: '700',
-                      color: project.status === 'open' ? '#4ade80' : '#facc15',
-                      textTransform: 'uppercase',
-                    }}>
-                      ● {openSeats} seats open
-                    </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{
+                        width: '7px', height: '7px', borderRadius: '50%',
+                        background: openSeats > 0 ? '#059669' : '#7c3aed',
+                      }} />
+                      <span style={{
+                        fontSize: '0.75rem',
+                        fontWeight: '700',
+                        color: openSeats > 0 ? '#059669' : '#7c3aed',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.3px',
+                      }}>
+                        {openSeats > 0 ? `${openSeats} open` : 'Filled'}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Capacity Meter Bar */}
+                  <div style={{
+                    width: '100%',
+                    height: '5px',
+                    background: '#f1f5f9',
+                    borderRadius: 'var(--radius-full)',
+                    overflow: 'hidden',
+                    marginBottom: '1rem',
+                  }}>
+                    <div style={{
+                      width: `${totalHeadcount > 0 ? Math.min(100, Math.round((totalFilled / totalHeadcount) * 100)) : 0}%`,
+                      height: '100%',
+                      background: totalFilled >= totalHeadcount ? '#7c3aed' : (openSeats === 1 ? '#d97706' : '#2563eb'),
+                      borderRadius: 'var(--radius-full)',
+                      transition: 'width 0.3s ease',
+                    }} />
                   </div>
 
                   {/* Title & Description */}
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: '800', marginBottom: '0.5rem', lineHeight: 1.3 }}>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '800', marginBottom: '0.5rem', lineHeight: 1.35, color: '#0f172a' }}>
                     {project.title}
                   </h3>
                   <p style={{
-                    color: 'var(--text-muted)',
-                    fontSize: '0.88rem',
-                    lineHeight: 1.5,
-                    marginBottom: '1rem',
+                    color: '#475569',
+                    fontSize: '0.9rem',
+                    lineHeight: 1.6,
+                    marginBottom: '1.25rem',
                     display: '-webkit-box',
                     WebkitLineClamp: 3,
                     WebkitBoxOrient: 'vertical',
@@ -376,50 +421,60 @@ export function ProjectsGallery({
                   </p>
 
                   {/* Positions Chips */}
-                  <div style={{ marginBottom: '1rem' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'block', marginBottom: '4px' }}>
-                      Open Positions
+                  <div style={{ marginBottom: '1.25rem' }}>
+                    <span style={{ fontSize: '0.72rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.8px', display: 'block', marginBottom: '6px', fontWeight: '700' }}>
+                      Required Positions
                     </span>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                      {project.positions.map((pos) => (
-                        <span
-                          key={pos.id || pos.specialty}
-                          style={{
-                            background: pos.filledCount >= pos.headcount ? 'rgba(234, 179, 8, 0.15)' : 'var(--bg-surface)',
-                            border: '1px solid var(--border)',
-                            color: pos.filledCount >= pos.headcount ? '#facc15' : 'var(--text-main)',
-                            padding: '2px 8px',
-                            borderRadius: 'var(--radius-sm)',
-                            fontSize: '0.75rem',
-                            fontWeight: '600',
-                          }}
-                        >
-                          {pos.specialty} ({pos.filledCount}/{pos.headcount})
-                        </span>
-                      ))}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {project.positions.map((pos) => {
+                        const isFull = pos.filledCount >= pos.headcount;
+                        return (
+                          <span
+                            key={pos.id || pos.specialty}
+                            style={{
+                              background: isFull ? '#fef3c7' : '#f8fafc',
+                              border: `1px solid ${isFull ? '#fde68a' : '#e2e8f0'}`,
+                              color: isFull ? '#92400e' : '#1e293b',
+                              padding: '3px 10px',
+                              borderRadius: 'var(--radius-full)',
+                              fontSize: '0.76rem',
+                              fontWeight: '600',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                            }}
+                          >
+                            <span>{pos.specialty}</span>
+                            <span style={{ color: isFull ? '#b45309' : '#64748b', fontSize: '0.7rem' }}>
+                              ({pos.filledCount}/{pos.headcount})
+                            </span>
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
 
                   {/* Skills */}
                   {project.requiredSkills?.length > 0 && (
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '1.25rem' }}>
                       {project.requiredSkills.slice(0, 4).map(skill => (
                         <span
                           key={skill}
                           style={{
-                            background: 'rgba(99, 102, 241, 0.08)',
-                            color: 'var(--primary)',
-                            padding: '2px 6px',
+                            background: '#eff6ff',
+                            border: '1px solid #dbeafe',
+                            color: '#1d4ed8',
+                            padding: '3px 8px',
                             borderRadius: 'var(--radius-sm)',
-                            fontSize: '0.72rem',
-                            fontWeight: '500',
+                            fontSize: '0.74rem',
+                            fontWeight: '600',
                           }}
                         >
                           {skill}
                         </span>
                       ))}
                       {project.requiredSkills.length > 4 && (
-                        <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', alignSelf: 'center' }}>
+                        <span style={{ fontSize: '0.74rem', color: '#64748b', alignSelf: 'center' }}>
                           +{project.requiredSkills.length - 4} more
                         </span>
                       )}
@@ -429,20 +484,26 @@ export function ProjectsGallery({
 
                 {/* Footer Action */}
                 <div style={{
-                  borderTop: '1px solid var(--border)',
-                  paddingTop: '0.75rem',
+                  borderTop: '1px solid #f1f5f9',
+                  paddingTop: '0.9rem',
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
                 }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'capitalize' }}>
-                    {project.commitmentLevel} commitment
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{
+                      width: '6px', height: '6px', borderRadius: '50%',
+                      background: project.commitmentLevel === 'high' ? '#dc2626' : (project.commitmentLevel === 'medium' ? '#d97706' : '#059669'),
+                    }} />
+                    <span style={{ fontSize: '0.78rem', color: '#64748b', textTransform: 'capitalize', fontWeight: '600' }}>
+                      {project.commitmentLevel} workload
+                    </span>
+                  </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {isCreator ? (
-                      <span style={{ fontSize: '0.7rem', color: 'var(--secondary)', fontWeight: '700' }}>
-                        👑 Creator (R2)
+                      <span style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: '700' }}>
+                        👑 Your Project
                       </span>
                     ) : (
                       currentUser && openSeats > 0 && project.status === 'open' && (
@@ -453,21 +514,21 @@ export function ProjectsGallery({
                             if (onOpenApply) onOpenApply(project);
                           }}
                           style={{
-                            padding: '3px 8px',
-                            background: 'rgba(99, 102, 241, 0.15)',
-                            border: '1px solid rgba(99, 102, 241, 0.35)',
-                            color: 'var(--primary)',
+                            padding: '4px 10px',
+                            background: '#eff6ff',
+                            border: '1px solid #bfdbfe',
+                            color: '#1d4ed8',
                             borderRadius: 'var(--radius-sm)',
-                            fontSize: '0.75rem',
+                            fontSize: '0.78rem',
                             fontWeight: '700',
                             cursor: 'pointer',
                           }}
                         >
-                          Apply
+                          Quick Apply
                         </button>
                       )
                     )}
-                    <span style={{ fontSize: '0.85rem', color: 'var(--primary)', fontWeight: '700' }}>
+                    <span style={{ fontSize: '0.85rem', color: '#2563eb', fontWeight: '700' }}>
                       View Details →
                     </span>
                   </div>

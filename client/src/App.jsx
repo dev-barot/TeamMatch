@@ -126,95 +126,342 @@ export function App() {
         onLogout={handleLogout}
       />
 
-      <main id="main-content" role="main" style={{ flex: 1, maxWidth: '1180px', margin: '0 auto', width: '100%', padding: '2rem 1rem' }}>
+      <main id="main-content" role="main" style={{ flex: 1, maxWidth: '1400px', margin: '0 auto', width: '100%', padding: '2rem 1.5rem' }}>
         {!currentUser ? (
           /* Landing Hero for Visitors */
-          <section style={{ textAlign: 'center', padding: '2rem 1rem 3rem 1rem' }}>
+          <section style={{ padding: '2rem 0 4rem 0' }}>
+            {/* 2-Column Hero Showcase */}
             <div style={{
-              display: 'inline-flex',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))',
+              gap: '3rem',
               alignItems: 'center',
-              gap: '8px',
-              padding: '6px 16px',
-              background: 'rgba(99, 102, 241, 0.1)',
-              border: '1px solid rgba(99, 102, 241, 0.25)',
-              borderRadius: 'var(--radius-full)',
-              color: 'var(--primary)',
-              fontSize: '0.85rem',
-              fontWeight: '600',
-              marginBottom: '1.5rem',
+              marginBottom: '5rem',
             }}>
-              ✨ Module 2 Live: Projects & Positions Capacity
+              {/* Left Column: Value Proposition */}
+              <div style={{ textAlign: 'left' }}>
+                {/* Pill Announcement */}
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '6px 16px',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  borderRadius: 'var(--radius-full)',
+                  color: '#1d4ed8',
+                  fontSize: '0.82rem',
+                  fontWeight: '700',
+                  marginBottom: '1.5rem',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+                }}>
+                  <span style={{
+                    display: 'inline-block', width: '8px', height: '8px',
+                    borderRadius: '50%', background: '#0284c7',
+                  }} />
+                  <span>AI-Assisted Team Formation</span>
+                  <span style={{ color: '#94a3b8' }}>•</span>
+                  <span style={{ color: '#475569', fontWeight: '600' }}>Fall 2026 Cohort</span>
+                </div>
+
+                {/* Main Headline */}
+                <h1 style={{
+                  fontSize: 'clamp(2.5rem, 4.5vw, 4rem)',
+                  fontWeight: '800',
+                  lineHeight: 1.12,
+                  letterSpacing: '-1.5px',
+                  marginBottom: '1.5rem',
+                  color: '#0f172a',
+                }}>
+                  Form High-Performing Student Teams with{' '}
+                  <span style={{ color: '#2563eb' }}>
+                    Explainable AI
+                  </span>
+                </h1>
+
+                {/* Subtitle */}
+                <p style={{
+                  fontSize: '1.15rem',
+                  color: '#475569',
+                  lineHeight: 1.65,
+                  marginBottom: '2rem',
+                  maxWidth: '580px',
+                }}>
+                  No more awkward group project cold-outreaches or unvetted teams. Find verified classmates by technical skills, availability, and guaranteed seat capacity constraints.
+                </p>
+
+                {/* Action Buttons */}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+                  <button
+                    onClick={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
+                    className="btn-primary"
+                    style={{ padding: '0.9rem 2.25rem', fontSize: '1rem' }}
+                  >
+                    Get Started Free →
+                  </button>
+                  <button
+                    onClick={() => {
+                      const el = document.getElementById('public-listings-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="btn-secondary"
+                    style={{ padding: '0.9rem 1.75rem', fontSize: '1rem' }}
+                  >
+                    Explore Projects ↓
+                  </button>
+                </div>
+
+                {/* Trust Checklist */}
+                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.85rem', color: '#475569', fontWeight: '500' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ color: '#059669', fontWeight: '800' }}>✓</span> Verified Student Profiles (R5)
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ color: '#2563eb', fontWeight: '800' }}>✓</span> Top-5 Explainable Reasons (R4)
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{ color: '#0284c7', fontWeight: '800' }}>✓</span> Strict Capacity Enforced (R3)
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Interactive Team Formation Glass Preview Card */}
+              <div style={{
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                borderRadius: 'var(--radius-xl)',
+                padding: '2rem',
+                boxShadow: '0 20px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)',
+                position: 'relative',
+              }}>
+                {/* Preview Header Pill */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }} />
+                    <span style={{ fontSize: '0.75rem', fontWeight: '800', color: '#059669', letterSpacing: '0.5px', textTransform: 'uppercase' }}>
+                      Real-Time AI Matching
+                    </span>
+                  </div>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', fontFamily: 'var(--font-mono)' }}>
+                    CS420 • Fall 2026
+                  </span>
+                </div>
+
+                {/* Project Title */}
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <h3 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', marginBottom: '0.25rem' }}>
+                    Autonomous Campus Delivery Rover
+                  </h3>
+                  <p style={{ fontSize: '0.88rem', color: '#475569' }}>
+                    Class Capstone Project • Robotics & Distributed Systems
+                  </p>
+                </div>
+
+                {/* Capacity Meter */}
+                <div style={{
+                  background: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '0.85rem 1rem',
+                  marginBottom: '1.5rem',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', fontWeight: '700', marginBottom: '6px' }}>
+                    <span style={{ color: '#475569' }}>Team Capacity Status</span>
+                    <span style={{ color: '#059669' }}>● 2 / 3 Seats Reserved</span>
+                  </div>
+                  <div style={{ width: '100%', height: '6px', background: '#e2e8f0', borderRadius: 'var(--radius-full)', overflow: 'hidden' }}>
+                    <div style={{ width: '66%', height: '100%', background: '#059669', borderRadius: 'var(--radius-full)' }} />
+                  </div>
+                </div>
+
+                {/* AI Candidate Match Card */}
+                <div style={{
+                  background: '#f8fafc',
+                  border: '1px solid #dbeafe',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '1.25rem',
+                  marginBottom: '1.25rem',
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{
+                        width: '36px', height: '36px', borderRadius: '50%',
+                        background: '#2563eb',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontWeight: '800', fontSize: '0.85rem', color: '#fff',
+                      }}>
+                        AP
+                      </div>
+                      <div>
+                        <div style={{ fontSize: '0.95rem', fontWeight: '700', color: '#0f172a' }}>Ava Patel</div>
+                        <div style={{ fontSize: '0.78rem', color: '#475569' }}>Backend & ML Lead</div>
+                      </div>
+                    </div>
+                    <div style={{
+                      background: '#ecfdf5',
+                      border: '1px solid #a7f3d0',
+                      color: '#059669',
+                      padding: '4px 10px',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '0.8rem',
+                      fontWeight: '800',
+                    }}>
+                      ⚡ 94% Match Fit
+                    </div>
+                  </div>
+
+                  {/* Explainable Reasons Tags */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <span><strong>Skills Overlap:</strong> Python, PyTorch, Node.js (+35 pts)</span>
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <span><strong>Schedule Fit:</strong> 18 hrs/wk available (High Commitment)</span>
+                    </div>
+                    <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <span><strong>Working Style:</strong> Collaborative & Fast-Paced match</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action button */}
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
+                    className="btn-primary"
+                    style={{ flex: 1, padding: '0.65rem 1rem', fontSize: '0.85rem' }}
+                  >
+                    Join Team as ML Engineer →
+                  </button>
+                </div>
+              </div>
             </div>
 
-            <h1 style={{
-              fontSize: 'clamp(2.2rem, 5vw, 3.8rem)',
-              fontWeight: '800',
-              lineHeight: 1.15,
-              letterSpacing: '-1.5px',
-              maxWidth: '850px',
-              margin: '0 auto 1.5rem auto',
-            }}>
-              Form high-performing student teams with{' '}
-              <span style={{
-                background: 'linear-gradient(135deg, #818cf8, #22d3ee)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
+            {/* "How It Works" 3-Step Feature Cards */}
+            <div style={{ marginBottom: '5rem' }}>
+              <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                <span style={{
+                  fontSize: '0.78rem', fontWeight: '800', color: '#2563eb',
+                  textTransform: 'uppercase', letterSpacing: '1px', display: 'block', marginBottom: '6px',
+                }}>
+                  The Architecture
+                </span>
+                <h2 style={{ fontSize: '2rem', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a' }}>
+                  How TeamMatch Works
+                </h2>
+                <p style={{ color: '#475569', fontSize: '1rem', marginTop: '0.5rem', maxWidth: '600px', margin: '0.5rem auto 0 auto' }}>
+                  From solo student to high-performing squad in three transparent, verifiable steps.
+                </p>
+              </div>
+
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1.5rem',
               }}>
-                explainable AI matching
-              </span>
-            </h1>
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '2rem',
+                  textAlign: 'left',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
+                }}>
+                  <div style={{
+                    width: '42px', height: '42px', borderRadius: 'var(--radius-md)',
+                    background: '#eff6ff', border: '1px solid #bfdbfe',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#2563eb', fontWeight: '800', fontSize: '1.1rem', marginBottom: '1.25rem',
+                  }}>
+                    01
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
+                    Profile & Skills (R2)
+                  </h3>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    Students declare verified skill tags, primary specialty, weekly available hours, and preferred working style.
+                  </p>
+                </div>
 
-            <p style={{
-              fontSize: '1.15rem',
-              color: 'var(--text-muted)',
-              maxWidth: '650px',
-              margin: '0 auto 2.5rem auto',
-              lineHeight: 1.6,
-            }}>
-              Discover semester projects and hackathon postings. Browse open seats by specialty and commitment level with guaranteed capacity constraints (R3).
-            </p>
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #bfdbfe',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '2rem',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 12px rgba(37, 99, 235, 0.08)',
+                }}>
+                  <div style={{
+                    width: '42px', height: '42px', borderRadius: 'var(--radius-md)',
+                    background: '#eff6ff', border: '1px solid #bfdbfe',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#2563eb', fontWeight: '800', fontSize: '1.1rem', marginBottom: '1.25rem',
+                  }}>
+                    02
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
+                    Explainable AI Engine (R4)
+                  </h3>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    No black-box mystery. Our deterministic matching engine provides transparent score breakdown across 5 weighted reasons.
+                  </p>
+                </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '3.5rem' }}>
-              <button
-                onClick={() => { setAuthModalMode('signup'); setAuthModalOpen(true); }}
-                style={{
-                  padding: '0.85rem 2rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                  color: '#fff',
-                  fontWeight: '700',
-                  fontSize: '1rem',
-                  boxShadow: 'var(--shadow-glow)',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                Create Student Account
-              </button>
-              <button
-                onClick={() => { setAuthModalMode('login'); setAuthModalOpen(true); }}
-                style={{
-                  padding: '0.85rem 1.75rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
-                  fontWeight: '600',
-                  fontSize: '1rem',
-                  cursor: 'pointer',
-                }}
-              >
-                Log In
-              </button>
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '2rem',
+                  textAlign: 'left',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.04)',
+                }}>
+                  <div style={{
+                    width: '42px', height: '42px', borderRadius: 'var(--radius-md)',
+                    background: '#ecfdf5', border: '1px solid #a7f3d0',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: '#059669', fontWeight: '800', fontSize: '1.1rem', marginBottom: '1.25rem',
+                  }}>
+                    03
+                  </div>
+                  <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
+                    Atomic Formation (R1 & R3)
+                  </h3>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    Concurrency-safe applications guarantee no double-booking and zero team overfill once headcount limits are reached.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Public Live Projects Gallery (R5: unverified / visitor can browse) */}
-            <div style={{ textAlign: 'left', marginTop: '2rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-                <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>Active Project Listings</h2>
-                <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                  Rule R5: Public browsing enabled
-                </span>
+            <div id="public-listings-section" style={{ textAlign: 'left', marginTop: '2rem' }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '0.75rem',
+                marginBottom: '1.75rem',
+                borderBottom: '1px solid #e2e8f0',
+                paddingBottom: '1.25rem',
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669', display: 'inline-block' }} />
+                    <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#059669', fontWeight: '800' }}>
+                      Live Project Listings
+                    </span>
+                  </div>
+                  <h2 style={{ fontSize: '1.8rem', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a' }}>
+                    Explore Active Postings
+                  </h2>
+                </div>
+                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
+                  Rule R5: Public discovery open to all students
+                </div>
               </div>
               <ProjectsGallery
                 currentUser={currentUser}
@@ -448,6 +695,94 @@ export function App() {
           </section>
         )}
       </main>
+
+      {/* Global Modern Platform Footer */}
+      <footer style={{
+        borderTop: '1px solid var(--border)',
+        background: 'rgba(10, 14, 26, 0.85)',
+        backdropFilter: 'blur(16px)',
+        padding: '3rem 1.5rem 2rem 1.5rem',
+        marginTop: 'auto',
+      }}>
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: '2.5rem',
+          marginBottom: '2.5rem',
+        }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
+              <div style={{
+                width: '32px', height: '32px', borderRadius: 'var(--radius-md)',
+                background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontWeight: '800', color: '#fff', fontSize: '0.9rem',
+              }}>
+                TM
+              </div>
+              <span style={{ fontWeight: '800', fontSize: '1.2rem', letterSpacing: '-0.5px' }}>
+                Team<span className="text-gradient">Match</span>
+              </span>
+            </div>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, maxWidth: '320px' }}>
+              Explainable AI-assisted team formation platform for university capstones, hackathons, and class projects.
+            </p>
+          </div>
+
+          <div>
+            <h4 style={{ fontSize: '0.82rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#fff', marginBottom: '1rem' }}>
+              Architecture & Rules
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+              <li>Rule R1: Duplicate Prevention</li>
+              <li>Rule R2: Student Profile Ownership</li>
+              <li>Rule R3: Atomic Headcount Capacity</li>
+              <li>Rule R4: Explainable Match Scoring</li>
+              <li>Rule R5: Email Verification Required</li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 style={{ fontSize: '0.82rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#fff', marginBottom: '1rem' }}>
+              Live System Status
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', fontWeight: '600' }}>
+                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
+                Realtime Socket.IO Gateway Online
+              </div>
+              <div style={{ color: 'var(--text-muted)' }}>
+                Port: <code style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)' }}>4000</code> • Health: <code style={{ color: '#34d399', fontFamily: 'var(--font-mono)' }}>200 OK</code>
+              </div>
+              <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
+                Hexagonal Architecture with Zero Express domain imports
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{
+          maxWidth: '1400px',
+          margin: '0 auto',
+          borderTop: '1px solid var(--border)',
+          paddingTop: '1.5rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '1rem',
+          fontSize: '0.8rem',
+          color: 'var(--text-dim)',
+        }}>
+          <div>
+            © 2026 TeamMatch • MSc IT Software Design & Testing Semester Project
+          </div>
+          <div>
+            Crafted for High-Performing Student Teams
+          </div>
+        </div>
+      </footer>
 
       {/* Modals */}
       {authModalOpen && (

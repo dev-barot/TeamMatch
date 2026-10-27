@@ -35,14 +35,15 @@ export function Navbar({
   const navBtn = {
     padding: '0.5rem 0.9rem',
     borderRadius: 'var(--radius-md)',
-    background: 'rgba(99, 102, 241, 0.12)',
-    border: '1px solid rgba(99, 102, 241, 0.3)',
-    color: 'var(--primary)',
+    background: '#eff6ff',
+    border: '1px solid #dbeafe',
+    color: '#1d4ed8',
     fontSize: '0.85rem',
     fontWeight: '600',
     cursor: 'pointer',
     minHeight: '44px',
     whiteSpace: 'nowrap',
+    transition: 'all 0.15s ease',
   };
 
   const menuItem = {
@@ -70,54 +71,68 @@ export function Navbar({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0.75rem 1rem',
-        borderBottom: '1px solid var(--border)',
-        background: 'rgba(10, 13, 20, 0.85)',
-        backdropFilter: 'blur(12px)',
+        padding: '0.85rem 1.75rem',
+        borderBottom: '1px solid #e2e8f0',
+        background: 'rgba(255, 255, 255, 0.94)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         position: 'sticky',
         top: 0,
-        zIndex: 40,
+        zIndex: 50,
+        boxShadow: '0 1px 3px 0 rgba(15, 23, 42, 0.05)',
       }}>
         {/* Logo */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
           <div style={{
-            width: '36px', height: '36px',
+            width: '38px', height: '38px',
             borderRadius: 'var(--radius-md)',
-            background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+            background: 'var(--primary)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontWeight: '800', fontSize: '1.1rem', color: '#fff',
-            boxShadow: 'var(--shadow-glow)', flexShrink: 0,
-          }}>TM</div>
-          <div>
-            <span style={{ fontWeight: '800', fontSize: '1.2rem', letterSpacing: '-0.5px' }}>
+            fontWeight: '800', fontSize: '1.15rem', color: '#fff',
+            boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)', flexShrink: 0,
+            letterSpacing: '-0.5px',
+          }}>
+            TM
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <span style={{ fontWeight: '800', fontSize: '1.3rem', letterSpacing: '-0.5px', color: '#0f172a' }}>
               Team<span style={{ color: 'var(--primary)' }}>Match</span>
             </span>
             <span className="hide-mobile" style={{
-              fontSize: '0.65rem', padding: '2px 6px', marginLeft: '8px',
-              background: 'rgba(99, 102, 241, 0.15)', color: 'var(--primary)',
-              borderRadius: 'var(--radius-full)', border: '1px solid rgba(99, 102, 241, 0.3)',
-              fontWeight: '600', verticalAlign: 'middle',
-            }}>AI-Engine</span>
+              fontSize: '0.68rem', padding: '3px 8px', marginLeft: '10px',
+              background: '#eff6ff', color: '#1d4ed8',
+              borderRadius: 'var(--radius-full)', border: '1px solid #dbeafe',
+              fontWeight: '700', letterSpacing: '0.5px', textTransform: 'uppercase',
+            }}>AI Platform</span>
           </div>
         </div>
 
         {/* Desktop nav */}
-        <nav className="hide-mobile" aria-label="Main navigation" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+        <nav className="hide-mobile" aria-label="Main navigation" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {currentUser ? (
             <>
               {/* User badge */}
               <div style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                padding: '0.4rem 0.8rem', borderRadius: 'var(--radius-full)',
-                background: 'var(--bg-glass)', border: '1px solid var(--border)',
+                display: 'flex', alignItems: 'center', gap: '0.6rem',
+                padding: '0.4rem 0.9rem', borderRadius: 'var(--radius-full)',
+                background: '#f8fafc', border: '1px solid #e2e8f0',
               }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '600' }}>{currentUser.name}</span>
+                <div style={{
+                  width: '24px', height: '24px', borderRadius: '50%',
+                  background: 'var(--primary)', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  fontSize: '0.75rem', fontWeight: '800', color: '#fff',
+                }}>
+                  {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <span style={{ fontSize: '0.88rem', fontWeight: '600', color: '#0f172a' }}>{currentUser.name}</span>
                 <span style={{
-                  fontSize: '0.7rem', padding: '2px 8px', borderRadius: 'var(--radius-full)',
-                  fontWeight: '600',
-                  background: currentUser.isEmailVerified ? 'rgba(16, 185, 129, 0.15)' : 'rgba(245, 158, 11, 0.15)',
-                  color: currentUser.isEmailVerified ? 'var(--success)' : 'var(--warning)',
-                  border: `1px solid ${currentUser.isEmailVerified ? 'rgba(16, 185, 129, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`,
+                  fontSize: '0.68rem', padding: '2px 8px', borderRadius: 'var(--radius-full)',
+                  fontWeight: '700',
+                  background: currentUser.isEmailVerified ? '#ecfdf5' : '#fffbeb',
+                  color: currentUser.isEmailVerified ? '#059669' : '#d97706',
+                  border: `1px solid ${currentUser.isEmailVerified ? '#a7f3d0' : '#fde68a'}`,
+                  textTransform: 'uppercase', letterSpacing: '0.3px',
                 }}>
                   {currentUser.isEmailVerified ? 'Verified' : 'Unverified'}
                 </span>
@@ -128,23 +143,46 @@ export function Navbar({
                 <button
                   onClick={onOpenAdmin}
                   id="navbar-admin-portal"
-                  style={{ ...navBtn, background: 'rgba(99,102,241,0.18)', border: '1px solid rgba(99,102,241,0.5)', fontWeight: '700', boxShadow: '0 0 12px rgba(99,102,241,0.25)' }}>
+                  style={{ ...navBtn, background: '#fef3c7', border: '1px solid #fde68a', color: '#b45309', fontWeight: '700' }}>
                   🛡️ Admin
                 </button>
               )}
               <NotificationBell onNavigateToLink={onNavigateToLink} />
-              <button onClick={onOpenProfile} id="nav-profile" style={{ ...navBtn, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'var(--text-main)' }}>My Profile</button>
-              <button onClick={onLogout} id="nav-logout" style={{ padding: '0.5rem 0.9rem', color: 'var(--text-muted)', fontSize: '0.85rem', minHeight: '44px' }}>Log Out</button>
+              <button onClick={onOpenProfile} id="nav-profile" style={{ ...navBtn, background: '#ffffff', border: '1px solid #e2e8f0', color: '#0f172a' }}>My Profile</button>
+              <button onClick={onLogout} id="nav-logout" style={{ padding: '0.5rem 0.9rem', color: '#64748b', fontSize: '0.85rem', minHeight: '44px', cursor: 'pointer' }}>Log Out</button>
             </>
           ) : (
             <>
-              <button onClick={() => onOpenAuth('login')} id="nav-login" style={{ padding: '0.5rem 1rem', color: 'var(--text-main)', fontWeight: '600', fontSize: '0.9rem', minHeight: '44px' }}>Log In</button>
-              <button onClick={() => onOpenAuth('signup')} id="nav-signup" style={{
-                padding: '0.5rem 1.25rem', borderRadius: 'var(--radius-md)',
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                color: '#fff', fontWeight: '600', fontSize: '0.9rem',
-                boxShadow: '0 4px 12px rgba(99, 102, 241, 0.3)', minHeight: '44px',
-              }}>Get Started</button>
+              <button
+                onClick={() => onOpenAuth('login')}
+                id="nav-login"
+                style={{
+                  padding: '0.6rem 1.25rem',
+                  color: '#0f172a',
+                  fontWeight: '600',
+                  fontSize: '0.92rem',
+                  minHeight: '44px',
+                  borderRadius: 'var(--radius-md)',
+                  transition: 'background 0.2s ease',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#f1f5f9'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+              >
+                Log In
+              </button>
+              <button
+                onClick={() => onOpenAuth('signup')}
+                id="nav-signup"
+                className="btn-primary"
+                style={{
+                  padding: '0.6rem 1.4rem',
+                  fontSize: '0.92rem',
+                  minHeight: '44px',
+                }}
+              >
+                Get Started Free
+              </button>
             </>
           )}
         </nav>
