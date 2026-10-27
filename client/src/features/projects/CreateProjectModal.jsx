@@ -112,31 +112,33 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
       overflowY: 'auto',
     }}>
       <div style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border)',
+        background: '#ffffff',
+        border: '1px solid #e2e8f0',
         borderRadius: 'var(--radius-lg)',
         width: '100%',
         maxWidth: '680px',
         maxHeight: '90vh',
         overflowY: 'auto',
-        boxShadow: 'var(--shadow-glow)',
+        boxShadow: 'var(--shadow-lg)',
         padding: '2rem',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800' }}>Post a New Project</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Define your project team requirements and open positions (M2)
+            <h2 style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a' }}>Post a New Project</h2>
+            <p style={{ fontSize: '0.85rem', color: '#475569' }}>
+              Define your project team requirements and open positions (Rule R3)
             </p>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close modal"
             style={{
               background: 'transparent',
               border: 'none',
-              color: 'var(--text-muted)',
-              fontSize: '1.25rem',
+              color: '#64748b',
+              fontSize: '1.35rem',
               cursor: 'pointer',
+              padding: '4px',
             }}
           >
             ✕
@@ -145,26 +147,27 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
 
         {!isVerified && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: '#fffbeb',
+            border: '1px solid #fde68a',
             borderRadius: 'var(--radius-md)',
             padding: '1rem',
-            color: '#f87171',
-            fontSize: '0.9rem',
+            color: '#b45309',
+            fontSize: '0.88rem',
             marginBottom: '1.5rem',
           }}>
-            <strong>Rule R5: Verification Gate.</strong> Your email is not verified yet. You can browse projects, but cannot post a project until verified.
+            <strong>Rule R5: Verification Gate.</strong> Your university email is not verified yet. You can browse projects, but must verify your account before posting a project.
           </div>
         )}
 
         {errorMessage && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.1)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
             borderRadius: 'var(--radius-md)',
-            padding: '0.75rem',
-            color: '#f87171',
+            padding: '0.75rem 1rem',
+            color: '#b91c1c',
             fontSize: '0.85rem',
+            fontWeight: '500',
             marginBottom: '1.5rem',
           }}>
             {errorMessage}
@@ -174,7 +177,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           {/* Title */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' }}>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
               Project Title *
             </label>
             <input
@@ -188,18 +191,18 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                 width: '100%',
                 padding: '0.75rem 1rem',
                 borderRadius: 'var(--radius-md)',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-main)',
-                fontSize: '0.95rem',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#0f172a',
+                fontSize: '0.92rem',
               }}
             />
           </div>
 
           {/* Category & Commitment */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' }}>
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                 Category
               </label>
               <select
@@ -210,10 +213,10 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   width: '100%',
                   padding: '0.75rem 1rem',
                   borderRadius: 'var(--radius-md)',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
-                  fontSize: '0.95rem',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.92rem',
                 }}
               >
                 <option value="Class Project">Class Project</option>
@@ -225,7 +228,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
             </div>
 
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' }}>
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                 Commitment Level
               </label>
               <select
@@ -236,10 +239,10 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   width: '100%',
                   padding: '0.75rem 1rem',
                   borderRadius: 'var(--radius-md)',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
-                  fontSize: '0.95rem',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.92rem',
                 }}
               >
                 {COMMITMENT_LEVELS.map(c => (
@@ -251,7 +254,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
 
           {/* Description */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' }}>
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
               Project Description *
             </label>
             <textarea
@@ -265,10 +268,10 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                 width: '100%',
                 padding: '0.75rem 1rem',
                 borderRadius: 'var(--radius-md)',
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-main)',
-                fontSize: '0.95rem',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#0f172a',
+                fontSize: '0.92rem',
                 resize: 'vertical',
               }}
             />
@@ -276,17 +279,17 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
 
           {/* Positions Builder (R3: Headcount >= 1) */}
           <div style={{
-            background: 'var(--bg-surface)',
+            background: '#f8fafc',
             padding: '1.25rem',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border)',
+            border: '1px solid #e2e8f0',
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
               <div>
-                <label style={{ fontSize: '0.9rem', fontWeight: '700' }}>
+                <label style={{ fontSize: '0.9rem', fontWeight: '700', color: '#0f172a', marginBottom: 0 }}>
                   Open Positions (Capacity) *
                 </label>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
                   Enforces Rule R3 (Headcount ≥ 1 per Position)
                 </p>
               </div>
@@ -295,14 +298,14 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                 onClick={handleAddPosition}
                 disabled={!isVerified}
                 style={{
-                  background: 'rgba(99, 102, 241, 0.2)',
-                  border: '1px solid var(--primary)',
-                  color: 'var(--primary)',
-                  padding: '4px 10px',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  color: '#1d4ed8',
+                  padding: '4px 12px',
                   borderRadius: 'var(--radius-sm)',
                   fontSize: '0.8rem',
-                  fontWeight: '600',
-                  cursor: 'pointer',
+                  fontWeight: '700',
+                  cursor: isVerified ? 'pointer' : 'not-allowed',
                 }}
               >
                 + Add Position
@@ -320,10 +323,10 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                       flex: 2,
                       padding: '0.6rem 0.75rem',
                       borderRadius: 'var(--radius-sm)',
-                      background: 'var(--bg-card)',
-                      border: '1px solid var(--border)',
-                      color: 'var(--text-main)',
-                      fontSize: '0.9rem',
+                      background: '#ffffff',
+                      border: '1px solid #cbd5e1',
+                      color: '#0f172a',
+                      fontSize: '0.88rem',
                     }}
                   >
                     {SPECIALTIES.map(s => (
@@ -332,7 +335,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   </select>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flex: 1 }}>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Headcount:</span>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '600' }}>Headcount:</span>
                     <input
                       type="number"
                       min={1}
@@ -340,13 +343,13 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                       value={pos.headcount}
                       onChange={(e) => handlePositionChange(idx, 'headcount', e.target.value)}
                       style={{
-                        width: '60px',
+                        width: '65px',
                         padding: '0.6rem 0.5rem',
                         borderRadius: 'var(--radius-sm)',
-                        background: 'var(--bg-card)',
-                        border: '1px solid var(--border)',
-                        color: 'var(--text-main)',
-                        fontSize: '0.9rem',
+                        background: '#ffffff',
+                        border: '1px solid #cbd5e1',
+                        color: '#0f172a',
+                        fontSize: '0.88rem',
                         textAlign: 'center',
                       }}
                     />
@@ -356,12 +359,15 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                     <button
                       type="button"
                       onClick={() => handleRemovePosition(idx)}
+                      aria-label="Remove position"
                       style={{
                         background: 'transparent',
                         border: 'none',
-                        color: '#f87171',
+                        color: '#dc2626',
                         cursor: 'pointer',
-                        padding: '4px',
+                        padding: '4px 8px',
+                        fontSize: '1rem',
+                        fontWeight: '700',
                       }}
                     >
                       ✕
@@ -374,8 +380,8 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
 
           {/* Required Skills */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem' }}>
-              Required Skills
+            <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
+              Required Tech Stack
             </label>
             <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
               <input
@@ -389,9 +395,9 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   flex: 1,
                   padding: '0.65rem 0.75rem',
                   borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
                   fontSize: '0.9rem',
                 }}
               />
@@ -399,13 +405,9 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                 type="button"
                 onClick={handleAddSkill}
                 disabled={!isVerified}
+                className="btn-primary"
                 style={{
-                  padding: '0.65rem 1rem',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
-                  cursor: 'pointer',
+                  padding: '0.65rem 1.25rem',
                   fontSize: '0.85rem',
                 }}
               >
@@ -419,20 +421,22 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   style={{
                     display: 'inline-flex',
                     alignItems: 'center',
-                    gap: '4px',
-                    background: 'rgba(99, 102, 241, 0.2)',
-                    border: '1px solid rgba(99, 102, 241, 0.4)',
-                    color: '#fff',
-                    padding: '2px 8px',
+                    gap: '6px',
+                    background: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                    color: '#1d4ed8',
+                    padding: '3px 10px',
                     borderRadius: 'var(--radius-full)',
                     fontSize: '0.8rem',
+                    fontWeight: '600',
                   }}
                 >
                   {s}
                   <button
                     type="button"
                     onClick={() => handleRemoveSkill(s)}
-                    style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '0.75rem' }}
+                    aria-label={`Remove skill ${s}`}
+                    style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', padding: '0 2px' }}
                   >
                     ✕
                   </button>
@@ -444,15 +448,15 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
           {/* Optional Course Tag */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
             gap: '1rem',
-            background: 'rgba(255, 255, 255, 0.02)',
+            background: '#f8fafc',
             padding: '1rem',
             borderRadius: 'var(--radius-md)',
-            border: '1px solid var(--border)',
+            border: '1px solid #e2e8f0',
           }}>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.3rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.3rem', color: '#334155' }}>
                 Course Code (Optional)
               </label>
               <input
@@ -465,15 +469,15 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   width: '100%',
                   padding: '0.6rem 0.75rem',
                   borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
                   fontSize: '0.85rem',
                 }}
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.3rem' }}>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '600', marginBottom: '0.3rem', color: '#334155' }}>
                 Academic Term (Optional)
               </label>
               <input
@@ -486,9 +490,9 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   width: '100%',
                   padding: '0.6rem 0.75rem',
                   borderRadius: 'var(--radius-sm)',
-                  background: 'var(--bg-surface)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-main)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
                   fontSize: '0.85rem',
                 }}
               />
@@ -496,17 +500,19 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
           </div>
 
           {/* Submit */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
             <button
               type="button"
               onClick={onClose}
               style={{
                 padding: '0.75rem 1.25rem',
                 borderRadius: 'var(--radius-md)',
-                background: 'transparent',
-                border: '1px solid var(--border)',
-                color: 'var(--text-muted)',
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#475569',
                 cursor: 'pointer',
+                fontWeight: '600',
+                fontSize: '0.9rem',
               }}
             >
               Cancel
@@ -514,15 +520,11 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
             <button
               type="submit"
               disabled={loading || !isVerified}
+              className="btn-primary"
               style={{
                 padding: '0.75rem 1.75rem',
-                borderRadius: 'var(--radius-md)',
-                background: isVerified ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : '#475569',
-                color: '#fff',
-                fontWeight: '700',
-                border: 'none',
-                cursor: isVerified && !loading ? 'pointer' : 'not-allowed',
-                boxShadow: isVerified ? 'var(--shadow-glow)' : 'none',
+                fontSize: '0.9rem',
+                opacity: isVerified && !loading ? 1 : 0.6,
               }}
             >
               {loading ? 'Creating...' : 'Publish Project'}

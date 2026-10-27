@@ -508,11 +508,11 @@ export function App() {
                     </span>
                   ) : (
                     <span style={{
-                      background: 'rgba(239, 68, 68, 0.15)',
-                      color: '#f87171',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      background: '#fef2f2',
+                      color: '#b91c1c',
+                      border: '1px solid #fecaca',
                       padding: '2px 8px',
-                      borderRadius: 'var(--radius-full)',
+                      borderRadius: '999px',
                       fontSize: '0.75rem',
                       fontWeight: '700',
                     }}>
@@ -665,11 +665,11 @@ export function App() {
                         <span
                           key={skill}
                           style={{
-                            background: 'rgba(99, 102, 241, 0.15)',
-                            border: '1px solid rgba(99, 102, 241, 0.3)',
-                            color: '#fff',
+                            background: '#eff6ff',
+                            border: '1px solid #bfdbfe',
+                            color: '#1d4ed8',
                             padding: '4px 12px',
-                            borderRadius: 'var(--radius-full)',
+                            borderRadius: '999px',
                             fontSize: '0.85rem',
                             fontWeight: '600',
                           }}

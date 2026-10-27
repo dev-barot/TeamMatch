@@ -98,16 +98,17 @@ export function NotificationBell({ onNavigateToLink }) {
         title="Notifications"
         style={{
           position: 'relative',
-          padding: '0.5rem 0.65rem',
-          borderRadius: 'var(--radius-md)',
-          background: isOpen ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255, 255, 255, 0.05)',
-          border: '1px solid var(--border)',
-          color: 'var(--text-main)',
-          fontSize: '1.1rem',
+          padding: '0.45rem 0.65rem',
+          borderRadius: '8px',
+          background: isOpen ? '#eff6ff' : '#ffffff',
+          border: '1px solid #cbd5e1',
+          color: '#0f172a',
+          fontSize: '1.05rem',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           cursor: 'pointer',
+          boxShadow: 'var(--shadow-sm)',
         }}
       >
         🔔
@@ -117,13 +118,13 @@ export function NotificationBell({ onNavigateToLink }) {
               position: 'absolute',
               top: '-4px',
               right: '-4px',
-              background: 'var(--primary)',
-              color: '#fff',
+              background: '#ef4444',
+              color: '#ffffff',
               fontSize: '0.65rem',
               fontWeight: '700',
-              padding: '2px 6px',
-              borderRadius: 'var(--radius-full)',
-              boxShadow: 'var(--shadow-glow)',
+              padding: '1px 5px',
+              borderRadius: '999px',
+              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
               minWidth: '18px',
               textAlign: 'center',
             }}
@@ -140,10 +141,9 @@ export function NotificationBell({ onNavigateToLink }) {
             right: 0,
             marginTop: '0.5rem',
             width: '340px',
-            background: 'rgba(17, 22, 34, 0.95)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid var(--border)',
-            borderRadius: 'var(--radius-lg)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
+            borderRadius: '12px',
             boxShadow: 'var(--shadow-lg)',
             zIndex: 100,
             overflow: 'hidden',
@@ -153,13 +153,14 @@ export function NotificationBell({ onNavigateToLink }) {
           <div
             style={{
               padding: '0.75rem 1rem',
-              borderBottom: '1px solid var(--border)',
+              borderBottom: '1px solid #e2e8f0',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
+              background: '#ffffff',
             }}
           >
-            <span style={{ fontWeight: '700', fontSize: '0.9rem', color: 'var(--text-main)' }}>
+            <span style={{ fontWeight: '700', fontSize: '0.9rem', color: '#0f172a' }}>
               Notifications {unreadCount > 0 && `(${unreadCount})`}
             </span>
             {unreadCount > 0 && (
@@ -167,11 +168,13 @@ export function NotificationBell({ onNavigateToLink }) {
                 onClick={handleMarkAllRead}
                 style={{
                   fontSize: '0.75rem',
-                  color: 'var(--primary)',
+                  color: '#1d4ed8',
                   fontWeight: '600',
-                  padding: '2px 6px',
-                  borderRadius: 'var(--radius-sm)',
-                  background: 'rgba(99, 102, 241, 0.1)',
+                  padding: '3px 8px',
+                  borderRadius: '4px',
+                  background: '#eff6ff',
+                  border: '1px solid #bfdbfe',
+                  cursor: 'pointer',
                 }}
               >
                 Mark all read
@@ -186,7 +189,7 @@ export function NotificationBell({ onNavigateToLink }) {
                 style={{
                   padding: '2rem 1rem',
                   textAlign: 'center',
-                  color: 'var(--text-muted)',
+                  color: '#64748b',
                   fontSize: '0.85rem',
                 }}
               >
@@ -199,8 +202,8 @@ export function NotificationBell({ onNavigateToLink }) {
                   onClick={() => handleItemClick(notif)}
                   style={{
                     padding: '0.75rem 1rem',
-                    borderBottom: '1px solid var(--border-subtle)',
-                    background: notif.isRead ? 'transparent' : 'rgba(99, 102, 241, 0.06)',
+                    borderBottom: '1px solid #f1f5f9',
+                    background: notif.isRead ? '#ffffff' : '#eff6ff',
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
@@ -208,12 +211,10 @@ export function NotificationBell({ onNavigateToLink }) {
                     transition: 'background 0.15s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.background = notif.isRead ? '#f8fafc' : '#dbeafe';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = notif.isRead
-                      ? 'transparent'
-                      : 'rgba(99, 102, 241, 0.06)';
+                    e.currentTarget.style.background = notif.isRead ? '#ffffff' : '#eff6ff';
                   }}
                 >
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -221,19 +222,19 @@ export function NotificationBell({ onNavigateToLink }) {
                       style={{
                         fontWeight: notif.isRead ? '600' : '700',
                         fontSize: '0.85rem',
-                        color: notif.isRead ? 'var(--text-main)' : '#fff',
+                        color: notif.isRead ? '#334155' : '#1e3a8a',
                       }}
                     >
                       {notif.title}
                     </span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--text-dim)' }}>
+                    <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
                       {formatTime(notif.createdAt)}
                     </span>
                   </div>
                   <p
                     style={{
                       fontSize: '0.8rem',
-                      color: 'var(--text-muted)',
+                      color: notif.isRead ? '#64748b' : '#334155',
                       lineHeight: '1.3',
                       margin: 0,
                     }}

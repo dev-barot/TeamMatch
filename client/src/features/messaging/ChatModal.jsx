@@ -148,8 +148,8 @@ export function ChatModal({
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(5, 8, 14, 0.75)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(15, 23, 42, 0.45)',
+        backdropFilter: 'blur(6px)',
         zIndex: 90,
         display: 'flex',
         alignItems: 'center',
@@ -161,11 +161,11 @@ export function ChatModal({
       <div
         style={{
           width: '100%',
-          maxWidth: '850px',
+          maxWidth: '860px',
           height: '620px',
-          background: 'var(--bg-surface)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-lg)',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
+          borderRadius: '16px',
           boxShadow: 'var(--shadow-lg)',
           display: 'flex',
           overflow: 'hidden',
@@ -177,31 +177,34 @@ export function ChatModal({
         <div
           style={{
             width: '280px',
-            borderRight: '1px solid var(--border)',
+            borderRight: '1px solid #e2e8f0',
             display: 'flex',
             flexDirection: 'column',
-            background: 'rgba(10, 13, 20, 0.5)',
+            background: '#f8fafc',
           }}
         >
           <div
             style={{
-              padding: '1rem',
-              borderBottom: '1px solid var(--border)',
+              padding: '1rem 1.25rem',
+              borderBottom: '1px solid #e2e8f0',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              background: '#ffffff',
             }}
           >
-            <span style={{ fontWeight: '700', fontSize: '1rem', color: 'var(--text-main)' }}>
+            <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>
               💬 Messages
             </span>
             <span
               style={{
                 fontSize: '0.75rem',
-                color: 'var(--text-dim)',
-                background: 'var(--bg-glass)',
+                color: '#2563eb',
+                background: '#eff6ff',
+                border: '1px solid #bfdbfe',
+                fontWeight: '600',
                 padding: '2px 8px',
-                borderRadius: 'var(--radius-full)',
+                borderRadius: '999px',
               }}
             >
               {conversations.length}
@@ -210,11 +213,11 @@ export function ChatModal({
 
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {loadingConv && conversations.length === 0 ? (
-              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#64748b', fontSize: '0.85rem' }}>
                 Loading chats...
               </div>
             ) : conversations.length === 0 ? (
-              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+              <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#64748b', fontSize: '0.85rem' }}>
                 No active conversations yet. Start one from a project or candidate card!
               </div>
             ) : (
@@ -227,24 +230,25 @@ export function ChatModal({
                     onClick={() => setActiveConversation(conv)}
                     style={{
                       padding: '0.85rem 1rem',
-                      borderBottom: '1px solid var(--border-subtle)',
-                      background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'transparent',
+                      borderBottom: '1px solid #e2e8f0',
+                      background: isSelected ? '#eff6ff' : 'transparent',
                       cursor: 'pointer',
                       transition: 'background 0.15s ease',
-                      borderLeft: isSelected ? '3px solid var(--primary)' : '3px solid transparent',
+                      borderLeft: isSelected ? '3px solid #2563eb' : '3px solid transparent',
                     }}
                   >
-                    <div style={{ fontWeight: '600', fontSize: '0.9rem', color: isSelected ? '#fff' : 'var(--text-main)' }}>
+                    <div style={{ fontWeight: '600', fontSize: '0.9rem', color: isSelected ? '#1d4ed8' : '#0f172a' }}>
                       {other.name || 'Student'}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
                       <span
                         style={{
                           fontSize: '0.7rem',
-                          padding: '1px 6px',
-                          borderRadius: 'var(--radius-sm)',
-                          background: 'rgba(255, 255, 255, 0.06)',
-                          color: 'var(--text-muted)',
+                          padding: '2px 6px',
+                          borderRadius: '4px',
+                          background: isSelected ? '#dbeafe' : '#f1f5f9',
+                          color: isSelected ? '#1e40af' : '#475569',
+                          fontWeight: '500',
                         }}
                       >
                         {other.specialty || 'General'}
@@ -258,35 +262,42 @@ export function ChatModal({
         </div>
 
         {/* Right Side: Active Chat Window */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', background: '#ffffff' }}>
           {activeConversation ? (
             <>
               {/* Chat Header */}
               <div
                 style={{
                   padding: '1rem 1.25rem',
-                  borderBottom: '1px solid var(--border)',
+                  borderBottom: '1px solid #e2e8f0',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  background: 'rgba(10, 13, 20, 0.3)',
+                  background: '#ffffff',
                 }}
               >
                 <div>
-                  <div style={{ fontWeight: '700', fontSize: '1.05rem', color: 'var(--text-main)' }}>
+                  <div style={{ fontWeight: '700', fontSize: '1rem', color: '#0f172a' }}>
                     {activeConversation.otherParticipant?.name || 'Student'}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                  <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
                     {activeConversation.otherParticipant?.specialty} · Live Encrypted Channel
                   </div>
                 </div>
                 <button
                   onClick={onClose}
                   style={{
-                    padding: '0.4rem 0.6rem',
-                    borderRadius: 'var(--radius-md)',
-                    color: 'var(--text-muted)',
-                    fontSize: '1.1rem',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '8px',
+                    color: '#64748b',
+                    fontSize: '1rem',
+                    width: '32px',
+                    height: '32px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}
                   title="Close chat"
                 >
@@ -303,14 +314,15 @@ export function ChatModal({
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.75rem',
+                  background: '#f8fafc',
                 }}
               >
                 {loadingMessages ? (
-                  <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '2rem' }}>
+                  <div style={{ textAlign: 'center', color: '#64748b', fontSize: '0.85rem', marginTop: '2rem' }}>
                     Loading messages...
                   </div>
                 ) : messages.length === 0 ? (
-                  <div style={{ textAlign: 'center', color: 'var(--text-dim)', fontSize: '0.85rem', marginTop: '3rem' }}>
+                  <div style={{ textAlign: 'center', color: '#64748b', fontSize: '0.85rem', marginTop: '3rem' }}>
                     👋 Say hello to begin the conversation!
                   </div>
                 ) : (
@@ -333,21 +345,19 @@ export function ChatModal({
                         <div
                           style={{
                             padding: '0.65rem 0.95rem',
-                            borderRadius: 'var(--radius-md)',
-                            background: isMe
-                              ? 'linear-gradient(135deg, var(--primary), var(--primary-hover))'
-                              : 'rgba(255, 255, 255, 0.07)',
-                            color: isMe ? '#fff' : 'var(--text-main)',
+                            borderRadius: '10px',
+                            background: isMe ? '#2563eb' : '#ffffff',
+                            color: isMe ? '#ffffff' : '#0f172a',
                             fontSize: '0.9rem',
                             lineHeight: '1.4',
                             wordBreak: 'break-word',
-                            border: isMe ? 'none' : '1px solid var(--border-subtle)',
-                            boxShadow: isMe ? '0 2px 8px rgba(99, 102, 241, 0.25)' : 'none',
+                            border: isMe ? 'none' : '1px solid #e2e8f0',
+                            boxShadow: isMe ? '0 2px 6px rgba(37, 99, 235, 0.25)' : 'var(--shadow-sm)',
                           }}
                         >
                           {msg.content}
                         </div>
-                        <span style={{ fontSize: '0.65rem', color: 'var(--text-dim)', marginTop: '2px', padding: '0 4px' }}>
+                        <span style={{ fontSize: '0.65rem', color: '#94a3b8', marginTop: '3px', padding: '0 4px' }}>
                           {timeStr}
                         </span>
                       </div>
@@ -362,8 +372,8 @@ export function ChatModal({
                 onSubmit={handleSendMessage}
                 style={{
                   padding: '1rem',
-                  borderTop: '1px solid var(--border)',
-                  background: 'rgba(10, 13, 20, 0.4)',
+                  borderTop: '1px solid #e2e8f0',
+                  background: '#ffffff',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.75rem',
@@ -378,12 +388,13 @@ export function ChatModal({
                     maxLength={2000}
                     style={{
                       width: '100%',
-                      padding: '0.75rem 1rem',
-                      background: 'var(--bg-input)',
-                      border: '1px solid var(--border)',
-                      borderRadius: 'var(--radius-md)',
-                      color: 'var(--text-main)',
+                      padding: '0.7rem 1rem',
+                      background: '#ffffff',
+                      border: '1px solid #cbd5e1',
+                      borderRadius: '8px',
+                      color: '#0f172a',
                       fontSize: '0.9rem',
+                      outline: 'none',
                     }}
                   />
                   {inputContent.length > 1500 && (
@@ -393,7 +404,7 @@ export function ChatModal({
                         right: '10px',
                         bottom: '8px',
                         fontSize: '0.65rem',
-                        color: inputContent.length > 1950 ? 'var(--danger)' : 'var(--warning)',
+                        color: inputContent.length > 1950 ? '#dc2626' : '#d97706',
                       }}
                     >
                       {inputContent.length}/2000
@@ -405,15 +416,15 @@ export function ChatModal({
                   type="submit"
                   disabled={!inputContent.trim() || sending}
                   style={{
-                    padding: '0.75rem 1.25rem',
-                    borderRadius: 'var(--radius-md)',
-                    background: inputContent.trim() ? 'var(--primary)' : 'rgba(255, 255, 255, 0.05)',
-                    color: inputContent.trim() ? '#fff' : 'var(--text-dim)',
+                    padding: '0.7rem 1.25rem',
+                    borderRadius: '8px',
+                    background: inputContent.trim() ? '#2563eb' : '#94a3b8',
+                    color: '#ffffff',
                     fontWeight: '600',
-                    fontSize: '0.9rem',
+                    fontSize: '0.875rem',
                     cursor: inputContent.trim() ? 'pointer' : 'not-allowed',
-                    transition: 'all 0.2s ease',
-                    boxShadow: inputContent.trim() ? 'var(--shadow-glow)' : 'none',
+                    border: 'none',
+                    boxShadow: inputContent.trim() ? '0 2px 6px rgba(37, 99, 235, 0.25)' : 'none',
                   }}
                 >
                   {sending ? '...' : 'Send'}
@@ -428,7 +439,7 @@ export function ChatModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: 'var(--text-muted)',
+                color: '#64748b',
                 gap: '0.5rem',
               }}
             >

@@ -89,20 +89,23 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
 
   return (
     <div className="modal-overlay" style={{ zIndex: 100 }}>
-      <div className="modal-sheet" style={{ maxWidth: '600px', padding: '1.75rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div className="modal-sheet" style={{ maxWidth: '600px', padding: '1.75rem', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
           <div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: '800' }}>Student Profile</h2>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              Matching-relevant attributes for Projects & Teams
+            <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a' }}>Student Profile</h2>
+            <p style={{ fontSize: '0.85rem', color: '#475569' }}>
+              Matching-relevant attributes for Projects & Teams (Guarded by Rule R2)
             </p>
           </div>
           <button
             onClick={onClose}
+            aria-label="Close profile editor"
             style={{
-              padding: '0.5rem',
-              color: 'var(--text-muted)',
+              padding: '0.4rem 0.6rem',
+              color: '#64748b',
               fontSize: '1.25rem',
+              borderRadius: 'var(--radius-sm)',
+              cursor: 'pointer',
             }}
           >
             ✕
@@ -111,44 +114,63 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
 
         {statusMessage && (
           <div style={{
-            background: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid rgba(16, 185, 129, 0.3)',
-            color: '#6ee7b7',
-            padding: '0.75rem',
+            background: '#ecfdf5',
+            border: '1px solid #a7f3d0',
+            color: '#059669',
+            padding: '0.75rem 1rem',
             borderRadius: 'var(--radius-md)',
             marginBottom: '1rem',
             fontSize: '0.85rem',
+            fontWeight: '500',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
           }}>
-            {statusMessage}
+            <span>✓</span>
+            <span>{statusMessage}</span>
           </div>
         )}
 
         {errorMessage && (
           <div style={{
-            background: 'rgba(239, 68, 68, 0.15)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            color: '#fca5a5',
-            padding: '0.75rem',
+            background: '#fef2f2',
+            border: '1px solid #fecaca',
+            color: '#b91c1c',
+            padding: '0.75rem 1rem',
             borderRadius: 'var(--radius-md)',
             marginBottom: '1rem',
             fontSize: '0.85rem',
+            fontWeight: '500',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
           }}>
-            {errorMessage}
+            <span>⚠️</span>
+            <span>{errorMessage}</span>
           </div>
         )}
 
         {loading ? (
-          <p style={{ color: 'var(--text-muted)' }}>Loading profile...</p>
+          <p style={{ color: '#475569', padding: '2rem 0', textAlign: 'center' }}>Loading profile...</p>
         ) : (
           <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             {/* Specialty */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
-                Specialty
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
+                Primary Specialty
               </label>
               <select
                 value={profile.specialty}
                 onChange={(e) => setProfile({ ...profile, specialty: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: 'var(--radius-md)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.92rem',
+                }}
               >
                 <option value="Frontend">Frontend</option>
                 <option value="Backend">Backend</option>
@@ -161,25 +183,32 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
 
             {/* Skills Chip Manager */}
             <div>
-              <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
-                Skills (Normalized & Deduplicated)
+              <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
+                Skills (Used by Explainable AI Matcher)
               </label>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.6rem' }}>
                 <input
                   type="text"
-                  placeholder="e.g. React, Node.js, Docker..."
+                  placeholder="e.g. React, Node.js, Docker, PyTorch..."
                   value={skillInput}
                   onChange={(e) => setSkillInput(e.target.value)}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '0.92rem',
+                  }}
                 />
                 <button
                   type="button"
                   onClick={handleAddSkill}
+                  className="btn-primary"
                   style={{
                     padding: '0.75rem 1.25rem',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--primary)',
-                    color: '#fff',
-                    fontWeight: '600',
+                    fontSize: '0.88rem',
                   }}
                 >
                   Add
@@ -189,18 +218,19 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
               {/* Skills Chips */}
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
                 {profile.skills.length === 0 && (
-                  <span style={{ fontSize: '0.85rem', color: 'var(--text-dim)' }}>No skills added yet.</span>
+                  <span style={{ fontSize: '0.82rem', color: '#64748b' }}>No skills added yet.</span>
                 )}
                 {profile.skills.map((skill) => (
                   <span
                     key={skill}
                     style={{
-                      background: 'rgba(99, 102, 241, 0.15)',
-                      border: '1px solid rgba(99, 102, 241, 0.3)',
-                      color: 'var(--text-main)',
+                      background: '#eff6ff',
+                      border: '1px solid #bfdbfe',
+                      color: '#1d4ed8',
                       padding: '4px 10px',
                       borderRadius: 'var(--radius-full)',
                       fontSize: '0.8rem',
+                      fontWeight: '600',
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '6px',
@@ -210,7 +240,8 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
                     <button
                       type="button"
                       onClick={() => handleRemoveSkill(skill)}
-                      style={{ color: 'var(--text-muted)', fontSize: '0.9rem', lineHeight: 1 }}
+                      aria-label={`Remove skill ${skill}`}
+                      style={{ color: '#2563eb', fontSize: '1rem', lineHeight: 1, cursor: 'pointer', padding: '0 2px' }}
                     >
                       ×
                     </button>
@@ -220,9 +251,9 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
             </div>
 
             {/* Availability & Timezone Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                   Weekly Availability ({profile.weeklyAvailability} hrs/wk)
                 </label>
                 <input
@@ -231,11 +262,20 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
                   max="80"
                   value={profile.weeklyAvailability}
                   onChange={(e) => setProfile({ ...profile, weeklyAvailability: Number(e.target.value) })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '0.92rem',
+                  }}
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                   Timezone (IANA)
                 </label>
                 <input
@@ -243,19 +283,37 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
                   placeholder="e.g. UTC, America/New_York"
                   value={profile.timezone}
                   onChange={(e) => setProfile({ ...profile, timezone: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '0.92rem',
+                  }}
                 />
               </div>
             </div>
 
             {/* Working Style & Experience Level Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                   Working Style
                 </label>
                 <select
                   value={profile.workingStyle}
                   onChange={(e) => setProfile({ ...profile, workingStyle: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '0.92rem',
+                  }}
                 >
                   <option value="collaborative">Collaborative</option>
                   <option value="independent">Independent</option>
@@ -265,12 +323,21 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: '600', marginBottom: '0.4rem', color: 'var(--text-muted)' }}>
+                <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '600', marginBottom: '0.35rem', color: '#334155' }}>
                   Experience Level
                 </label>
                 <select
                   value={profile.experienceLevel}
                   onChange={(e) => setProfile({ ...profile, experienceLevel: e.target.value })}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    borderRadius: 'var(--radius-md)',
+                    background: '#ffffff',
+                    border: '1px solid #cbd5e1',
+                    color: '#0f172a',
+                    fontSize: '0.92rem',
+                  }}
                 >
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
@@ -281,11 +348,11 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
 
             {/* Bio with 500-char counter */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                <label style={{ fontSize: '0.85rem', fontWeight: '600', color: 'var(--text-muted)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: '600', color: '#334155' }}>
                   Bio (Brief Overview)
                 </label>
-                <span style={{ fontSize: '0.75rem', color: profile.bio.length > 500 ? 'var(--danger)' : 'var(--text-dim)' }}>
+                <span style={{ fontSize: '0.75rem', color: profile.bio.length > 500 ? '#dc2626' : '#64748b' }}>
                   {profile.bio.length} / 500
                 </span>
               </div>
@@ -294,21 +361,32 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
                 placeholder="What projects are you excited to build?"
                 value={profile.bio}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: 'var(--radius-md)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#0f172a',
+                  fontSize: '0.92rem',
+                }}
               />
             </div>
 
             {/* Footer Buttons */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '0.5rem', borderTop: '1px solid #e2e8f0', paddingTop: '1rem' }}>
               <button
                 type="button"
                 onClick={onClose}
                 style={{
                   padding: '0.75rem 1.25rem',
                   borderRadius: 'var(--radius-md)',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid var(--border)',
-                  color: 'var(--text-muted)',
+                  background: '#ffffff',
+                  border: '1px solid #cbd5e1',
+                  color: '#475569',
                   fontWeight: '600',
+                  fontSize: '0.92rem',
+                  cursor: 'pointer',
                 }}
               >
                 Close
@@ -316,13 +394,10 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
               <button
                 type="submit"
                 disabled={saving}
+                className="btn-primary"
                 style={{
                   padding: '0.75rem 1.5rem',
-                  borderRadius: 'var(--radius-md)',
-                  background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                  color: '#fff',
-                  fontWeight: '700',
-                  boxShadow: '0 4px 14px rgba(99, 102, 241, 0.3)',
+                  fontSize: '0.92rem',
                   opacity: saving ? 0.7 : 1,
                 }}
               >
