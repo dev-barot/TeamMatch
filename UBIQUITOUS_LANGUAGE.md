@@ -1,7 +1,7 @@
 # UBIQUITOUS_LANGUAGE.md
 
 The words this product is about. If a word is not here, it must not appear in code, tests, or the other docs.
-"Named in code at" is **planned** until Module 10 converts every entry to a real `file:line` (run `npm run check:docs`).
+"Named in code at" references the authoritative file location in the codebase.
 
 ## Terms
 
@@ -28,17 +28,17 @@ The words this product is about. If a word is not here, it must not appear in co
 | **Applicant** | A Student with a Pending Application on a Project. | Candidate | `server/src/domain/applications/Application.js` |
 | **Member** | A Student with an Accepted Application on a Project. | Confirmed member, Teammate, Team member | `server/src/domain/applications/Application.js` |
 | **Team** | All Members of one Project. | Group, Squad | `server/src/domain/projects/Team.js` |
-| **Match** | A scored pairing of one Student and one Project, with Reasons. Computed on request, never stored. | Recommendation, Suggestion, Fit | `server/src/domain/matching/Match.js` |
-| **Match Score** | The sum of points from Scoring Rules for a Match. Soft cap ~100. | Percentage, Rating | `server/src/domain/matching/Match.js` |
-| **Match Reason** | One human-readable sentence + points explaining a part of a Match Score. Top 5 shown, highest points first. | Explanation, Justification, Tooltip | `server/src/domain/matching/MatchReason.js` |
-| **Scoring Rule** | One pluggable rule that awards points and a Reason (skill overlap, gap-fill, specialty, timezone, availability, style). | Bonus, Heuristic, Factor | `server/src/domain/matching/rules/` |
+| **Match** | A scored pairing of one Student and one Project, with Reasons. Computed on request, never stored. | Recommendation, Suggestion, Fit | `server/src/domain/matching/MatchingEngine.js` |
+| **Match Score** | The sum of points from Scoring Rules for a Match. Soft cap ~100. | Percentage, Rating | `server/src/domain/matching/MatchingEngine.js` |
+| **Match Reason** | One human-readable sentence + points explaining a part of a Match Score. Top 5 shown, highest points first. | Explanation, Justification, Tooltip | `server/src/domain/matching/MatchingEngine.js` |
+| **Scoring Rule** | One pluggable rule that awards points and a Reason (skill overlap, gap-fill, specialty, timezone, availability, style). | Bonus, Heuristic, Factor | `server/src/domain/matching/rules/index.js` |
 | **Scoring Weights** | The single config object holding every point value. | Constants, Magic numbers | `server/src/domain/matching/weights.js` |
 | **Skill Gap** | A Required Skill that no Member lists. | Missing skill | `server/src/domain/matching/rules/fillsSkillGap.js` |
 | **Conversation** | A one-to-one thread between exactly two Students. | Chat, Thread, Room | `server/src/domain/messaging/Conversation.js` |
 | **Message** | One text sent inside a Conversation (≤ 2000 chars). | DM, Chat text | `server/src/domain/messaging/Message.js` |
-| **Notification** | A short in-app notice triggered by a new Message, Application, or Application decision. | Alert, Push | `server/src/domain/notifications/Notification.js` |
+| **Notification** | A short in-app notice triggered by a new Message, Application, or Application decision. | Alert, Push | `server/src/domain/messaging/Notification.js` |
 | **Report** | A Student's complaint about a Student or Conversation, queued for Admin review. | Flag, Complaint | `server/src/domain/moderation/Report.js` |
-| **Email Verification** | Proof an Account owns its email; required before creating or applying. | Activation, Confirmation | `server/src/domain/identity/EmailVerification.js` |
+| **Email Verification** | Proof an Account owns its email; required before creating or applying. | Activation, Confirmation | `server/src/domain/identity/Account.js` (`server/src/application/identity/VerifyEmail.js`) |
 
 ## Flagged ambiguities
 
