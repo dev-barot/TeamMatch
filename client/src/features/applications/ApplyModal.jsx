@@ -106,7 +106,7 @@ export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
             fontSize: '0.85rem',
             fontWeight: '500',
           }}>
-            ⚠️ Rule R5: Your profile is unverified. Verified status is required by the academic coordinator before applying.
+            ⚠️ Rule R5: Your email is unverified. Verified status is required by the academic coordinator before applying.
           </div>
         )}
 
