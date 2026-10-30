@@ -1,3 +1,4 @@
+
 # UBIQUITOUS_LANGUAGE.md
 
 The words this product is about. If a word is not here, it must not appear in code, tests, or the other docs.
