@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { projectApi } from '../../api/projectApi.js';
+import { IconCourse, IconClose, IconCrown, IconUsers, IconMessages } from '../../components/ui/Icons.jsx';
 
 export function ProjectDetailsModal({
   project,
@@ -19,7 +20,7 @@ export function ProjectDetailsModal({
   const isClosed = project.status === 'closed';
 
   const handleCloseProject = async () => {
-    if (!window.confirm('Are you sure you want to close this project? This action is terminal (R3).')) {
+    if (!window.confirm('Are you sure you want to close this project? This action cannot be undone.')) {
       return;
     }
 
@@ -59,21 +60,21 @@ export function ProjectDetailsModal({
                 {project.category}
               </span>
               {project.courseTag && project.courseTag.courseCode && (
-                <span style={{
+                <span className="geo-tag" style={{
                   background: '#eff6ff',
-                  border: '1px solid #bfdbfe',
+                  borderColor: '#bfdbfe',
                   color: '#1d4ed8',
-                  padding: '2px 8px',
-                  borderRadius: 'var(--radius-sm)',
-                  fontSize: '0.75rem',
-                  fontWeight: '600',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
                 }}>
-                  📚 {project.courseTag.courseCode} {project.courseTag.term && `(${project.courseTag.term})`}
+                  <IconCourse size={12} />
+                  <span>{project.courseTag.courseCode} {project.courseTag.term && `(${project.courseTag.term})`}</span>
                 </span>
               )}
             </div>
 
-            <h1 style={{ fontSize: '1.75rem', fontWeight: '800', lineHeight: 1.25, color: '#0f172a' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: '900', lineHeight: 1.25, color: '#0f172a', letterSpacing: '-0.02em' }}>
               {project.title}
             </h1>
           </div>
@@ -82,15 +83,19 @@ export function ProjectDetailsModal({
             onClick={onClose}
             aria-label="Close modal"
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#64748b',
-              fontSize: '1.35rem',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
+              width: '36px',
+              height: '36px',
               cursor: 'pointer',
-              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
@@ -148,10 +153,10 @@ export function ProjectDetailsModal({
           </p>
         </div>
 
-        {/* Positions & Capacity (Rule R3) */}
+        {/* Positions & Capacity */}
         <div style={{ marginBottom: '1.75rem' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a' }}>Positions Capacity (Rule R3)</h3>
+            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#0f172a' }}>Positions & Capacity</h3>
             <span style={{ fontSize: '0.8rem', color: '#64748b' }}>
               Strict capacity limits enforced
             </span>
@@ -251,8 +256,9 @@ export function ProjectDetailsModal({
         }}>
           {isCreator ? (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '0.75rem' }}>
-              <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-                👑 You are the <strong>Creator</strong> of this Project (Rule R2).
+              <div style={{ fontSize: '0.85rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <IconCrown size={15} color="var(--primary)" />
+                <span>You are the <strong>Creator</strong> of this project.</span>
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 <button
@@ -260,29 +266,29 @@ export function ProjectDetailsModal({
                   onClick={() => onOpenManageApplicants && onOpenManageApplicants(project)}
                   className="btn-primary"
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
                     padding: '0.65rem 1.25rem',
                     fontSize: '0.85rem',
                   }}
                 >
-                  👥 Manage Applicants
+                  <IconUsers size={15} />
+                  <span>Manage Applicants</span>
                 </button>
                 {!isClosed && (
                   <button
                     type="button"
                     onClick={handleCloseProject}
                     disabled={closing}
+                    className="btn-danger"
                     style={{
                       padding: '0.65rem 1.25rem',
-                      background: '#fef2f2',
-                      border: '1px solid #fecaca',
-                      color: '#dc2626',
-                      borderRadius: 'var(--radius-md)',
-                      fontWeight: '700',
                       fontSize: '0.85rem',
                       cursor: closing ? 'not-allowed' : 'pointer',
                     }}
                   >
-                    {closing ? 'Closing...' : 'Close Project (R2/R3)'}
+                    {closing ? 'Closing...' : 'Close Project'}
                   </button>
                 )}
               </div>
@@ -290,7 +296,7 @@ export function ProjectDetailsModal({
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', flexWrap: 'wrap', gap: '0.75rem' }}>
               <div style={{ fontSize: '0.85rem', color: '#475569' }}>
-                {isClosed ? 'This project is closed.' : 'Ready to collaborate? Apply for an open position (Rule R1).'}
+                {isClosed ? 'This project is closed.' : 'Ready to collaborate? Apply for an open position.'}
               </div>
               <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                 {currentUser && project.creatorId && (
@@ -301,18 +307,17 @@ export function ProjectDetailsModal({
                       name: 'Project Creator',
                       specialty: 'Creator',
                     })}
+                    className="btn-secondary"
                     style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
                       padding: '0.65rem 1.25rem',
-                      background: '#eff6ff',
-                      border: '1px solid #bfdbfe',
-                      color: '#1d4ed8',
-                      borderRadius: 'var(--radius-md)',
-                      fontWeight: '700',
                       fontSize: '0.85rem',
-                      cursor: 'pointer',
                     }}
                   >
-                    💬 Message Creator
+                    <IconMessages size={15} color="var(--primary)" />
+                    <span>Message Creator</span>
                   </button>
                 )}
                 {!isClosed && (

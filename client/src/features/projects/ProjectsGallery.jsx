@@ -3,6 +3,7 @@ import { projectApi } from '../../api/projectApi.js';
 import { matchingApi } from '../../api/matchingApi.js';
 import { MatchScoreBadge } from '../matching/MatchScoreBadge.jsx';
 import { LoadingSpinner, EmptyState, ErrorBanner } from '../../components/ui/States.jsx';
+import { IconSpark, IconCrown, IconSearch, IconPlus } from '../../components/ui/Icons.jsx';
 
 const SPECIALTIES = ['All', 'Frontend', 'Backend', 'ML', 'DevOps', 'UI/UX', 'Other'];
 const COMMITMENTS = ['All', 'low', 'medium', 'high'];
@@ -84,7 +85,7 @@ export function ProjectsGallery({
               Explore Projects & Positions
             </h2>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-              Discover open team seats by skill, specialty, and commitment level with explainable AI matching (M4)
+              Discover open team seats by skill, specialty, and commitment level with explainable AI matching
             </p>
           </div>
 
@@ -117,39 +118,38 @@ export function ProjectsGallery({
                   type="button"
                   onClick={() => setViewMode('recommended')}
                   style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '5px',
                     padding: '6px 12px',
                     borderRadius: 'var(--radius-sm)',
                     border: 'none',
-                    background: viewMode === 'recommended' ? 'linear-gradient(135deg, var(--primary), var(--secondary))' : 'transparent',
-                    color: viewMode === 'recommended' ? '#fff' : 'var(--text-muted)',
+                    background: viewMode === 'recommended' ? 'var(--primary)' : 'transparent',
+                    color: viewMode === 'recommended' ? '#fff' : 'var(--ink-muted)',
                     fontWeight: '700',
                     fontSize: '0.82rem',
                     cursor: 'pointer',
                   }}
                 >
-                  ⚡ AI Matches (R4)
+                  <IconSpark size={13} color={viewMode === 'recommended' ? '#ffffff' : 'var(--primary)'} />
+                  <span>AI Matches</span>
                 </button>
               </div>
             )}
 
             <button
               onClick={onOpenCreateProject}
+              className="btn-primary"
               style={{
-                padding: '0.75rem 1.5rem',
-                borderRadius: 'var(--radius-md)',
-                background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                color: '#fff',
-                fontWeight: '700',
-                fontSize: '0.9rem',
-                boxShadow: 'var(--shadow-glow)',
-                cursor: 'pointer',
-                border: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '8px',
+                padding: '0.65rem 1.25rem',
+                fontSize: '0.88rem',
               }}
             >
-              <span>+</span> Post a Project
+              <IconPlus size={15} />
+              <span>Post a Project</span>
             </button>
           </div>
         </div>
@@ -278,7 +278,7 @@ export function ProjectsGallery({
       {/* Empty State */}
       {!loading && projects.length === 0 && !errorMessage && (
         <EmptyState
-          icon="🔍"
+          icon={<IconSearch size={40} color="var(--ink-muted)" />}
           title="No projects found"
           message="Try adjusting your search, clearing specialty filters, or be the first to post a project!"
           action={
@@ -286,11 +286,17 @@ export function ProjectsGallery({
               onClick={onOpenCreateProject}
               className="btn-primary"
               style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
                 padding: '0.75rem 1.5rem',
                 fontSize: '0.9rem',
                 minHeight: '44px',
               }}
-            >Post a Project</button>
+            >
+              <IconPlus size={15} />
+              <span>Post a Project</span>
+            </button>
           }
         />
       )}
@@ -502,8 +508,15 @@ export function ProjectsGallery({
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {isCreator ? (
-                      <span style={{ fontSize: '0.75rem', color: '#0284c7', fontWeight: '700' }}>
-                        👑 Your Project
+                      <span className="geo-tag" style={{
+                        background: '#eff6ff',
+                        color: '#1d4ed8',
+                        borderColor: '#bfdbfe',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}>
+                        <IconCrown size={12} color="#1d4ed8" /> CREATOR
                       </span>
                     ) : (
                       currentUser && openSeats > 0 && project.status === 'open' && (

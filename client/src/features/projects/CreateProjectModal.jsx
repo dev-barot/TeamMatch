@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { projectApi } from '../../api/projectApi.js';
+import { IconClose } from '../../components/ui/Icons.jsx';
 
 const SPECIALTIES = ['Frontend', 'Backend', 'ML', 'DevOps', 'UI/UX', 'Other'];
 const COMMITMENT_LEVELS = [
@@ -61,7 +62,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isVerified) {
-      setErrorMessage('Rule R5: Email verification is required before creating a Project.');
+      setErrorMessage('Email verification is required before creating a project.');
       return;
     }
 
@@ -126,22 +127,26 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
           <div>
             <h2 style={{ fontSize: '1.45rem', fontWeight: '800', color: '#0f172a' }}>Post a New Project</h2>
             <p style={{ fontSize: '0.85rem', color: '#475569' }}>
-              Define your project team requirements and open positions (Rule R3)
+              Define your project team requirements and open positions
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close modal"
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: '#64748b',
-              fontSize: '1.35rem',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
+              width: '36px',
+              height: '36px',
               cursor: 'pointer',
-              padding: '4px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
@@ -155,7 +160,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
             fontSize: '0.88rem',
             marginBottom: '1.5rem',
           }}>
-            <strong>Rule R5: Verification Gate.</strong> Your university email is not verified yet. You can browse projects, but must verify your account before posting a project.
+            <strong>Verification Required.</strong> Your university email is not verified yet. You can browse projects, but must verify your account before posting a project.
           </div>
         )}
 
@@ -277,7 +282,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
             />
           </div>
 
-          {/* Positions Builder (R3: Headcount >= 1) */}
+          {/* Positions Builder */}
           <div style={{
             background: '#f8fafc',
             padding: '1.25rem',
@@ -290,7 +295,7 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                   Open Positions (Capacity) *
                 </label>
                 <p style={{ fontSize: '0.8rem', color: '#64748b' }}>
-                  Enforces Rule R3 (Headcount ≥ 1 per Position)
+                  Specify required headcount (minimum 1 per position)
                 </p>
               </div>
               <button
@@ -366,11 +371,12 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                         color: '#dc2626',
                         cursor: 'pointer',
                         padding: '4px 8px',
-                        fontSize: '1rem',
-                        fontWeight: '700',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                       }}
                     >
-                      ✕
+                      <IconClose size={14} color="#dc2626" />
                     </button>
                   )}
                 </div>
@@ -436,9 +442,9 @@ export function CreateProjectModal({ currentUser, onClose, onProjectCreated }) {
                     type="button"
                     onClick={() => handleRemoveSkill(s)}
                     aria-label={`Remove skill ${s}`}
-                    style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', fontSize: '0.85rem', padding: '0 2px' }}
+                    style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: '0 2px', display: 'inline-flex', alignItems: 'center' }}
                   >
-                    ✕
+                    <IconClose size={12} color="#1d4ed8" />
                   </button>
                 </span>
               ))}
