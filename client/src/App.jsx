@@ -10,10 +10,18 @@ import { MyApplicationsModal } from './features/applications/MyApplicationsModal
 import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
 import { ChatModal } from './features/messaging/ChatModal.jsx';
 import { AdminPortal } from './features/admin/AdminPortal.jsx';
-import { FeedbackWidget } from './components/ui/FeedbackWidget.jsx';
 import { connectSocket, disconnectSocket } from './api/socketClient.js';
 import { authApi } from './api/authApi.js';
 import { studentApi } from './api/studentApi.js';
+import {
+  IconCheck,
+  IconSpark,
+  IconEdit,
+  IconPlus,
+  IconProjects,
+  IconProfile,
+  IconWarning,
+} from './components/ui/Icons.jsx';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState(() => authApi.getCurrentUser());
@@ -31,6 +39,49 @@ export function App() {
   const [userProfile, setUserProfile] = useState(() => currentUser?.profile || null);
   const [activeTab, setActiveTab] = useState('projects');
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
+
+  const [dashboardPin, setDashboardPin] = useState('');
+  const [verifyingDashboardPin, setVerifyingDashboardPin] = useState(false);
+  const [resendingDashboardPin, setResendingDashboardPin] = useState(false);
+  const [dashboardVerifyMsg, setDashboardVerifyMsg] = useState(null);
+  const [dashboardVerifyError, setDashboardVerifyError] = useState(null);
+
+  const handleVerifyDashboardPin = async (e) => {
+    e.preventDefault();
+    if (!dashboardPin || dashboardPin.trim().length !== 4) {
+      setDashboardVerifyError('Please enter a complete 4-digit PIN.');
+      return;
+    }
+    setDashboardVerifyError(null);
+    setDashboardVerifyMsg(null);
+    setVerifyingDashboardPin(true);
+    try {
+      await authApi.verifyEmail(dashboardPin.trim(), currentUser.email);
+      setDashboardVerifyMsg('Email verified & auto-approved! You now have full platform access.');
+      const updatedUser = { ...currentUser, isEmailVerified: true };
+      setCurrentUser(updatedUser);
+      localStorage.setItem('tm_current_user', JSON.stringify(updatedUser));
+      setDashboardPin('');
+    } catch (err) {
+      setDashboardVerifyError(err.message || 'Verification failed. Please check the PIN.');
+    } finally {
+      setVerifyingDashboardPin(false);
+    }
+  };
+
+  const handleResendDashboardPin = async () => {
+    setDashboardVerifyError(null);
+    setDashboardVerifyMsg(null);
+    setResendingDashboardPin(true);
+    try {
+      const res = await authApi.resendVerificationCode(currentUser.email);
+      setDashboardVerifyMsg(res.message || 'A new 4-digit code has been dispatched to your email.');
+    } catch (err) {
+      setDashboardVerifyError(err.message || 'Failed to resend code.');
+    } finally {
+      setResendingDashboardPin(false);
+    }
+  };
 
   useEffect(() => {
     const cached = authApi.getCurrentUser();
@@ -200,27 +251,24 @@ export function App() {
                     Get Started Free →
                   </button>
                   <button
-                    onClick={() => {
-                      const el = document.getElementById('public-listings-section');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
-                    }}
+                    onClick={() => { setAuthModalMode('login'); setAuthModalOpen(true); }}
                     className="btn-secondary"
                     style={{ padding: '0.9rem 1.75rem', fontSize: '1rem' }}
                   >
-                    Explore Projects ↓
+                    Sign In →
                   </button>
                 </div>
 
                 {/* Trust Checklist */}
-                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.85rem', color: '#475569', fontWeight: '500' }}>
+                <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', fontSize: '0.85rem', color: '#475569', fontWeight: '600' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ color: '#059669', fontWeight: '800' }}>✓</span> Verified Student Profiles (R5)
+                    <IconCheck size={14} color="#059669" /> Verified Student Profiles
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ color: '#2563eb', fontWeight: '800' }}>✓</span> Top-5 Explainable Reasons (R4)
+                    <IconCheck size={14} color="#2563eb" /> Top Explainable Match Fit
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ color: '#0284c7', fontWeight: '800' }}>✓</span> Strict Capacity Enforced (R3)
+                    <IconCheck size={14} color="#0284c7" /> Strict Capacity Enforced
                   </div>
                 </div>
               </div>
@@ -299,29 +347,32 @@ export function App() {
                     </div>
                     <div style={{
                       background: '#ecfdf5',
-                      border: '1px solid #a7f3d0',
+                      border: '1.5px solid #a7f3d0',
                       color: '#059669',
                       padding: '4px 10px',
-                      borderRadius: 'var(--radius-full)',
-                      fontSize: '0.8rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.78rem',
                       fontWeight: '800',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
                     }}>
-                      ⚡ 94% Match Fit
+                      <IconSpark size={13} color="#059669" /> 94% MATCH FIT
                     </div>
                   </div>
 
                   {/* Explainable Reasons Tags */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <IconCheck size={12} color="#2563eb" />
                       <span><strong>Skills Overlap:</strong> Python, PyTorch, Node.js (+35 pts)</span>
                     </div>
                     <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <IconCheck size={12} color="#2563eb" />
                       <span><strong>Schedule Fit:</strong> 18 hrs/wk available (High Commitment)</span>
                     </div>
                     <div style={{ fontSize: '0.78rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <span style={{ color: '#2563eb' }}>✓</span>
+                      <IconCheck size={12} color="#2563eb" />
                       <span><strong>Working Style:</strong> Collaborative & Fast-Paced match</span>
                     </div>
                   </div>
@@ -379,7 +430,7 @@ export function App() {
                     01
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
-                    Profile & Skills (R2)
+                    Profile & Skills
                   </h3>
                   <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
                     Students declare verified skill tags, primary specialty, weekly available hours, and preferred working style.
@@ -403,7 +454,7 @@ export function App() {
                     02
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
-                    Explainable AI Engine (R4)
+                    Explainable AI Engine
                   </h3>
                   <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
                     No black-box mystery. Our deterministic matching engine provides transparent score breakdown across 5 weighted reasons.
@@ -427,7 +478,7 @@ export function App() {
                     03
                   </div>
                   <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginBottom: '0.5rem', color: '#0f172a' }}>
-                    Atomic Formation (R1 & R3)
+                    Atomic Team Formation
                   </h3>
                   <p style={{ color: '#475569', fontSize: '0.9rem', lineHeight: 1.6 }}>
                     Concurrency-safe applications guarantee no double-booking and zero team overfill once headcount limits are reached.
@@ -435,168 +486,237 @@ export function App() {
                 </div>
               </div>
             </div>
-
-            {/* Public Live Projects Gallery (R5: unverified / visitor can browse) */}
-            <div id="public-listings-section" style={{ textAlign: 'left', marginTop: '2rem' }}>
-              <div style={{
-                display: 'flex',
-                alignItems: 'flex-end',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '0.75rem',
-                marginBottom: '1.75rem',
-                borderBottom: '1px solid #e2e8f0',
-                paddingBottom: '1.25rem',
-              }}>
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669', display: 'inline-block' }} />
-                    <span style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#059669', fontWeight: '800' }}>
-                      Live Project Listings
-                    </span>
-                  </div>
-                  <h2 style={{ fontSize: '1.8rem', fontWeight: '800', letterSpacing: '-0.5px', color: '#0f172a' }}>
-                    Explore Active Postings
-                  </h2>
-                </div>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                  Rule R5: Public discovery open to all students
-                </div>
-              </div>
-              <ProjectsGallery
-                currentUser={currentUser}
-                onOpenCreateProject={handleOpenCreateProject}
-                onSelectProject={(proj) => setSelectedProject(proj)}
-                onOpenApply={handleOpenApply}
-                refreshTrigger={galleryRefreshKey}
-              />
-            </div>
           </section>
         ) : (
           /* Authenticated Student Dashboard */
           <section>
             {/* Header Greeting Banner */}
-            <div style={{
+            <div className="geo-card" style={{
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
               flexWrap: 'wrap',
-              gap: '1rem',
+              gap: '1.25rem',
               padding: '1.75rem 2rem',
-              background: 'var(--bg-card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-lg)',
+              background: '#ffffff',
+              border: '2px solid var(--border-structural)',
+              borderRadius: 'var(--radius-sm)',
               marginBottom: '2rem',
-              boxShadow: 'var(--shadow-md)',
+              boxShadow: 'var(--shadow-geo)',
+              position: 'relative',
+              overflow: 'hidden',
             }}>
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                right: 0,
+                width: '32px',
+                height: '32px',
+                background: 'linear-gradient(135deg, transparent 50%, var(--primary) 50%)',
+                opacity: 0.15,
+                pointerEvents: 'none',
+              }} />
+
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '0.25rem' }}>
-                  <h1 style={{ fontSize: '1.8rem', fontWeight: '800' }}>
-                    Welcome back, {currentUser.name}! 👋
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.35rem', flexWrap: 'wrap' }}>
+                  <h1 style={{ fontSize: '1.75rem', fontWeight: '900', letterSpacing: '-0.02em', color: 'var(--ink)' }}>
+                    Welcome back, {currentUser.name}
                   </h1>
                   {currentUser.isEmailVerified ? (
-                    <span style={{
-                      background: 'rgba(34, 197, 94, 0.15)',
-                      color: '#4ade80',
-                      border: '1px solid rgba(34, 197, 94, 0.3)',
-                      padding: '2px 8px',
-                      borderRadius: 'var(--radius-full)',
-                      fontSize: '0.75rem',
-                      fontWeight: '700',
+                    <span className="geo-tag" style={{
+                      background: '#ecfdf5',
+                      color: '#059669',
+                      borderColor: '#a7f3d0',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
                     }}>
-                      ✓ Verified (R5)
+                      <IconCheck size={12} color="#059669" /> VERIFIED
                     </span>
                   ) : (
-                    <span style={{
-                      background: '#fef2f2',
-                      color: '#b91c1c',
-                      border: '1px solid #fecaca',
-                      padding: '2px 8px',
-                      borderRadius: '999px',
-                      fontSize: '0.75rem',
-                      fontWeight: '700',
+                    <span className="geo-tag" style={{
+                      background: '#fffbeb',
+                      color: '#b45309',
+                      borderColor: '#fde68a',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '4px',
                     }}>
-                      Unverified (R5)
+                      <IconWarning size={12} color="#b45309" /> UNVERIFIED
                     </span>
                   )}
                 </div>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                  Logged in as <code style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)' }}>{currentUser.email}</code>
+                <p style={{ color: 'var(--ink-muted)', fontSize: '0.88rem', margin: 0 }}>
+                  Logged in as <code style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)', fontWeight: '600' }}>{currentUser.email}</code>
                 </p>
               </div>
 
               <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                 <button
                   onClick={handleOpenCreateProject}
-                  style={{
-                    padding: '0.75rem 1.5rem',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-                    color: '#fff',
-                    fontWeight: '700',
-                    fontSize: '0.9rem',
-                    boxShadow: 'var(--shadow-glow)',
-                    border: 'none',
-                    cursor: 'pointer',
-                  }}
+                  className="btn-primary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  + Post a Project (M2)
+                  <IconPlus size={15} />
+                  <span>Post a Project</span>
                 </button>
                 <button
                   onClick={() => setProfileModalOpen(true)}
-                  style={{
-                    padding: '0.75rem 1.25rem',
-                    borderRadius: 'var(--radius-md)',
-                    background: 'var(--bg-surface)',
-                    border: '1px solid var(--border)',
-                    color: 'var(--text-main)',
-                    fontWeight: '600',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                  }}
+                  className="btn-secondary"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
                 >
-                  ✏️ Edit Profile (R2)
+                  <IconEdit size={14} />
+                  <span>Edit Profile</span>
                 </button>
               </div>
             </div>
 
+            {/* Unverified Email Warning & 4-Digit PIN Gate */}
+            {currentUser && !currentUser.isEmailVerified && (
+              <div style={{
+                background: '#fffbeb',
+                border: '2px solid #f59e0b',
+                borderRadius: 'var(--radius-sm)',
+                padding: '1.25rem 1.75rem',
+                marginBottom: '2rem',
+                boxShadow: '2px 2px 0px #f59e0b',
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+                  <div style={{ maxWidth: '640px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#b45309', fontWeight: '800', fontSize: '1rem', marginBottom: '4px' }}>
+                      <IconWarning size={18} color="#b45309" /> Email Verification Required
+                    </div>
+                    <p style={{ color: '#92400e', fontSize: '0.88rem', margin: 0, lineHeight: 1.5 }}>
+                      We sent a 4-digit PIN to <strong>{currentUser.email}</strong>. Enter it below for instant auto-approval to post projects and apply to teams.
+                    </p>
+                    {dashboardVerifyError && (
+                      <p style={{ color: '#b91c1c', fontSize: '0.82rem', fontWeight: '700', marginTop: '6px', marginBottom: 0, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <IconWarning size={14} color="#b91c1c" /> {dashboardVerifyError}
+                      </p>
+                    )}
+                    {dashboardVerifyMsg && (
+                      <p style={{ color: '#059669', fontSize: '0.82rem', fontWeight: '700', marginTop: '6px', marginBottom: 0, display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <IconCheck size={14} color="#059669" /> {dashboardVerifyMsg}
+                      </p>
+                    )}
+                  </div>
+
+                  <form onSubmit={handleVerifyDashboardPin} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      maxLength={4}
+                      placeholder="••••"
+                      value={dashboardPin}
+                      onChange={(e) => setDashboardPin(e.target.value.replace(/[^0-9]/g, ''))}
+                      aria-label="4-digit verification PIN"
+                      style={{
+                        width: '90px',
+                        padding: '0.65rem 0.5rem',
+                        textAlign: 'center',
+                        fontFamily: 'var(--font-mono, monospace)',
+                        fontSize: '1.15rem',
+                        fontWeight: '800',
+                        letterSpacing: '4px',
+                        borderRadius: 'var(--radius-sm)',
+                        border: '2px solid #d97706',
+                        background: '#ffffff',
+                        color: '#0f172a',
+                        outline: 'none',
+                      }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={verifyingDashboardPin || dashboardPin.length !== 4}
+                      style={{
+                        padding: '0.65rem 1.2rem',
+                        background: '#d97706',
+                        color: '#ffffff',
+                        border: '2px solid #b45309',
+                        borderRadius: 'var(--radius-sm)',
+                        fontWeight: '800',
+                        fontSize: '0.88rem',
+                        cursor: dashboardPin.length === 4 ? 'pointer' : 'not-allowed',
+                        opacity: dashboardPin.length === 4 ? 1 : 0.6,
+                        boxShadow: '1px 1px 0px #b45309',
+                      }}
+                    >
+                      {verifyingDashboardPin ? 'Verifying...' : 'Verify PIN'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResendDashboardPin}
+                      disabled={resendingDashboardPin}
+                      style={{
+                        padding: '0.65rem 0.9rem',
+                        background: '#ffffff',
+                        color: '#b45309',
+                        border: '1.5px solid #fde68a',
+                        borderRadius: 'var(--radius-sm)',
+                        fontWeight: '700',
+                        fontSize: '0.82rem',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {resendingDashboardPin ? 'Sending...' : 'Resend PIN'}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            )}
+
             {/* Dashboard Tabs */}
             <div style={{
               display: 'flex',
-              gap: '1rem',
-              borderBottom: '1px solid var(--border)',
+              gap: '0.5rem',
+              borderBottom: '2px solid var(--border-structural)',
               marginBottom: '2rem',
-              paddingBottom: '0.5rem',
+              paddingBottom: 0,
             }}>
               <button
                 onClick={() => setActiveTab('projects')}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: '8px 16px',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  color: activeTab === 'projects' ? 'var(--primary)' : 'var(--text-muted)',
-                  borderBottom: activeTab === 'projects' ? '2px solid var(--primary)' : '2px solid transparent',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: activeTab === 'projects' ? '#ffffff' : 'transparent',
+                  border: '2px solid',
+                  borderColor: activeTab === 'projects' ? 'var(--border-structural)' : 'transparent',
+                  borderBottom: activeTab === 'projects' ? '2px solid #ffffff' : 'none',
+                  marginBottom: activeTab === 'projects' ? '-2px' : '0',
+                  padding: '10px 18px',
+                  fontSize: '0.92rem',
+                  fontWeight: '800',
+                  color: activeTab === 'projects' ? 'var(--primary)' : 'var(--ink-muted)',
                   cursor: 'pointer',
+                  borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+                  transition: 'all 0.15s ease',
                 }}
               >
-                📁 Projects Gallery (M2)
+                <IconProjects size={16} color={activeTab === 'projects' ? 'var(--primary)' : 'var(--ink-muted)'} />
+                <span>Projects Gallery</span>
               </button>
               <button
                 onClick={() => setActiveTab('profile')}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  padding: '8px 16px',
-                  fontSize: '1rem',
-                  fontWeight: '700',
-                  color: activeTab === 'profile' ? 'var(--primary)' : 'var(--text-muted)',
-                  borderBottom: activeTab === 'profile' ? '2px solid var(--primary)' : '2px solid transparent',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: activeTab === 'profile' ? '#ffffff' : 'transparent',
+                  border: '2px solid',
+                  borderColor: activeTab === 'profile' ? 'var(--border-structural)' : 'transparent',
+                  borderBottom: activeTab === 'profile' ? '2px solid #ffffff' : 'none',
+                  marginBottom: activeTab === 'profile' ? '-2px' : '0',
+                  padding: '10px 18px',
+                  fontSize: '0.92rem',
+                  fontWeight: '800',
+                  color: activeTab === 'profile' ? 'var(--primary)' : 'var(--ink-muted)',
                   cursor: 'pointer',
+                  borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+                  transition: 'all 0.15s ease',
                 }}
               >
-                👤 My Matching Profile (M1)
+                <IconProfile size={16} color={activeTab === 'profile' ? 'var(--primary)' : 'var(--ink-muted)'} />
+                <span>My Matching Profile</span>
               </button>
             </div>
 
@@ -621,8 +741,8 @@ export function App() {
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: '700' }}>Active Matching Profile</h2>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                    Enforced by Rule R2 (Student owns profile)
+                  <span style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>
+                    Only you can edit your profile details
                   </span>
                 </div>
 
@@ -695,94 +815,6 @@ export function App() {
           </section>
         )}
       </main>
-
-      {/* Global Modern Platform Footer */}
-      <footer style={{
-        borderTop: '1px solid var(--border)',
-        background: 'rgba(10, 14, 26, 0.85)',
-        backdropFilter: 'blur(16px)',
-        padding: '3rem 1.5rem 2rem 1.5rem',
-        marginTop: 'auto',
-      }}>
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-          gap: '2.5rem',
-          marginBottom: '2.5rem',
-        }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1rem' }}>
-              <div style={{
-                width: '32px', height: '32px', borderRadius: 'var(--radius-md)',
-                background: 'var(--gradient-brand)', display: 'flex', alignItems: 'center',
-                justifyContent: 'center', fontWeight: '800', color: '#fff', fontSize: '0.9rem',
-              }}>
-                TM
-              </div>
-              <span style={{ fontWeight: '800', fontSize: '1.2rem', letterSpacing: '-0.5px' }}>
-                Team<span className="text-gradient">Match</span>
-              </span>
-            </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.88rem', lineHeight: 1.6, maxWidth: '320px' }}>
-              Explainable AI-assisted team formation platform for university capstones, hackathons, and class projects.
-            </p>
-          </div>
-
-          <div>
-            <h4 style={{ fontSize: '0.82rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#fff', marginBottom: '1rem' }}>
-              Architecture & Rules
-            </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-              <li>Rule R1: Duplicate Prevention</li>
-              <li>Rule R2: Student Profile Ownership</li>
-              <li>Rule R3: Atomic Headcount Capacity</li>
-              <li>Rule R4: Explainable Match Scoring</li>
-              <li>Rule R5: Email Verification Required</li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 style={{ fontSize: '0.82rem', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.8px', color: '#fff', marginBottom: '1rem' }}>
-              Live System Status
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.85rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', fontWeight: '600' }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981' }} />
-                Realtime Socket.IO Gateway Online
-              </div>
-              <div style={{ color: 'var(--text-muted)' }}>
-                Port: <code style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)' }}>4000</code> • Health: <code style={{ color: '#34d399', fontFamily: 'var(--font-mono)' }}>200 OK</code>
-              </div>
-              <div style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>
-                Hexagonal Architecture with Zero Express domain imports
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style={{
-          maxWidth: '1400px',
-          margin: '0 auto',
-          borderTop: '1px solid var(--border)',
-          paddingTop: '1.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '1rem',
-          fontSize: '0.8rem',
-          color: 'var(--text-dim)',
-        }}>
-          <div>
-            © 2026 TeamMatch • MSc IT Software Design & Testing Semester Project
-          </div>
-          <div>
-            Crafted for High-Performing Student Teams
-          </div>
-        </div>
-      </footer>
 
       {/* Modals */}
       {authModalOpen && (
@@ -876,16 +908,13 @@ export function App() {
         />
       )}
 
-      {/* M6: Admin Moderation Portal — only accessible for admin accounts (R2) */}
+      {/* Admin Moderation Portal — only accessible for admin accounts */}
       {adminPortalOpen && currentUser?.accountType === 'admin' && (
         <AdminPortal
           currentUser={currentUser}
           onClose={() => setAdminPortalOpen(false)}
         />
       )}
-
-      {/* M7: Feedback widget — every page (step 7) */}
-      <FeedbackWidget />
     </div>
   );
 }
