@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { messagingApi } from '../../api/messagingApi.js';
 import { getSocket } from '../../api/socketClient.js';
+import { IconBell } from '../../components/ui/Icons.jsx';
 
 export function NotificationBell({ onNavigateToLink }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -111,7 +112,7 @@ export function NotificationBell({ onNavigateToLink }) {
           boxShadow: 'var(--shadow-sm)',
         }}
       >
-        🔔
+        <IconBell size={18} color="#0f172a" />
         {unreadCount > 0 && (
           <span
             style={{
