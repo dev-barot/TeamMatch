@@ -22,10 +22,17 @@ export const authApi = {
     return res;
   },
 
-  async verifyEmail(token) {
+  async verifyEmail(token, email) {
     return apiRequest('/auth/verify-email', {
       method: 'POST',
-      body: { token },
+      body: { token, email },
+    });
+  },
+
+  async resendVerificationCode(email) {
+    return apiRequest('/auth/resend-code', {
+      method: 'POST',
+      body: { email },
     });
   },
 
