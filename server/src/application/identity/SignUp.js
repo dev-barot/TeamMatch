@@ -19,9 +19,10 @@ export class SignUp {
     }
 
     const passwordHash = await this.hasher.hash(password);
-    const verificationToken = crypto.randomUUID();
+    // 4-digit PIN for instant email verification & auto-approval
+    const verificationToken = String(Math.floor(1000 + Math.random() * 9000));
     const now = this.clock ? this.clock.now() : new Date();
-    const tokenExpiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
+    const tokenExpiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
     const account = new Account({
       email,

@@ -6,14 +6,21 @@ export class VerifyEmail {
     this.clock = clock;
   }
 
-  async execute({ token }) {
+  async execute({ token, email }) {
     if (!token) {
-      throw new InvalidTokenError('Verification token is required.');
+      throw new InvalidTokenError('Verification code is required.');
     }
 
-    const student = await this.studentRepo.findByVerificationToken(token);
+    let student = null;
+    if (email) {
+      student = await this.studentRepo.findByEmail(email);
+    }
     if (!student) {
-      throw new InvalidTokenError('Invalid or expired verification token.');
+      student = await this.studentRepo.findByVerificationToken(token);
+    }
+
+    if (!student) {
+      throw new InvalidTokenError('Invalid or expired verification PIN.');
     }
 
     const now = this.clock ? this.clock.now() : new Date();
@@ -21,7 +28,7 @@ export class VerifyEmail {
     await this.studentRepo.save(student);
 
     return {
-      message: 'Email successfully verified.',
+      message: 'Email successfully verified. Your account has been activated!',
       student: student.toPrivateView(),
     };
   }
