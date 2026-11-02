@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { applicationApi } from '../../api/applicationApi.js';
+import { IconClose, IconCheck, IconWarning } from '../../components/ui/Icons.jsx';
 
 export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
   const openPositions = project?.positions?.filter(p => (p.remaining !== undefined ? p.remaining > 0 : (p.headcount > (p.filledCount || 0)))) || [];
@@ -49,10 +50,9 @@ export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
             aria-label="Close apply modal"
             style={{
               background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              color: '#64748b',
-              fontSize: '1rem',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
               width: '36px',
               height: '36px',
               cursor: 'pointer',
@@ -61,20 +61,20 @@ export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
               justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
         {error && (
           <div style={{
             background: '#fef2f2',
-            border: '1px solid #fecaca',
+            border: '1.5px solid #fecaca',
             color: '#b91c1c',
             padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1.25rem',
             fontSize: '0.85rem',
-            fontWeight: '500',
+            fontWeight: '600',
           }}>
             {error}
           </div>
@@ -83,36 +83,44 @@ export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
         {successMsg && (
           <div style={{
             background: '#ecfdf5',
-            border: '1px solid #a7f3d0',
+            border: '1.5px solid #a7f3d0',
             color: '#059669',
             padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1.25rem',
             fontSize: '0.85rem',
             fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
           }}>
-            ✓ {successMsg}
+            <IconCheck size={14} color="#059669" />
+            <span>{successMsg}</span>
           </div>
         )}
 
         {!currentUser?.isEmailVerified && (
           <div style={{
             background: '#fffbeb',
-            border: '1px solid #fde68a',
+            border: '1.5px solid #fde68a',
             color: '#b45309',
             padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1.25rem',
             fontSize: '0.85rem',
-            fontWeight: '500',
+            fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
           }}>
-            ⚠️ Rule R5: Your email is unverified. Verified status is required by the academic coordinator before applying.
+            <IconWarning size={16} color="#b45309" />
+            <span>Your email is unverified. Verified status is required by the academic coordinator before applying.</span>
           </div>
         )}
 
         {openPositions.length === 0 ? (
           <div style={{ padding: '1rem', background: '#fef2f2', borderRadius: '8px', border: '1px solid #fecaca', color: '#b91c1c', fontSize: '0.875rem' }}>
-            All positions on this project are currently filled to capacity (Rule R3).
+            All positions on this project are currently filled to capacity.
           </div>
         ) : (
           <form onSubmit={handleApply} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
@@ -198,7 +206,7 @@ export function ApplyModal({ project, currentUser, onClose, onSuccess }) {
                   boxShadow: (submitting || !currentUser?.isEmailVerified) ? 'none' : '0 2px 8px rgba(37, 99, 235, 0.25)',
                 }}
               >
-                {submitting ? 'Submitting...' : 'Submit Application (R1)'}
+                {submitting ? 'Submitting...' : 'Submit Application'}
               </button>
             </div>
           </form>

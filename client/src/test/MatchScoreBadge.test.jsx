@@ -44,10 +44,10 @@ describe('MatchScoreBadge', () => {
     expect(screen.getByText('+20')).toBeInTheDocument();
   });
 
-  it('popover contains the R4 footer text', () => {
+  it('popover contains the score explanation footer text', () => {
     render(<MatchScoreBadge match={highMatch} />);
     fireEvent.click(screen.getByText(/75 pts match/i));
-    expect(screen.getByText(/Rule R4: Every point is explained/i)).toBeInTheDocument();
+    expect(screen.getByText(/Every score point is explained/i)).toBeInTheDocument();
   });
 
   it('renders nothing when match prop is null', () => {

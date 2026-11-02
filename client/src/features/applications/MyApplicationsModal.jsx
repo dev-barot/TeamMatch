@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { applicationApi } from '../../api/applicationApi.js';
-import { LoadingSpinner, ErrorBanner, EmptyState } from '../../components/ui/States.jsx';
+import { IconClose, IconEmptyDraft, IconCheck } from '../../components/ui/Icons.jsx';
 
 export function MyApplicationsModal({ onClose, onApplicationWithdrawn }) {
   const [applications, setApplications] = useState([]);
@@ -61,7 +61,7 @@ export function MyApplicationsModal({ onClose, onApplicationWithdrawn }) {
           <div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>My Applications</h2>
             <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem', margin: '0.25rem 0 0 0' }}>
-              Track applications and project memberships (Rule R1)
+              Track applications and project memberships
             </p>
           </div>
           <button
@@ -69,10 +69,9 @@ export function MyApplicationsModal({ onClose, onApplicationWithdrawn }) {
             aria-label="Close applications panel"
             style={{
               background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              color: '#64748b',
-              fontSize: '1rem',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
               width: '36px',
               height: '36px',
               cursor: 'pointer',
@@ -81,31 +80,33 @@ export function MyApplicationsModal({ onClose, onApplicationWithdrawn }) {
               justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
         {error && (
           <div style={{
             background: '#fef2f2',
-            border: '1px solid #fecaca',
+            border: '1.5px solid #fecaca',
             color: '#b91c1c',
             padding: '0.75rem 1rem',
-            borderRadius: '8px',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1.25rem',
             fontSize: '0.85rem',
-            fontWeight: '500',
+            fontWeight: '600',
           }}>
             {error}
           </div>
         )}
 
         {loading ? (
-          <p style={{ color: '#64748b', textAlign: 'center', padding: '2rem' }}>Loading applications...</p>
+          <p style={{ color: 'var(--ink-muted)', textAlign: 'center', padding: '2rem' }}>Loading applications...</p>
         ) : applications.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
-            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>📋</span>
-            <p style={{ color: '#64748b', fontSize: '0.95rem', margin: 0 }}>You have not submitted any applications yet.</p>
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: 'var(--radius-sm)', border: '1.5px dashed var(--border)' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+              <IconEmptyDraft size={44} color="#94a3b8" />
+            </div>
+            <p style={{ color: 'var(--ink-muted)', fontSize: '0.95rem', margin: 0 }}>You have not submitted any applications yet.</p>
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -116,39 +117,39 @@ export function MyApplicationsModal({ onClose, onApplicationWithdrawn }) {
                   key={app.id}
                   style={{
                     background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '10px',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 'var(--radius-sm)',
                     padding: '1.25rem',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     gap: '1rem',
-                    boxShadow: 'var(--shadow-sm)',
+                    boxShadow: 'var(--shadow-geo-sm)',
                   }}
                 >
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-                      <span style={{ fontWeight: '700', fontSize: '1rem', color: '#0f172a' }}>Position: {app.specialty}</span>
-                      <span style={{
-                        fontSize: '0.75rem',
-                        padding: '2px 8px',
-                        borderRadius: '999px',
-                        fontWeight: '600',
+                      <span style={{ fontWeight: '800', fontSize: '1rem', color: 'var(--ink)' }}>Position: {app.specialty}</span>
+                      <span className="geo-tag" style={{
                         background: statusStyle.bg,
                         color: statusStyle.text,
-                        border: `1px solid ${statusStyle.border}`,
+                        borderColor: statusStyle.border,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
                       }}>
-                        {app.status === 'Accepted' ? '🎉 Accepted (Member)' : app.status}
+                        {app.status === 'Accepted' && <IconCheck size={11} color={statusStyle.text} />}
+                        {app.status === 'Accepted' ? 'Accepted Member' : app.status}
                       </span>
                     </div>
 
-                    <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.25rem', margin: '0 0 0.25rem 0' }}>
-                      Project ID: <code style={{ color: '#2563eb', background: '#eff6ff', padding: '1px 6px', borderRadius: '4px' }}>{app.projectId}</code> · {app.origin === 'invited' ? 'Received Invitation' : 'Applied by You'}
+                    <p style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', marginBottom: '0.25rem', margin: '0 0 0.25rem 0' }}>
+                      Project ID: <code style={{ color: 'var(--primary)', background: '#eff6ff', padding: '1px 6px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>{app.projectId}</code> · {app.origin === 'invited' ? 'Received Invitation' : 'Applied by You'}
                     </p>
 
                     {app.notes && (
-                      <p style={{ fontSize: '0.85rem', color: '#475569', fontStyle: 'italic', marginTop: '0.35rem', margin: '0.35rem 0 0 0' }}>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', fontStyle: 'italic', marginTop: '0.35rem', margin: '0.35rem 0 0 0' }}>
                         "{app.notes}"
                       </p>
                     )}

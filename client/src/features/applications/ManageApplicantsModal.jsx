@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { applicationApi } from '../../api/applicationApi.js';
 import { matchingApi } from '../../api/matchingApi.js';
 import { MatchScoreBadge } from '../matching/MatchScoreBadge.jsx';
+import { IconClose, IconUsers, IconSpark, IconMessages, IconCheck, IconEmptyDraft } from '../../components/ui/Icons.jsx';
 
 export function ManageApplicantsModal({ project, onClose, onApplicantDecided, onMessageApplicant }) {
   const [activeTab, setActiveTab] = useState('applicants'); // 'applicants' | 'recommendations'
@@ -84,7 +85,7 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
           <div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>Manage Applicants</h2>
             <p style={{ fontSize: '0.875rem', color: '#64748b', marginTop: '0.25rem', margin: '0.25rem 0 0 0' }}>
-              Project: <span style={{ color: '#0f172a', fontWeight: '600' }}>{project?.title}</span> (Rule R2 Creator Access)
+              Project: <span style={{ color: '#0f172a', fontWeight: '600' }}>{project?.title}</span>
             </p>
           </div>
           <button
@@ -92,10 +93,9 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
             aria-label="Close applicants panel"
             style={{
               background: '#f8fafc',
-              border: '1px solid #e2e8f0',
-              borderRadius: '8px',
-              color: '#64748b',
-              fontSize: '1rem',
+              border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
               width: '36px',
               height: '36px',
               cursor: 'pointer',
@@ -104,45 +104,57 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
               justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
         {/* Tab switch */}
-        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.25rem', borderBottom: '1px solid #e2e8f0' }}>
+        <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', borderBottom: '2px solid var(--border-structural)' }}>
           <button
             type="button"
             onClick={() => setActiveTab('applicants')}
             style={{
-              background: 'none',
-              border: 'none',
-              padding: '8px 4px',
-              fontSize: '0.9rem',
-              fontWeight: '700',
-              color: activeTab === 'applicants' ? '#2563eb' : '#64748b',
-              borderBottom: activeTab === 'applicants' ? '2px solid #2563eb' : '2px solid transparent',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: activeTab === 'applicants' ? '#ffffff' : 'transparent',
+              border: '1.5px solid',
+              borderColor: activeTab === 'applicants' ? 'var(--border-structural)' : 'transparent',
+              borderBottom: activeTab === 'applicants' ? '2px solid #ffffff' : 'none',
+              borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+              padding: '8px 14px',
+              fontSize: '0.88rem',
+              fontWeight: '800',
+              color: activeTab === 'applicants' ? 'var(--primary)' : 'var(--ink-muted)',
               cursor: 'pointer',
-              marginBottom: '-1px',
+              marginBottom: '-2px',
             }}
           >
-            👥 Received Applicants ({applications.length})
+            <IconUsers size={16} />
+            <span>Received Applicants ({applications.length})</span>
           </button>
           <button
             type="button"
             onClick={() => setActiveTab('recommendations')}
             style={{
-              background: 'none',
-              border: 'none',
-              padding: '8px 4px',
-              fontSize: '0.9rem',
-              fontWeight: '700',
-              color: activeTab === 'recommendations' ? '#2563eb' : '#64748b',
-              borderBottom: activeTab === 'recommendations' ? '2px solid #2563eb' : '2px solid transparent',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: activeTab === 'recommendations' ? '#ffffff' : 'transparent',
+              border: '1.5px solid',
+              borderColor: activeTab === 'recommendations' ? 'var(--border-structural)' : 'transparent',
+              borderBottom: activeTab === 'recommendations' ? '2px solid #ffffff' : 'none',
+              borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+              padding: '8px 14px',
+              fontSize: '0.88rem',
+              fontWeight: '800',
+              color: activeTab === 'recommendations' ? 'var(--primary)' : 'var(--ink-muted)',
               cursor: 'pointer',
-              marginBottom: '-1px',
+              marginBottom: '-2px',
             }}
           >
-            ⚡ AI Recommendations (M4)
+            <IconSpark size={15} />
+            <span>AI Recommendations</span>
           </button>
         </div>
 
@@ -171,8 +183,12 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
             marginBottom: '1rem',
             fontSize: '0.85rem',
             fontWeight: '600',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
           }}>
-            ✓ {inviteSuccessMsg}
+            <IconCheck size={14} color="#059669" />
+            <span>{inviteSuccessMsg}</span>
           </div>
         )}
 
@@ -181,17 +197,14 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
           {project?.positions?.map((pos) => (
             <span
               key={pos.specialty}
+              className="geo-tag"
               style={{
-                fontSize: '0.8rem',
-                padding: '4px 10px',
-                borderRadius: '6px',
                 background: pos.remaining === 0 ? '#fef2f2' : '#eff6ff',
                 color: pos.remaining === 0 ? '#b91c1c' : '#1d4ed8',
-                border: `1px solid ${pos.remaining === 0 ? '#fecaca' : '#bfdbfe'}`,
-                fontWeight: '600',
+                borderColor: pos.remaining === 0 ? '#fecaca' : '#bfdbfe',
               }}
             >
-              {pos.specialty}: {pos.filledCount}/{pos.headcount} {pos.remaining === 0 ? '(Filled - R3)' : `(${pos.remaining} seat remaining)`}
+              {pos.specialty}: {pos.filledCount}/{pos.headcount} {pos.remaining === 0 ? '(Filled)' : `(${pos.remaining} remaining)`}
             </span>
           ))}
         </div>
@@ -199,11 +212,13 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
         {/* Tab 1: Received Applicants */}
         {activeTab === 'applicants' && (
           loading ? (
-            <p style={{ color: '#64748b', textAlign: 'center', padding: '2rem' }}>Loading applicants...</p>
+            <p style={{ color: 'var(--ink-muted)', textAlign: 'center', padding: '2rem' }}>Loading applicants...</p>
           ) : applications.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
-              <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>👥</span>
-              <p style={{ color: '#64748b', fontSize: '0.95rem', margin: 0 }}>No applicants have applied to this project yet.</p>
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: 'var(--radius-sm)', border: '1.5px dashed var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+                <IconEmptyDraft size={44} color="#94a3b8" />
+              </div>
+              <p style={{ color: 'var(--ink-muted)', fontSize: '0.95rem', margin: 0 }}>No applicants have applied to this project yet.</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -212,39 +227,35 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                   key={app.id}
                   style={{
                     background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '10px',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 'var(--radius-sm)',
                     padding: '1.25rem',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     gap: '1rem',
-                    boxShadow: 'var(--shadow-sm)',
+                    boxShadow: 'var(--shadow-geo-sm)',
                   }}
                 >
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', marginBottom: '0.4rem' }}>
-                      <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>Position: {app.specialty}</span>
-                      <span style={{
-                        fontSize: '0.75rem',
-                        padding: '2px 8px',
-                        borderRadius: '999px',
-                        fontWeight: '600',
+                      <span style={{ fontWeight: '800', fontSize: '0.95rem', color: 'var(--ink)' }}>Position: {app.specialty}</span>
+                      <span className="geo-tag" style={{
                         background: app.status === 'Accepted' ? '#ecfdf5' : '#fffbeb',
                         color: app.status === 'Accepted' ? '#059669' : '#b45309',
-                        border: `1px solid ${app.status === 'Accepted' ? '#a7f3d0' : '#fde68a'}`,
+                        borderColor: app.status === 'Accepted' ? '#a7f3d0' : '#fde68a',
                       }}>
-                        {app.status === 'Accepted' ? '✓ Accepted Member' : app.status}
+                        {app.status === 'Accepted' ? 'Accepted Member' : app.status}
                       </span>
                     </div>
 
-                    <p style={{ fontSize: '0.8rem', color: '#64748b', margin: '0.2rem 0' }}>
-                      Student ID: <code style={{ color: '#2563eb', background: '#eff6ff', padding: '1px 6px', borderRadius: '4px' }}>{app.studentId}</code>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', margin: '0.2rem 0' }}>
+                      Student ID: <code style={{ color: 'var(--primary)', background: '#eff6ff', padding: '1px 6px', borderRadius: '2px', fontFamily: 'var(--font-mono)' }}>{app.studentId}</code>
                     </p>
 
                     {app.notes && (
-                      <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.35rem', fontStyle: 'italic', margin: '0.35rem 0 0 0' }}>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', marginTop: '0.35rem', fontStyle: 'italic', margin: '0.35rem 0 0 0' }}>
                         "{app.notes}"
                       </p>
                     )}
@@ -260,17 +271,21 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                           specialty: app.specialty,
                         })}
                         style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
                           padding: '0.45rem 0.85rem',
-                          borderRadius: '6px',
-                          background: '#f8fafc',
-                          border: '1px solid #cbd5e1',
-                          color: '#2563eb',
+                          borderRadius: 'var(--radius-sm)',
+                          background: '#ffffff',
+                          border: '1px solid var(--border)',
+                          color: 'var(--primary)',
                           fontSize: '0.85rem',
-                          fontWeight: '600',
+                          fontWeight: '700',
                           cursor: 'pointer',
                         }}
                       >
-                        💬 Message
+                        <IconMessages size={14} />
+                        <span>Message</span>
                       </button>
                     )}
 
@@ -307,7 +322,7 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                             boxShadow: '0 2px 6px rgba(5, 150, 105, 0.25)',
                           }}
                         >
-                          Accept Member (R3)
+                          Accept Member
                         </button>
                       </>
                     )}
@@ -318,14 +333,16 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
           )
         )}
 
-        {/* Tab 2: AI Candidate Recommendations (Rule R4) */}
+        {/* Tab 2: AI Candidate Recommendations */}
         {activeTab === 'recommendations' && (
           loading ? (
-            <p style={{ color: '#64748b', textAlign: 'center', padding: '2rem' }}>Computing explainable AI recommendations...</p>
+            <p style={{ color: 'var(--ink-muted)', textAlign: 'center', padding: '2rem' }}>Computing explainable AI recommendations...</p>
           ) : candidates.length === 0 ? (
-            <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: '12px', border: '1px dashed #cbd5e1' }}>
-              <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '0.5rem' }}>✨</span>
-              <p style={{ color: '#64748b', fontSize: '0.95rem', margin: 0 }}>No matching candidates found right now.</p>
+            <div style={{ textAlign: 'center', padding: '3rem 1rem', background: '#f8fafc', borderRadius: 'var(--radius-sm)', border: '1.5px dashed var(--border)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+                <IconEmptyDraft size={44} color="#94a3b8" />
+              </div>
+              <p style={{ color: 'var(--ink-muted)', fontSize: '0.95rem', margin: 0 }}>No matching candidates found right now.</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
@@ -334,25 +351,25 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                   key={cand.id}
                   style={{
                     background: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '10px',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 'var(--radius-sm)',
                     padding: '1.25rem',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexWrap: 'wrap',
                     gap: '1rem',
-                    boxShadow: 'var(--shadow-sm)',
+                    boxShadow: 'var(--shadow-geo-sm)',
                   }}
                 >
                   <div style={{ flex: 1, minWidth: '240px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.4rem', flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: '800', fontSize: '1.05rem', color: '#0f172a' }}>{cand.name}</span>
+                      <span style={{ fontWeight: '800', fontSize: '1.05rem', color: 'var(--ink)' }}>{cand.name}</span>
                       <MatchScoreBadge match={match} />
                     </div>
 
-                    <p style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.4rem', margin: '0 0 0.4rem 0' }}>
-                      Specialty: <strong style={{ color: '#0f172a' }}>{cand.profile?.specialty || 'Generalist'}</strong> · Availability: {cand.profile?.weeklyAvailability || 10}h/w · Timezone: {cand.profile?.timezone || 'UTC'}
+                    <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', marginBottom: '0.4rem', margin: '0 0 0.4rem 0' }}>
+                      Specialty: <strong style={{ color: 'var(--ink)' }}>{cand.profile?.specialty || 'Generalist'}</strong> · Availability: {cand.profile?.weeklyAvailability || 10}h/w · Timezone: {cand.profile?.timezone || 'UTC'}
                     </p>
 
                     {cand.profile?.skills?.length > 0 && (
@@ -360,14 +377,11 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                         {cand.profile.skills.map((skill) => (
                           <span
                             key={skill}
+                            className="geo-tag"
                             style={{
                               background: '#eff6ff',
-                              border: '1px solid #bfdbfe',
+                              borderColor: '#bfdbfe',
                               color: '#1d4ed8',
-                              padding: '2px 8px',
-                              borderRadius: '4px',
-                              fontSize: '0.75rem',
-                              fontWeight: '500',
                             }}
                           >
                             {skill}
@@ -387,17 +401,21 @@ export function ManageApplicantsModal({ project, onClose, onApplicantDecided, on
                           specialty: cand.profile?.specialty || 'General',
                         })}
                         style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
                           padding: '0.45rem 0.85rem',
-                          borderRadius: '6px',
-                          background: '#f8fafc',
-                          border: '1px solid #cbd5e1',
-                          color: '#2563eb',
+                          borderRadius: 'var(--radius-sm)',
+                          background: '#ffffff',
+                          border: '1px solid var(--border)',
+                          color: 'var(--primary)',
                           fontSize: '0.85rem',
-                          fontWeight: '600',
+                          fontWeight: '700',
                           cursor: 'pointer',
                         }}
                       >
-                        💬 Message
+                        <IconMessages size={14} />
+                        <span>Message</span>
                       </button>
                     )}
                     <button

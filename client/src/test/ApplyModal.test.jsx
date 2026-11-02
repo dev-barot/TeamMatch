@@ -61,7 +61,7 @@ describe('ApplyModal — Apply button states', () => {
     expect(screen.getByRole('option', { name: /Frontend/i })).toBeInTheDocument();
   });
 
-  it('Close (✕) button has accessible aria-label and calls onClose', () => {
+  it('Close button has accessible aria-label and calls onClose', () => {
     render(
       <ApplyModal project={mockProject} currentUser={mockUserVerified} onClose={onClose} onSuccess={onSuccess} />,
     );
