@@ -1,8 +1,8 @@
 import React from 'react';
+import { IconEmptyDraft, IconWarning } from './Icons.jsx';
 
 /**
  * LoadingSpinner — universal loading state component.
- * Used across every list and data-fetching component (M7 step 4).
  */
 export function LoadingSpinner({ size = 'md', label = 'Loading…', inline = false }) {
   const dim = size === 'sm' ? 20 : size === 'lg' ? 48 : 32;
@@ -15,7 +15,7 @@ export function LoadingSpinner({ size = 'md', label = 'Loading…', inline = fal
     justifyContent: 'center',
     gap: '0.75rem',
     padding: inline ? '0' : '3rem 1rem',
-    color: 'var(--text-dim)',
+    color: 'var(--ink-muted)',
     fontSize: '0.875rem',
   };
 
@@ -38,7 +38,8 @@ export function LoadingSpinner({ size = 'md', label = 'Loading…', inline = fal
 /**
  * EmptyState — shown when a list/query returns zero results.
  */
-export function EmptyState({ icon = '📭', title, message, action }) {
+export function EmptyState({ icon, title, message, action }) {
+  const renderedIcon = icon || <IconEmptyDraft size={48} color="#94a3b8" />;
   return (
     <div style={{
       display: 'flex',
@@ -50,12 +51,14 @@ export function EmptyState({ icon = '📭', title, message, action }) {
       gap: '0.75rem',
       animation: 'fadeIn 0.3s ease',
     }}>
-      <span style={{ fontSize: '3rem', lineHeight: 1 }}>{icon}</span>
+      <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+        {renderedIcon}
+      </div>
       {title && (
-        <p style={{ fontWeight: 700, fontSize: '1.05rem', color: 'var(--text-main)' }}>{title}</p>
+        <p style={{ fontWeight: 800, fontSize: '1.05rem', color: 'var(--ink)' }}>{title}</p>
       )}
       {message && (
-        <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', maxWidth: '28ch', lineHeight: 1.6 }}>
+        <p style={{ color: 'var(--ink-muted)', fontSize: '0.9rem', maxWidth: '32ch', lineHeight: 1.6 }}>
           {message}
         </p>
       )}
@@ -81,16 +84,16 @@ export function ErrorBanner({ message, onRetry }) {
         gap: '1rem',
         padding: '1rem 1.25rem',
         background: '#fef2f2',
-        border: '1px solid #fecaca',
-        borderRadius: 'var(--radius-md)',
+        border: '1.5px solid #fecaca',
+        borderRadius: 'var(--radius-sm)',
         color: '#b91c1c',
         fontSize: '0.9rem',
-        fontWeight: '500',
+        fontWeight: '600',
         flexWrap: 'wrap',
         animation: 'fadeIn 0.25s ease',
       }}>
       <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <span aria-hidden="true">⚠️</span>
+        <IconWarning size={16} color="#b91c1c" />
         {message || 'Something went wrong. Please try again.'}
       </span>
       {onRetry && (
@@ -98,16 +101,16 @@ export function ErrorBanner({ message, onRetry }) {
           onClick={onRetry}
           style={{
             padding: '6px 14px',
-            borderRadius: 'var(--radius-md)',
-            background: 'rgba(239,68,68,0.2)',
-            border: '1px solid rgba(239,68,68,0.4)',
-            color: '#fca5a5',
-            fontWeight: 600,
+            borderRadius: 'var(--radius-sm)',
+            background: '#ffffff',
+            border: '1px solid #fca5a5',
+            color: '#b91c1c',
+            fontWeight: 700,
             fontSize: '0.82rem',
             cursor: 'pointer',
-            minHeight: '44px',
+            minHeight: '36px',
           }}>
-          ↻ Retry
+          Retry
         </button>
       )}
     </div>

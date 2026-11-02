@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IconMessages } from './Icons.jsx';
 
 /**
  * FeedbackWidget — M7 step 7.
@@ -17,15 +18,15 @@ export function FeedbackWidget() {
       {expanded && (
         <div style={{
           marginBottom: '0.75rem',
-          background: 'var(--bg-card)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-lg)',
+          background: '#ffffff',
+          border: '2px solid var(--border-structural)',
+          borderRadius: 'var(--radius-sm)',
           padding: '1rem',
-          width: '220px',
-          boxShadow: 'var(--shadow-lg)',
+          width: '240px',
+          boxShadow: 'var(--shadow-geo)',
           animation: 'slideUp 0.2s ease',
         }}>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)', marginBottom: '0.75rem', lineHeight: 1.5 }}>
             Found a bug or have a suggestion? We'd love to hear from you.
           </p>
           <a
@@ -34,17 +35,13 @@ export function FeedbackWidget() {
             rel="noopener noreferrer"
             id="feedback-link"
             onClick={() => setExpanded(false)}
+            className="btn-primary"
             style={{
               display: 'block',
               textAlign: 'center',
               padding: '8px 16px',
-              borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
-              color: '#fff',
-              fontWeight: 700,
-              fontSize: '0.875rem',
+              fontSize: '0.85rem',
               textDecoration: 'none',
-              boxShadow: '0 4px 12px rgba(99,102,241,0.35)',
             }}>
             Share Feedback →
           </a>
@@ -58,23 +55,23 @@ export function FeedbackWidget() {
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
-          padding: '10px 16px',
-          borderRadius: 'var(--radius-full)',
-          background: 'linear-gradient(135deg, var(--primary), var(--secondary))',
+          gap: '8px',
+          padding: '8px 16px',
+          borderRadius: 'var(--radius-sm)',
+          background: 'var(--ink)',
           color: '#fff',
           fontWeight: 700,
-          fontSize: '0.82rem',
-          boxShadow: '0 4px 16px rgba(99,102,241,0.4)',
-          border: 'none',
+          fontSize: '0.84rem',
+          boxShadow: 'var(--shadow-geo-sm)',
+          border: '1.5px solid var(--ink)',
           cursor: 'pointer',
-          transition: 'transform 0.15s, box-shadow 0.15s',
-          minHeight: '44px',
+          transition: 'all 0.15s ease',
+          minHeight: '40px',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 24px rgba(99,102,241,0.5)'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 16px rgba(99,102,241,0.4)'; }}
+        onMouseEnter={(e) => { e.currentTarget.style.transform = 'translate(-1px, -1px)'; e.currentTarget.style.boxShadow = '3px 3px 0px rgba(15, 23, 42, 0.4)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'var(--shadow-geo-sm)'; }}
       >
-        <span aria-hidden="true">💬</span>
+        <IconMessages size={16} color="#ffffff" />
         <span className="hide-mobile">Feedback</span>
       </button>
     </div>
