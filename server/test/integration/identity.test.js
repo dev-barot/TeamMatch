@@ -163,4 +163,36 @@ describe('Integration: Identity API (M1)', () => {
     const res = await request(app).get('/students/me');
     expect(res.status).toBe(401);
   });
+
+  it('sends 4-digit PIN on signup and auto-approves account on verification', async () => {
+    // 1. Sign up
+    const res = await request(app)
+      .post('/auth/signup')
+      .send({
+        name: 'David Developer',
+        email: 'david@uni.edu',
+        password: 'password123',
+      });
+    expect(res.status).toBe(201);
+
+    // 2. 4-digit PIN dispatched
+    const lastEmail = mailer.sentEmails[mailer.sentEmails.length - 1];
+    expect(lastEmail.token).toMatch(/^\d{4}$/);
+
+    // 3. Resend code dispatches new 4-digit PIN
+    const resendRes = await request(app)
+      .post('/auth/resend-code')
+      .send({ email: 'david@uni.edu' });
+    expect(resendRes.status).toBe(200);
+
+    const resentEmail = mailer.sentEmails[mailer.sentEmails.length - 1];
+    expect(resentEmail.token).toMatch(/^\d{4}$/);
+
+    // 4. Verify with 4-digit PIN
+    const verifyRes = await request(app)
+      .post('/auth/verify-email')
+      .send({ email: 'david@uni.edu', token: resentEmail.token });
+    expect(verifyRes.status).toBe(200);
+    expect(verifyRes.body.student.isEmailVerified).toBe(true);
+  });
 });

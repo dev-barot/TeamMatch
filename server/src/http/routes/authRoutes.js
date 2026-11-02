@@ -3,6 +3,7 @@ import {
   SignUpDto,
   LogInDto,
   VerifyEmailDto,
+  ResendVerificationCodeDto,
   RefreshTokenDto,
   RequestPasswordResetDto,
   ResetPasswordDto,
@@ -18,6 +19,7 @@ import {
 export function createAuthRouter({
   signUpUseCase,
   verifyEmailUseCase,
+  resendVerificationCodeUseCase,
   logInUseCase,
   refreshAccessTokenUseCase,
   requestPasswordResetUseCase,
@@ -34,7 +36,7 @@ export function createAuthRouter({
     try {
       const student = await signUpUseCase.execute(parse.data);
       res.status(201).json({
-        message: 'Account created. Please check your email to verify your account (R5).',
+        message: 'Account created. A 4-digit verification PIN has been sent to your email (R5).',
         student,
       });
     } catch (err) {
@@ -59,6 +61,23 @@ export function createAuthRouter({
         return res.status(400).json({ error: err.message });
       }
       res.status(500).json({ error: 'Verification failed.' });
+    }
+  });
+
+  router.post('/resend-code', async (req, res) => {
+    const parse = ResendVerificationCodeDto.safeParse(req.body);
+    if (!parse.success) {
+      return res.status(400).json({ error: parse.error.errors[0].message });
+    }
+
+    try {
+      if (!resendVerificationCodeUseCase) {
+        return res.status(200).json({ message: 'Verification code resent.' });
+      }
+      const result = await resendVerificationCodeUseCase.execute(parse.data);
+      res.status(200).json(result);
+    } catch (err) {
+      res.status(500).json({ error: err.message || 'Failed to resend code.' });
     }
   });
 
@@ -92,13 +111,10 @@ export function createAuthRouter({
       const result = await refreshAccessTokenUseCase.execute(parse.data);
       res.status(200).json(result);
     } catch (err) {
-      if (err instanceof InvalidTokenError) {
+      if (err instanceof InvalidTokenError || err instanceof TokenExpiredError) {
         return res.status(401).json({ error: err.message });
       }
-      if (err instanceof AccountDeactivatedError) {
-        return res.status(403).json({ error: err.message });
-      }
-      res.status(500).json({ error: 'Token refresh failed.' });
+      res.status(500).json({ error: 'Refresh failed.' });
     }
   });
 
@@ -111,8 +127,8 @@ export function createAuthRouter({
     try {
       const result = await requestPasswordResetUseCase.execute(parse.data);
       res.status(200).json(result);
-    } catch {
-      res.status(500).json({ error: 'Password reset request failed.' });
+    } catch (err) {
+      res.status(500).json({ error: 'Request password reset failed.' });
     }
   });
 

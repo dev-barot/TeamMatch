@@ -17,7 +17,12 @@ export const LogInDto = z.object({
 });
 
 export const VerifyEmailDto = z.object({
-  token: z.string().min(1, 'Token is required'),
+  token: z.string().min(1, 'Verification PIN is required'),
+  email: z.string().email().optional(),
+});
+
+export const ResendVerificationCodeDto = z.object({
+  email: z.string().email('Invalid email address'),
 });
 
 export const RefreshTokenDto = z.object({

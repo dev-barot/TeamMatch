@@ -13,8 +13,10 @@ export function createMessagingRouter({
   listConversationsUseCase,
   listMessagesUseCase,
   requireAuth,
+  requireVerified,
 }) {
   const router = Router();
+  const verifyGate = requireVerified || ((_req, _res, next) => next());
 
   // GET /conversations - List conversations for the logged in student
   router.get('/', requireAuth, async (req, res) => {
@@ -28,8 +30,8 @@ export function createMessagingRouter({
     }
   });
 
-  // POST /conversations - Get or start a conversation with another student
-  router.post('/', requireAuth, async (req, res) => {
+  // POST /conversations - Get or start a conversation with another student (Requires verification R5)
+  router.post('/', requireAuth, verifyGate, async (req, res) => {
     const parse = CreateConversationDto.safeParse(req.body);
     if (!parse.success) {
       return res.status(400).json({ error: parse.error.errors[0].message });
@@ -70,30 +72,29 @@ export function createMessagingRouter({
     }
   });
 
-  // POST /conversations/:id/messages - Send a message in a conversation
-  router.post('/:id/messages', requireAuth, async (req, res) => {
+  // POST /conversations/:id/messages - Send a message in a conversation (Requires verification R5)
+  router.post('/:id/messages', requireAuth, verifyGate, async (req, res) => {
     const parse = SendMessageDto.safeParse(req.body);
     if (!parse.success) {
       return res.status(400).json({ error: parse.error.errors[0].message });
     }
 
     try {
-      const content = parse.data.content || parse.data.body;
       const message = await sendMessageUseCase.execute({
         conversationId: req.params.id,
         senderId: req.user.id,
-        content,
+        content: parse.data.content,
       });
       res.status(201).json(message.toJSON());
     } catch (err) {
-      if (err instanceof ConversationNotFoundError) {
-        return res.status(404).json({ error: err.message });
+      if (err instanceof InvalidMessageContentError) {
+        return res.status(400).json({ error: err.message });
       }
       if (err instanceof UnauthorizedConversationActionError) {
         return res.status(403).json({ error: err.message });
       }
-      if (err instanceof InvalidMessageContentError) {
-        return res.status(400).json({ error: err.message });
+      if (err instanceof ConversationNotFoundError) {
+        return res.status(404).json({ error: err.message });
       }
       res.status(500).json({ error: err.message || 'Internal server error' });
     }

@@ -16,7 +16,7 @@ import { requireAdmin } from './middleware/requireAdmin.js';
 
 import { BcryptPasswordHasher } from '../infrastructure/crypto/BcryptPasswordHasher.js';
 import { JwtTokenSigner } from '../infrastructure/crypto/JwtTokenSigner.js';
-import { ConsoleMailer } from '../infrastructure/mail/ConsoleMailer.js';
+import { SmtpMailer } from '../infrastructure/mail/SmtpMailer.js';
 import { InMemoryStudentRepository } from '../infrastructure/mongo/InMemoryStudentRepository.js';
 import { InMemoryProjectRepository } from '../infrastructure/mongo/InMemoryProjectRepository.js';
 import { InMemoryApplicationRepository } from '../infrastructure/mongo/InMemoryApplicationRepository.js';
@@ -29,6 +29,7 @@ import { Clock } from '../ports/Clock.js';
 
 import { SignUp } from '../application/identity/SignUp.js';
 import { VerifyEmail } from '../application/identity/VerifyEmail.js';
+import { ResendVerificationCode } from '../application/identity/ResendVerificationCode.js';
 import { LogIn } from '../application/identity/LogIn.js';
 import { RefreshAccessToken } from '../application/identity/RefreshAccessToken.js';
 import { RequestPasswordReset } from '../application/identity/RequestPasswordReset.js';
@@ -97,7 +98,7 @@ export function createApp(customDeps = {}) {
     accessSecret: process.env.JWT_ACCESS_SECRET || 'access_secret_test',
     refreshSecret: process.env.JWT_REFRESH_SECRET || 'refresh_secret_test',
   });
-  const mailer = customDeps.mailer || new ConsoleMailer();
+  const mailer = customDeps.mailer || new SmtpMailer();
   const clock = customDeps.clock || new Clock();
 
   // Application use cases: Identity
@@ -110,6 +111,12 @@ export function createApp(customDeps = {}) {
 
   const verifyEmailUseCase = new VerifyEmail({
     studentRepository: studentRepo,
+    clock,
+  });
+
+  const resendVerificationCodeUseCase = new ResendVerificationCode({
+    studentRepository: studentRepo,
+    mailer,
     clock,
   });
 
@@ -314,6 +321,7 @@ export function createApp(customDeps = {}) {
   app.use('/auth', createAuthRouter({
     signUpUseCase,
     verifyEmailUseCase,
+    resendVerificationCodeUseCase,
     logInUseCase,
     refreshAccessTokenUseCase,
     requestPasswordResetUseCase,
@@ -356,6 +364,7 @@ export function createApp(customDeps = {}) {
     listConversationsUseCase,
     listMessagesUseCase,
     requireAuth,
+    requireVerified,
   }));
   app.use('/notifications', createNotificationRouter({
     listNotificationsUseCase,
