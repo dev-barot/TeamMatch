@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { studentApi } from '../../api/studentApi.js';
+import { IconClose, IconCheck, IconWarning } from '../../components/ui/Icons.jsx';
 
 export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
   const [profile, setProfile] = useState({
@@ -74,9 +75,9 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
     setErrorMessage(null);
 
     try {
-      // Calls PATCH /students/:id/profile (Rule R2 guarded)
+      // Calls PATCH /students/:id/profile
       const updated = await studentApi.updateProfile(currentUser.id, profile);
-      setStatusMessage('Profile updated successfully (Guarded by Rule R2).');
+      setStatusMessage('Profile updated successfully.');
       if (onProfileUpdated) {
         onProfileUpdated(updated);
       }
@@ -94,39 +95,44 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
           <div>
             <h2 style={{ fontSize: '1.35rem', fontWeight: '800', color: '#0f172a' }}>Student Profile</h2>
             <p style={{ fontSize: '0.85rem', color: '#475569' }}>
-              Matching-relevant attributes for Projects & Teams (Guarded by Rule R2)
+              Matching-relevant attributes for Projects & Teams
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close profile editor"
             style={{
-              padding: '0.4rem 0.6rem',
-              color: '#64748b',
-              fontSize: '1.25rem',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border)',
               borderRadius: 'var(--radius-sm)',
+              color: 'var(--ink-muted)',
+              width: '36px',
+              height: '36px',
               cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            ✕
+            <IconClose size={18} />
           </button>
         </div>
 
         {statusMessage && (
           <div style={{
             background: '#ecfdf5',
-            border: '1px solid #a7f3d0',
+            border: '1.5px solid #a7f3d0',
             color: '#059669',
             padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1rem',
             fontSize: '0.85rem',
-            fontWeight: '500',
+            fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
           }}>
-            <span>✓</span>
+            <IconCheck size={14} color="#059669" />
             <span>{statusMessage}</span>
           </div>
         )}
@@ -134,18 +140,18 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
         {errorMessage && (
           <div style={{
             background: '#fef2f2',
-            border: '1px solid #fecaca',
+            border: '1.5px solid #fecaca',
             color: '#b91c1c',
             padding: '0.75rem 1rem',
-            borderRadius: 'var(--radius-md)',
+            borderRadius: 'var(--radius-sm)',
             marginBottom: '1rem',
             fontSize: '0.85rem',
-            fontWeight: '500',
+            fontWeight: '600',
             display: 'flex',
             alignItems: 'center',
             gap: '6px',
           }}>
-            <span>⚠️</span>
+            <IconWarning size={15} color="#b91c1c" />
             <span>{errorMessage}</span>
           </div>
         )}
@@ -401,7 +407,7 @@ export function ProfileEditor({ currentUser, onClose, onProfileUpdated }) {
                   opacity: saving ? 0.7 : 1,
                 }}
               >
-                {saving ? 'Saving...' : 'Save Profile (R2)'}
+                {saving ? 'Saving...' : 'Save Profile'}
               </button>
             </div>
           </form>

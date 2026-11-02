@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { messagingApi } from '../../api/messagingApi.js';
 import { getSocket } from '../../api/socketClient.js';
+import { IconMessages, IconClose } from '../../components/ui/Icons.jsx';
 
 export function ChatModal({
   isOpen,
@@ -193,8 +194,9 @@ export function ChatModal({
               background: '#ffffff',
             }}
           >
-            <span style={{ fontWeight: '700', fontSize: '0.95rem', color: '#0f172a' }}>
-              💬 Messages
+            <span style={{ fontWeight: '800', fontSize: '0.95rem', color: '#0f172a', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <IconMessages size={16} color="var(--primary)" />
+              <span>Messages</span>
             </span>
             <span
               style={{
@@ -288,10 +290,9 @@ export function ChatModal({
                   onClick={onClose}
                   style={{
                     background: '#f8fafc',
-                    border: '1px solid #e2e8f0',
-                    borderRadius: '8px',
+                    border: '1.5px solid var(--border)',
+                    borderRadius: 'var(--radius-sm)',
                     color: '#64748b',
-                    fontSize: '1rem',
                     width: '32px',
                     height: '32px',
                     cursor: 'pointer',
@@ -301,7 +302,7 @@ export function ChatModal({
                   }}
                   title="Close chat"
                 >
-                  ✕
+                  <IconClose size={16} />
                 </button>
               </div>
 
@@ -323,7 +324,7 @@ export function ChatModal({
                   </div>
                 ) : messages.length === 0 ? (
                   <div style={{ textAlign: 'center', color: '#64748b', fontSize: '0.85rem', marginTop: '3rem' }}>
-                    👋 Say hello to begin the conversation!
+                    Say hello to begin the conversation!
                   </div>
                 ) : (
                   messages.map((msg) => {
@@ -439,11 +440,13 @@ export function ChatModal({
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#64748b',
-                gap: '0.5rem',
+                color: 'var(--ink-muted)',
+                gap: '0.75rem',
               }}
             >
-              <span style={{ fontSize: '2.5rem' }}>💬</span>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <IconMessages size={38} color="#94a3b8" />
+              </div>
               <span style={{ fontSize: '0.95rem' }}>Select a conversation to start messaging</span>
             </div>
           )}

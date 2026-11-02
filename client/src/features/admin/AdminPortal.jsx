@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { adminApi } from '../../api/adminApi.js';
+import { IconAdmin, IconUsers, IconFlag, IconCheck, IconHourglass, IconClose } from '../../components/ui/Icons.jsx';
 
 // ─── Small reusable components ───────────────────────────────────────────────
 
@@ -38,8 +39,21 @@ function ReportStatusBadge({ status }) {
       background: isPending ? 'rgba(249,115,22,0.15)' : 'rgba(34,197,94,0.15)',
       color: isPending ? '#fb923c' : '#4ade80',
       border: `1px solid ${isPending ? 'rgba(249,115,22,0.3)' : 'rgba(34,197,94,0.3)'}`,
-      padding: '2px 10px', borderRadius: '999px', fontSize: '0.75rem', fontWeight: 700,
-    }}>{isPending ? '⏳ Pending' : '✓ Reviewed'}</span>
+      padding: '2px 10px', borderRadius: 'var(--radius-sm)', fontSize: '0.75rem', fontWeight: 700,
+      display: 'inline-flex', alignItems: 'center', gap: '4px',
+    }}>
+      {isPending ? (
+        <>
+          <IconHourglass size={11} color="#fb923c" />
+          <span>Pending</span>
+        </>
+      ) : (
+        <>
+          <IconCheck size={11} color="#4ade80" />
+          <span>Reviewed</span>
+        </>
+      )}
+    </span>
   );
 }
 
@@ -166,7 +180,7 @@ function AccountsTab() {
                         background: '#ecfdf5', color: '#059669',
                         border: '1px solid #a7f3d0', cursor: 'pointer',
                       }}>
-                      ✓ Verify (R5)
+                      Verify Student
                     </button>
                   )}
                   {acc.accountType !== 'admin' && acc.isActive && (
@@ -281,8 +295,10 @@ function ReportsTab() {
       {loading && <p style={{ color: 'var(--text-dim)', padding: '1rem' }}>Loading reports…</p>}
       {error && <p style={{ color: '#f87171', padding: '1rem' }}>Error: {error}</p>}
       {!loading && reports.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-dim)' }}>
-          <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>✅</div>
+        <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--ink-muted)' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '0.5rem' }}>
+            <IconCheck size={36} color="#059669" />
+          </div>
           <p>No reports{filter ? ` with status "${filter}"` : ''} found.</p>
         </div>
       )}
@@ -292,32 +308,32 @@ function ReportsTab() {
           <div
             key={report.id}
             style={{
-              background: 'var(--bg-surface)', border: '1px solid var(--border)',
-              borderRadius: '10px', padding: '1.25rem',
-              borderLeft: report.status === 'pending' ? '3px solid #fb923c' : '3px solid #4ade80',
-              transition: 'transform 0.1s',
+              background: '#ffffff', border: '1.5px solid var(--border)',
+              borderRadius: 'var(--radius-sm)', padding: '1.25rem',
+              borderLeft: report.status === 'pending' ? '4px solid #fb923c' : '4px solid #059669',
+              boxShadow: '1px 1px 0px rgba(15, 23, 42, 0.05)',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.5rem' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
                   <ReportStatusBadge status={report.status} />
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>#{report.id.slice(-8)}</span>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--ink-muted)', fontFamily: 'var(--font-mono)' }}>#{report.id.slice(-8)}</span>
                   <span style={{
-                    fontSize: '0.75rem', background: 'rgba(99,102,241,0.15)', color: 'var(--primary)',
-                    padding: '1px 8px', borderRadius: '4px', fontWeight: 600,
+                    fontSize: '0.75rem', background: '#eff6ff', color: 'var(--primary)',
+                    padding: '1px 8px', borderRadius: 'var(--radius-sm)', fontWeight: 700,
                   }}>{report.targetType}</span>
                 </div>
-                <p style={{ fontSize: '0.92rem', color: 'var(--text-main)', marginBottom: '0.4rem', lineHeight: 1.5 }}>
+                <p style={{ fontSize: '0.92rem', color: 'var(--ink)', marginBottom: '0.4rem', lineHeight: 1.5 }}>
                   <strong>Reason:</strong> {report.reason}
                 </p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)' }}>
-                  Target ID: <code style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-muted)' }}>{report.targetId}</code>
+                <p style={{ fontSize: '0.8rem', color: 'var(--ink-muted)' }}>
+                  Target ID: <code style={{ fontFamily: 'var(--font-mono)', color: 'var(--ink)' }}>{report.targetId}</code>
                   {' · '}Filed: {new Date(report.createdAt).toLocaleString()}
                 </p>
                 {report.reviewedByAdminId && (
-                  <p style={{ fontSize: '0.8rem', color: '#4ade80', marginTop: '0.25rem' }}>
-                    ✓ Reviewed at {new Date(report.reviewedAt).toLocaleString()}
+                  <p style={{ fontSize: '0.8rem', color: '#059669', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <IconCheck size={12} color="#059669" /> Reviewed at {new Date(report.reviewedAt).toLocaleString()}
                   </p>
                 )}
               </div>
@@ -327,12 +343,12 @@ function ReportsTab() {
                   disabled={reviewing === report.id}
                   id={`review-report-${report.id}`}
                   style={{
-                    padding: '6px 16px', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 700,
-                    background: 'rgba(34,197,94,0.15)', color: '#4ade80',
-                    border: '1px solid rgba(34,197,94,0.3)', cursor: 'pointer',
+                    padding: '6px 16px', borderRadius: 'var(--radius-sm)', fontSize: '0.85rem', fontWeight: 700,
+                    background: '#ecfdf5', color: '#059669',
+                    border: '1.5px solid #a7f3d0', cursor: 'pointer',
                     opacity: reviewing === report.id ? 0.5 : 1, whiteSpace: 'nowrap',
                   }}>
-                  {reviewing === report.id ? '…' : '✓ Mark Reviewed'}
+                  {reviewing === report.id ? '…' : 'Mark Reviewed'}
                 </button>
               )}
             </div>
@@ -348,43 +364,42 @@ export function AdminPortal({ currentUser, onClose }) {
   const [activeTab, setActiveTab] = useState('accounts');
 
   const tabs = [
-    { id: 'accounts', label: '👥 Accounts' },
-    { id: 'reports', label: '🚩 Reports' },
+    { id: 'accounts', label: 'Accounts', icon: <IconUsers size={16} /> },
+    { id: 'reports', label: 'Reports', icon: <IconFlag size={16} /> },
   ];
 
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 1000,
-      background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
+      background: 'rgba(15, 23, 42, 0.65)', backdropFilter: 'blur(4px)',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '1rem',
     }}>
       <div style={{
-        background: 'var(--bg-card)', border: '1px solid var(--border)',
-        borderRadius: '16px', width: '100%', maxWidth: '960px', maxHeight: '90vh',
-        display: 'flex', flexDirection: 'column', boxShadow: '0 25px 80px rgba(0,0,0,0.6)',
+        background: '#ffffff', border: '2px solid var(--border-structural)',
+        borderRadius: 'var(--radius-sm)', width: '100%', maxWidth: '960px', maxHeight: '90vh',
+        display: 'flex', flexDirection: 'column', boxShadow: 'var(--shadow-geo-lg)',
         overflow: 'hidden',
       }}>
         {/* Header */}
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '1.5rem 2rem', borderBottom: '1px solid var(--border)',
-          background: 'linear-gradient(135deg, rgba(99,102,241,0.08), rgba(34,211,238,0.06))',
+          padding: '1.5rem 2rem', borderBottom: '2px solid var(--border-structural)',
+          background: '#f8fafc',
           flexShrink: 0,
         }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.2rem' }}>
-              <span style={{ fontSize: '1.4rem' }}>🛡️</span>
-              <h2 style={{ fontSize: '1.35rem', fontWeight: 800, letterSpacing: '-0.5px' }}>
+              <IconAdmin size={22} color="var(--primary)" />
+              <h2 style={{ fontSize: '1.35rem', fontWeight: 900, letterSpacing: '-0.5px', color: 'var(--ink)' }}>
                 Admin Moderation Portal
               </h2>
-              <span style={{
-                background: 'rgba(99,102,241,0.2)', color: 'var(--primary)',
-                border: '1px solid rgba(99,102,241,0.4)',
-                padding: '2px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700,
-              }}>ADMIN · R2</span>
+              <span className="geo-tag" style={{
+                background: '#eff6ff', color: 'var(--primary)',
+                borderColor: '#bfdbfe',
+              }}>ADMINISTRATOR</span>
             </div>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            <p style={{ fontSize: '0.85rem', color: 'var(--ink-muted)' }}>
               Logged in as <strong>{currentUser?.name}</strong> ({currentUser?.email})
             </p>
           </div>
@@ -392,19 +407,19 @@ export function AdminPortal({ currentUser, onClose }) {
             onClick={onClose}
             id="admin-portal-close"
             style={{
-              background: 'none', border: 'none', color: 'var(--text-dim)',
-              fontSize: '1.5rem', cursor: 'pointer', lineHeight: 1, padding: '4px 8px',
-              borderRadius: '6px', transition: 'all 0.15s',
+              background: 'none', border: 'none', color: 'var(--ink-muted)',
+              cursor: 'pointer', padding: '6px',
+              borderRadius: 'var(--radius-sm)', display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
-            onMouseEnter={(e) => { e.target.style.background = 'var(--bg-surface)'; e.target.style.color = 'var(--text-main)'; }}
-            onMouseLeave={(e) => { e.target.style.background = 'none'; e.target.style.color = 'var(--text-dim)'; }}
-          >×</button>
+          >
+            <IconClose size={18} />
+          </button>
         </div>
 
         {/* Tabs */}
         <div style={{
-          display: 'flex', gap: '0.25rem', padding: '0.75rem 2rem 0',
-          borderBottom: '1px solid var(--border)', flexShrink: 0,
+          display: 'flex', gap: '0.5rem', padding: '0.75rem 2rem 0',
+          borderBottom: '2px solid var(--border-structural)', flexShrink: 0,
         }}>
           {tabs.map((tab) => (
             <button
@@ -412,13 +427,20 @@ export function AdminPortal({ currentUser, onClose }) {
               onClick={() => setActiveTab(tab.id)}
               id={`admin-tab-${tab.id}`}
               style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                padding: '8px 18px', fontWeight: 700, fontSize: '0.9rem',
-                color: activeTab === tab.id ? 'var(--primary)' : 'var(--text-muted)',
-                borderBottom: activeTab === tab.id ? '2px solid var(--primary)' : '2px solid transparent',
-                transition: 'all 0.15s', marginBottom: '-1px',
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+                background: activeTab === tab.id ? '#ffffff' : 'transparent',
+                border: '1.5px solid',
+                borderColor: activeTab === tab.id ? 'var(--border-structural)' : 'transparent',
+                borderBottom: activeTab === tab.id ? '2px solid #ffffff' : 'none',
+                marginBottom: activeTab === tab.id ? '-2px' : '0',
+                borderRadius: 'var(--radius-sm) var(--radius-sm) 0 0',
+                cursor: 'pointer',
+                padding: '8px 18px', fontWeight: 800, fontSize: '0.88rem',
+                color: activeTab === tab.id ? 'var(--primary)' : 'var(--ink-muted)',
+                transition: 'all 0.15s',
               }}>
-              {tab.label}
+              {tab.icon}
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
