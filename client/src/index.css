@@ -1,56 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..800;1,400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root {
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Schibsted Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
   /* Architectural Light Theme Palette */
-  --bg-canvas: #fafbfc;
-  --bg-surface: #ffffff;
-  --bg-surface-elevated: #ffffff;
-  --bg-card: #ffffff;
-  --bg-card-hover: #fcfdfe;
-  --bg-subtle: #f1f5f9;
-  --bg-accent-blue: #eff6ff;
-  --bg-accent-amber: #fffbeb;
-  --bg-accent-coral: #fff1f2;
-  --bg-accent-green: #ecfdf5;
+  --bg-canvas: #F6F8FB;
+  --bg-surface: #FFFFFF;
+  --bg-surface-elevated: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #FCFDFE;
+  --bg-subtle: #EDF2F7;
+  --bg-accent-blue: #EFF6FF;
+  --bg-accent-amber: #FFFBEB;
+  --bg-accent-coral: #FFF1F2;
+  --bg-accent-green: #ECFDF5;
 
   /* Structural Architectural Line-work */
-  --ink: #0f172a;
-  --ink-secondary: #334155;
-  --ink-muted: #64748b;
-  --ink-faint: #94a3b8;
+  --ink: #0F1B33;
+  --ink-secondary: #2C3B59;
+  --ink-muted: #5A6B87;
+  --ink-faint: #8F9FB8;
 
-  --border-structural: #0f172a;
-  --border: #cbd5e1;
-  --border-subtle: #e2e8f0;
-  --border-focus: #2563eb;
+  --border-structural: #0F1B33;
+  --border: #C9D3E3;
+  --border-subtle: #E2E8F0;
+  --border-focus: #1F4FE0;
 
   /* Bauhaus & Architectural Primary Accents */
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-light: #eff6ff;
+  --primary: #1F4FE0;
+  --primary-hover: #163BB0;
+  --primary-light: #EFF6FF;
 
-  --accent-gold: #f59e0b;
-  --accent-amber: #d97706;
-  --accent-coral: #e11d48;
-  --accent-teal: #0891b2;
-  --accent-emerald: #059669;
+  --accent-gold: #F2A33A;
+  --accent-amber: #F2A33A;
+  --accent-coral: #E11D48;
+  --accent-teal: #0891B2;
+  --accent-emerald: #0E9F6E;
 
   /* Geometric Radius System (clean structural angles) */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
+  --radius-xs: 0px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 2px;
+  --radius-xl: 4px;
   --radius-full: 9999px;
 
   /* Architectural Hard Shadows & Drafting Grids */
-  --shadow-geo-sm: 2px 2px 0px rgba(15, 23, 42, 0.08);
-  --shadow-geo-md: 3px 3px 0px rgba(15, 23, 42, 0.1);
-  --shadow-geo-lg: 5px 5px 0px rgba(15, 23, 42, 0.12);
-  --shadow-geo-primary: 3px 3px 0px #0f172a;
+  --shadow-geo-sm: 2px 2px 0px #0F1B33;
+  --shadow-geo-md: 3px 3px 0px #0F1B33;
+  --shadow-geo-lg: 4px 4px 0px #0F1B33;
+  --shadow-geo-primary: 3px 3px 0px #0F1B33;
 }
 
 * {
@@ -69,9 +69,9 @@ body {
 
   /* Architectural Blueprint Drafting Matrix */
   background-image:
-    radial-gradient(#cbd5e1 1.2px, transparent 1.2px),
-    linear-gradient(to right, rgba(226, 232, 240, 0.5) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(226, 232, 240, 0.5) 1px, transparent 1px);
+    radial-gradient(#C9D3E3 1.2px, transparent 1.2px),
+    linear-gradient(to right, rgba(201, 211, 227, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201, 211, 227, 0.4) 1px, transparent 1px);
   background-size: 24px 24px, 120px 120px, 120px 120px;
   background-position: 0 0, -1px -1px, -1px -1px;
   background-attachment: fixed;
@@ -177,6 +177,157 @@ h3 {
 .btn-secondary:active {
   transform: translate(1px, 1px);
   box-shadow: 1px 1px 0px var(--ink);
+}
+
+/* 45-degree Chamfered Architectural Buttons */
+.chamfer-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ink);
+  padding: 1.5px;
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  box-shadow: 3px 3px 0px var(--ink);
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+}
+.chamfer-btn:hover:not(:disabled) {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px var(--ink);
+}
+.chamfer-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--ink);
+}
+.chamfer-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+.chamfer-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: 1px 1px 0px var(--ink);
+  transform: none;
+}
+.chamfer-btn-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  padding: 0.65rem 1.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+  white-space: nowrap;
+}
+.chamfer-btn-primary .chamfer-btn-inner {
+  background: var(--primary);
+  color: #FFFFFF;
+}
+.chamfer-btn-primary:hover:not(:disabled) .chamfer-btn-inner {
+  background: var(--primary-hover);
+}
+.chamfer-btn-secondary .chamfer-btn-inner {
+  background: #FFFFFF;
+  color: var(--ink);
+}
+.chamfer-btn-secondary:hover:not(:disabled) .chamfer-btn-inner {
+  background: #F6F8FB;
+}
+
+/* Header Navigation Layout & Responsive Breakpoints */
+.nav-desktop-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nav-mobile-trigger {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .nav-desktop-group.is-auth {
+    display: none;
+  }
+  .nav-mobile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+/* Architectural Corner Ticks & Dimension Lines */
+.corner-ticks {
+  position: relative;
+}
+.corner-ticks::before,
+.corner-ticks::after {
+  content: '+';
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  line-height: 1;
+  pointer-events: none;
+  font-weight: 700;
+}
+.corner-ticks::before {
+  top: 4px;
+  left: 4px;
+}
+.corner-ticks::after {
+  bottom: 4px;
+  right: 4px;
+}
+
+.dimension-annotation {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+}
+.dimension-annotation::before,
+.dimension-annotation::after {
+  content: '';
+  height: 1px;
+  width: 16px;
+  background: var(--border);
+}
+
+/* Stagger-in on section entry */
+@keyframes sectionStaggerIn {
+  from {
+    transform: translateX(28px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+.stagger-in {
+  animation: sectionStaggerIn 0.45s cubic-bezier(.77, 0, .18, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stagger-in {
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
 }
 
 /* Architectural Blueprint Badge */
