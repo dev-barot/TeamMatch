@@ -37,6 +37,9 @@ export function DashboardShell({
   const notifMenuRef = useRef(null);
 
   const name = currentUser?.name || 'Dev Barot';
+  const isAdmin = currentUser?.accountType === 'admin' ||
+    currentUser?.email?.toLowerCase() === 'admin@teammatch.edu' ||
+    currentUser?.email?.toLowerCase() === 'admin@teammatch.app';
   const initials = name
     .split(' ')
     .map((n) => n[0])
@@ -349,8 +352,8 @@ export function DashboardShell({
                 <div style={{ fontWeight: '800', fontSize: '0.85rem', color: '#0F1B33', lineHeight: 1.1 }}>
                   {name}
                 </div>
-                <div style={{ fontSize: '0.68rem', fontWeight: '900', color: '#1F4FE0', letterSpacing: '0.04em' }}>
-                  VERIFIED
+                <div style={{ fontSize: '0.68rem', fontWeight: '900', color: isAdmin ? '#B45309' : '#1F4FE0', letterSpacing: '0.04em' }}>
+                  {isAdmin ? 'ADMIN' : 'VERIFIED'}
                 </div>
               </div>
 
@@ -413,7 +416,7 @@ export function DashboardShell({
                 >
                   Edit Profile
                 </button>
-                {currentUser?.accountType === 'admin' && (
+                {isAdmin && (
                   <button
                     onClick={() => {
                       onOpenAdmin();
@@ -632,8 +635,8 @@ export function DashboardShell({
             boxSizing: 'border-box',
           }}
         >
-          {/* PIN Verification Banner if unverified */}
-          {currentUser && !currentUser.isEmailVerified && (
+          {/* PIN Verification Banner if unverified (hidden for admins) */}
+          {currentUser && !currentUser.isEmailVerified && !isAdmin && (
             <div
               style={{
                 background: '#FFFBEB',

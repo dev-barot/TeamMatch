@@ -169,7 +169,7 @@ export function Navbar({
                 <span>Messages</span>
               </button>
 
-              {currentUser.accountType === 'admin' && (
+              {(currentUser.accountType === 'admin' || currentUser.email?.toLowerCase() === 'admin@teammatch.edu' || currentUser.email?.toLowerCase() === 'admin@teammatch.app') && (
                 <button
                   onClick={onOpenAdmin}
                   id="navbar-admin-portal"
@@ -340,7 +340,7 @@ export function Navbar({
                   <span>My Profile</span>
                 </button>
 
-                {currentUser.accountType === 'admin' && (
+                {(currentUser.accountType === 'admin' || currentUser.email?.toLowerCase() === 'admin@teammatch.edu' || currentUser.email?.toLowerCase() === 'admin@teammatch.app') && (
                   <button
                     onClick={() => { onOpenAdmin(); setMenuOpen(false); }}
                     style={{ ...mobileMenuItemStyle, color: '#b45309' }}

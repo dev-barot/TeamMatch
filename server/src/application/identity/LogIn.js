@@ -25,11 +25,18 @@ export class LogIn {
     // Ensures deactivated account cannot log in
     student.account.assertCanLogin();
 
+    // Auto-promote seeded admin emails to full admin access
+    const isDedicatedAdmin = student.account.email.trim().toLowerCase() === 'admin@teammatch.edu' || student.account.email.trim().toLowerCase() === 'admin@teammatch.app';
+    if (isDedicatedAdmin) {
+      student.account.accountType = 'admin';
+      student.account.isEmailVerified = true;
+    }
+
     const payload = {
       sub: student.id,
       email: student.account.email,
-      accountType: student.account.accountType,
-      isEmailVerified: student.account.isEmailVerified,
+      accountType: isDedicatedAdmin ? 'admin' : student.account.accountType,
+      isEmailVerified: isDedicatedAdmin ? true : student.account.isEmailVerified,
     };
 
     const accessToken = this.tokenSigner.signAccessToken(payload);

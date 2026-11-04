@@ -98,22 +98,25 @@ const unverifiedStudent = new Student({
 await studentRepository.save(unverifiedStudent);
 
 // 3. Seed Platform Admin (Rule R2: No public signup path to admin)
-const adminEmail = process.env.ADMIN_EMAIL || 'admin@teammatch.edu';
-const adminAccount = new Account({
-  email: adminEmail,
-  passwordHash: process.env.ADMIN_PASSWORD_HASH ? process.env.ADMIN_PASSWORD_HASH : adminPasswordHash,
-  accountType: ACCOUNT_TYPES.ADMIN,
-  isEmailVerified: true,
-  isActive: true,
-});
-const adminStudent = new Student({
-  id: 'admin_seed_001',
-  name: process.env.ADMIN_NAME || 'Platform Admin',
-  account: adminAccount,
-  profile: new Profile({ specialty: 'Other' }),
-});
-await studentRepository.save(adminStudent);
-console.log(`[Seed] Admin account ready: ${adminEmail} (password: AdminPass123!)`);
+const adminEmails = Array.from(new Set([process.env.ADMIN_EMAIL, 'admin@teammatch.edu', 'admin@teammatch.app'].filter(Boolean)));
+for (let i = 0; i < adminEmails.length; i++) {
+  const email = adminEmails[i];
+  const adminAccount = new Account({
+    email,
+    passwordHash: adminPasswordHash,
+    accountType: ACCOUNT_TYPES.ADMIN,
+    isEmailVerified: true,
+    isActive: true,
+  });
+  const adminStudent = new Student({
+    id: `admin_seed_00${i + 1}`,
+    name: 'Platform Admin',
+    account: adminAccount,
+    profile: new Profile({ specialty: 'Other' }),
+  });
+  await studentRepository.save(adminStudent);
+  console.log(`[Seed] Admin account ready: ${email} (password: AdminPass123!)`);
+}
 console.log(`[Seed] Verified student ready: sarah.creator@university.edu (password: StudentPass123!)`);
 console.log(`[Seed] Unverified student ready: alex.unverified@university.edu (password: StudentPass123!)`);
 

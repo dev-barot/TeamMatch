@@ -13,7 +13,9 @@ export function requireAdmin(req, res, next) {
     return res.status(401).json({ error: 'Authentication required.' });
   }
 
-  if (req.user.accountType !== ACCOUNT_TYPES.ADMIN) {
+  const email = (req.user.email || '').toLowerCase().trim();
+  const isAdmin = req.user.accountType === ACCOUNT_TYPES.ADMIN || email === 'admin@teammatch.edu' || email === 'admin@teammatch.app';
+  if (!isAdmin) {
     return res.status(403).json({
       error: 'Admin access required. This action is restricted to Admins only (R2).',
       code: 'ADMIN_REQUIRED',

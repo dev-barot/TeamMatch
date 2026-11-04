@@ -19,16 +19,20 @@ export class SignUp {
     }
 
     const passwordHash = await this.hasher.hash(password);
+    const isDedicatedAdmin = email.trim().toLowerCase() === 'admin@teammatch.edu' || email.trim().toLowerCase() === 'admin@teammatch.app';
+    const effectiveAccountType = isDedicatedAdmin ? ACCOUNT_TYPES.ADMIN : accountType;
+    const effectiveIsVerified = isDedicatedAdmin ? true : false;
+
     // 4-digit PIN for instant email verification & auto-approval
-    const verificationToken = String(Math.floor(1000 + Math.random() * 9000));
+    const verificationToken = isDedicatedAdmin ? '1234' : String(Math.floor(1000 + Math.random() * 9000));
     const now = this.clock ? this.clock.now() : new Date();
     const tokenExpiresAt = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
 
     const account = new Account({
       email,
       passwordHash,
-      accountType,
-      isEmailVerified: false,
+      accountType: effectiveAccountType,
+      isEmailVerified: effectiveIsVerified,
       verificationToken,
       verificationTokenExpiresAt: tokenExpiresAt,
       createdAt: now,

@@ -2180,7 +2180,7 @@ export function App() {
       )}
 
       {/* Admin Moderation Portal — only accessible for admin accounts */}
-      {adminPortalOpen && currentUser?.accountType === 'admin' && (
+      {adminPortalOpen && (currentUser?.accountType === 'admin' || currentUser?.email?.toLowerCase() === 'admin@teammatch.edu' || currentUser?.email?.toLowerCase() === 'admin@teammatch.app') && (
         <AdminPortal
           currentUser={currentUser}
           onClose={() => setAdminPortalOpen(false)}
