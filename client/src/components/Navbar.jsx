@@ -107,7 +107,7 @@ export function Navbar({
         </div>
 
         {/* Desktop Navigation Group */}
-        <div className="nav-desktop-group">
+        <div className={`nav-desktop-group ${currentUser ? 'is-auth' : ''}`}>
           {currentUser ? (
             <>
               {/* User Identity Chip */}
@@ -219,163 +219,150 @@ export function Navbar({
               </button>
             </>
           ) : (
-            <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <button
                 onClick={() => onOpenAuth('login')}
                 id="nav-login"
-                className="btn-secondary"
-                style={{ minHeight: '38px', padding: '0.45rem 1.1rem' }}
+                className="chamfer-btn chamfer-btn-secondary"
+                aria-label="Log In"
+                style={{ padding: '1px' }}
               >
-                Log In
+                <span className="chamfer-btn-inner" style={{ padding: '0.45rem 1.15rem', fontSize: '0.84rem', fontWeight: 700 }}>
+                  Log In
+                </span>
               </button>
               <button
                 onClick={() => onOpenAuth('signup')}
                 id="nav-signup"
-                className="btn-primary"
-                style={{ minHeight: '38px', padding: '0.45rem 1.3rem' }}
+                className="chamfer-btn chamfer-btn-primary"
+                aria-label="Get Started"
+                style={{ padding: '1px' }}
               >
-                Get Started
+                <span className="chamfer-btn-inner" style={{ padding: '0.45rem 1.25rem', fontSize: '0.84rem', fontWeight: 700 }}>
+                  Get Started
+                </span>
               </button>
-            </>
-          )}
-        </div>
-
-        {/* Mobile Navigation Trigger (Only active on small viewports) */}
-        <div className="nav-mobile-trigger" ref={menuRef}>
-          {currentUser && <NotificationBell onNavigateToLink={onNavigateToLink} />}
-          <button
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            id="hamburger-btn"
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '4px',
-              padding: '8px',
-              borderRadius: 'var(--radius-sm)',
-              background: menuOpen ? '#f1f5f9' : '#ffffff',
-              border: '1.5px solid var(--border-structural)',
-              minHeight: '38px',
-              minWidth: '38px',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-            }}
-          >
-            <span style={{ width: '18px', height: '2px', background: 'var(--ink)', transition: 'all 0.2s', transform: menuOpen ? 'translateY(6px) rotate(45deg)' : 'none' }} />
-            <span style={{ width: '18px', height: '2px', background: 'var(--ink)', opacity: menuOpen ? 0 : 1 }} />
-            <span style={{ width: '18px', height: '2px', background: 'var(--ink)', transition: 'all 0.2s', transform: menuOpen ? 'translateY(-6px) rotate(-45deg)' : 'none' }} />
-          </button>
-
-          {/* Mobile Drawer */}
-          {menuOpen && (
-            <div
-              id="mobile-menu"
-              role="dialog"
-              aria-label="Mobile Navigation"
-              style={{
-                position: 'absolute',
-                top: '100%',
-                right: '1rem',
-                left: '1rem',
-                background: '#ffffff',
-                border: '2px solid var(--ink)',
-                borderRadius: 'var(--radius-sm)',
-                boxShadow: 'var(--shadow-geo-lg)',
-                padding: '0.75rem',
-                zIndex: 100,
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.35rem',
-              }}
-            >
-              {currentUser ? (
-                <>
-                  <div style={{
-                    padding: '0.5rem 0.75rem',
-                    borderBottom: '1px solid var(--border)',
-                    fontSize: '0.82rem',
-                    color: 'var(--ink-muted)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
-                    <span>Signed in as <strong style={{ color: 'var(--ink)' }}>{currentUser.name}</strong></span>
-                    <span className="geo-tag" style={{
-                      background: currentUser.isEmailVerified ? '#ecfdf5' : '#fffbeb',
-                      color: currentUser.isEmailVerified ? '#059669' : '#b45309',
-                    }}>
-                      {currentUser.isEmailVerified ? 'VERIFIED' : 'UNVERIFIED'}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => { onOpenMyApplications(); setMenuOpen(false); }}
-                    style={mobileMenuItemStyle}
-                  >
-                    <IconApplications size={16} color="var(--primary)" />
-                    <span>Applications</span>
-                  </button>
-
-                  <button
-                    onClick={() => { if (onOpenMessages) onOpenMessages(); setMenuOpen(false); }}
-                    style={mobileMenuItemStyle}
-                  >
-                    <IconMessages size={16} color="var(--primary)" />
-                    <span>Messages</span>
-                  </button>
-
-                  <button
-                    onClick={() => { onOpenProfile(); setMenuOpen(false); }}
-                    style={mobileMenuItemStyle}
-                  >
-                    <IconProfile size={16} color="var(--ink)" />
-                    <span>My Profile</span>
-                  </button>
-
-                  {currentUser.accountType === 'admin' && (
-                    <button
-                      onClick={() => { onOpenAdmin(); setMenuOpen(false); }}
-                      style={{ ...mobileMenuItemStyle, color: '#b45309' }}
-                    >
-                      <IconAdmin size={16} color="#d97706" />
-                      <span>Admin Portal</span>
-                    </button>
-                  )}
-
-                  <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.25rem', paddingTop: '0.25rem' }}>
-                    <button
-                      onClick={() => { onLogout(); setMenuOpen(false); }}
-                      style={{ ...mobileMenuItemStyle, color: '#dc2626' }}
-                    >
-                      <IconLogout size={16} />
-                      <span>Log Out</span>
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => { onOpenAuth('login'); setMenuOpen(false); }}
-                    className="btn-secondary"
-                    style={{ width: '100%', marginBottom: '0.5rem' }}
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => { onOpenAuth('signup'); setMenuOpen(false); }}
-                    className="btn-primary"
-                    style={{ width: '100%' }}
-                  >
-                    Get Started Free
-                  </button>
-                </>
-              )}
             </div>
           )}
         </div>
+
+        {/* Mobile Navigation Trigger (Only active for authenticated users on small viewports) */}
+        {currentUser && (
+          <div className="nav-mobile-trigger" ref={menuRef}>
+            <NotificationBell onNavigateToLink={onNavigateToLink} />
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              id="hamburger-btn"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                padding: '8px',
+                borderRadius: 'var(--radius-sm)',
+                background: menuOpen ? '#f1f5f9' : '#ffffff',
+                border: '1.5px solid var(--border-structural)',
+                minHeight: '38px',
+                minWidth: '38px',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+              }}
+            >
+              <span style={{ width: '18px', height: '2px', background: 'var(--ink)', transition: 'all 0.2s', transform: menuOpen ? 'translateY(6px) rotate(45deg)' : 'none' }} />
+              <span style={{ width: '18px', height: '2px', background: 'var(--ink)', opacity: menuOpen ? 0 : 1 }} />
+              <span style={{ width: '18px', height: '2px', background: 'var(--ink)', transition: 'all 0.2s', transform: menuOpen ? 'translateY(-6px) rotate(-45deg)' : 'none' }} />
+            </button>
+
+            {/* Mobile Drawer */}
+            {menuOpen && (
+              <div
+                id="mobile-menu"
+                role="dialog"
+                aria-label="Mobile Navigation"
+                style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: '1rem',
+                  left: '1rem',
+                  background: '#ffffff',
+                  border: '2px solid var(--ink)',
+                  borderRadius: 'var(--radius-sm)',
+                  boxShadow: 'var(--shadow-geo-lg)',
+                  padding: '0.75rem',
+                  zIndex: 100,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.35rem',
+                }}
+              >
+                <div style={{
+                  padding: '0.5rem 0.75rem',
+                  borderBottom: '1px solid var(--border)',
+                  fontSize: '0.82rem',
+                  color: 'var(--ink-muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}>
+                  <span>Signed in as <strong style={{ color: 'var(--ink)' }}>{currentUser.name}</strong></span>
+                  <span className="geo-tag" style={{
+                    background: currentUser.isEmailVerified ? '#ecfdf5' : '#fffbeb',
+                    color: currentUser.isEmailVerified ? '#059669' : '#b45309',
+                  }}>
+                    {currentUser.isEmailVerified ? 'VERIFIED' : 'UNVERIFIED'}
+                  </span>
+                </div>
+
+                <button
+                  onClick={() => { onOpenMyApplications(); setMenuOpen(false); }}
+                  style={mobileMenuItemStyle}
+                >
+                  <IconApplications size={16} color="var(--primary)" />
+                  <span>Applications</span>
+                </button>
+
+                <button
+                  onClick={() => { if (onOpenMessages) onOpenMessages(); setMenuOpen(false); }}
+                  style={mobileMenuItemStyle}
+                >
+                  <IconMessages size={16} color="var(--primary)" />
+                  <span>Messages</span>
+                </button>
+
+                <button
+                  onClick={() => { onOpenProfile(); setMenuOpen(false); }}
+                  style={mobileMenuItemStyle}
+                >
+                  <IconProfile size={16} color="var(--ink)" />
+                  <span>My Profile</span>
+                </button>
+
+                {currentUser.accountType === 'admin' && (
+                  <button
+                    onClick={() => { onOpenAdmin(); setMenuOpen(false); }}
+                    style={{ ...mobileMenuItemStyle, color: '#b45309' }}
+                  >
+                    <IconAdmin size={16} color="#d97706" />
+                    <span>Admin Portal</span>
+                  </button>
+                )}
+
+                <div style={{ borderTop: '1px solid var(--border)', marginTop: '0.25rem', paddingTop: '0.25rem' }}>
+                  <button
+                    onClick={() => { onLogout(); setMenuOpen(false); }}
+                    style={{ ...mobileMenuItemStyle, color: '#dc2626' }}
+                  >
+                    <IconLogout size={16} />
+                    <span>Log Out</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </header>
     </>
   );
