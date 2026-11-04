@@ -6,6 +6,7 @@ export function ApplicationsView() {
   const [activeTab, setActiveTab] = useState('sent'); // 'sent' | 'invited' | 'accepted' | 'declined'
   const [searchQuery, setSearchQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState('All');
+  const [sortOrder, setSortOrder] = useState('Latest First');
 
   // Interactive mock applications matching reference screenshot
   const [applications, setApplications] = useState([
@@ -273,10 +274,29 @@ export function ApplicationsView() {
         </div>
       </div>
 
-      {/* Search and Filters */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-        <div style={{ flex: '1 1 280px', position: 'relative', display: 'flex', alignItems: 'center' }}>
-          <span style={{ position: 'absolute', left: '12px', color: '#5A6B87', pointerEvents: 'none' }}>
+      {/* Search and Filters — All items in a single line / row */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.65rem',
+          width: '100%',
+          flexWrap: 'nowrap',
+          overflowX: 'auto',
+          boxSizing: 'border-box',
+        }}
+      >
+        <div
+          style={{
+            flex: '1 1 200px',
+            minWidth: '160px',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            height: '38px',
+          }}
+        >
+          <span style={{ position: 'absolute', left: '12px', color: '#5A6B87', pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
             <IconSearch size={16} />
           </span>
           <input
@@ -286,13 +306,16 @@ export function ApplicationsView() {
             placeholder="Search applications..."
             style={{
               width: '100%',
-              padding: '0.55rem 0.85rem 0.55rem 2.25rem',
+              height: '38px',
+              padding: '0 0.85rem 0 2.25rem',
               border: '1.5px solid #0F1B33',
               borderRadius: '0px',
               fontFamily: 'var(--font-sans)',
-              fontSize: '0.88rem',
+              fontSize: '0.86rem',
               outline: 'none',
               backgroundColor: '#FFFFFF',
+              boxSizing: 'border-box',
+              color: '#0F1B33',
             }}
           />
         </div>
@@ -301,14 +324,20 @@ export function ApplicationsView() {
           value={roleFilter}
           onChange={(e) => setRoleFilter(e.target.value)}
           style={{
-            padding: '0.55rem 1.25rem 0.55rem 0.85rem',
+            width: 'auto',
+            minWidth: '135px',
+            flexShrink: 0,
+            height: '38px',
+            padding: '0 1.25rem 0 0.85rem',
             border: '1.5px solid #0F1B33',
+            borderRadius: '0px',
             backgroundColor: '#FFFFFF',
-            fontSize: '0.85rem',
+            fontSize: '0.84rem',
             fontWeight: '700',
             color: '#0F1B33',
             cursor: 'pointer',
             outline: 'none',
+            boxSizing: 'border-box',
           }}
         >
           <option value="All">All Roles</option>
@@ -318,15 +347,23 @@ export function ApplicationsView() {
         </select>
 
         <select
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
           style={{
-            padding: '0.55rem 1.25rem 0.55rem 0.85rem',
+            width: 'auto',
+            minWidth: '135px',
+            flexShrink: 0,
+            height: '38px',
+            padding: '0 1.25rem 0 0.85rem',
             border: '1.5px solid #0F1B33',
+            borderRadius: '0px',
             backgroundColor: '#FFFFFF',
-            fontSize: '0.85rem',
+            fontSize: '0.84rem',
             fontWeight: '700',
             color: '#0F1B33',
             cursor: 'pointer',
             outline: 'none',
+            boxSizing: 'border-box',
           }}
         >
           <option value="Latest First">Latest First</option>
