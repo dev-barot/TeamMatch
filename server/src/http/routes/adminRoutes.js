@@ -86,6 +86,27 @@ export function createAdminRouter({
     }
   });
 
+  // PATCH /admin/accounts/:id/activate — Admin reactivates a student account
+  router.patch('/accounts/:id/activate', async (req, res) => {
+    try {
+      if (!studentRepository) {
+        return res.status(500).json({ error: 'Student repository not available.' });
+      }
+      const student = await studentRepository.findById(req.params.id);
+      if (!student) {
+        return res.status(404).json({ error: 'Student account not found.' });
+      }
+      student.account.activate();
+      await studentRepository.save(student);
+      res.status(200).json({
+        message: `Account for "${student.name}" has been reactivated.`,
+        student: student.toPrivateView(),
+      });
+    } catch (err) {
+      res.status(500).json({ error: err.message || 'Failed to reactivate account.' });
+    }
+  });
+
   // PATCH /admin/accounts/:id/verify — Admin manually verifies a student profile (Rule R5)
   router.patch('/accounts/:id/verify', async (req, res) => {
     try {

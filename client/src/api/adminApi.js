@@ -17,6 +17,10 @@ export const adminApi = {
   deactivateAccount: (studentId) =>
     apiRequest(`/admin/accounts/${studentId}/deactivate`, { method: 'PATCH', body: {} }),
 
+  /** Reactivate a deactivated student account */
+  activateAccount: (studentId) =>
+    apiRequest(`/admin/accounts/${studentId}/activate`, { method: 'PATCH', body: {} }),
+
   /** Verify a student profile (Rule R5) */
   verifyAccount: (studentId) =>
     apiRequest(`/admin/accounts/${studentId}/verify`, { method: 'PATCH', body: {} }),
