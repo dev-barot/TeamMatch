@@ -9,6 +9,7 @@ import { MyApplicationsModal } from './features/applications/MyApplicationsModal
 import { ManageApplicantsModal } from './features/applications/ManageApplicantsModal.jsx';
 import { ChatModal } from './features/messaging/ChatModal.jsx';
 import { AdminPortal } from './features/admin/AdminPortal.jsx';
+import { AdminDashboard } from './features/admin/AdminDashboard.jsx';
 import { DashboardShell } from './features/dashboard/DashboardShell.jsx';
 import { connectSocket, disconnectSocket } from './api/socketClient.js';
 import { authApi } from './api/authApi.js';
@@ -29,6 +30,14 @@ export function App() {
   const [adminPortalOpen, setAdminPortalOpen] = useState(false);
   const [userProfile, setUserProfile] = useState(() => currentUser?.profile || null);
   const [galleryRefreshKey, setGalleryRefreshKey] = useState(0);
+
+  const isAdmin = Boolean(
+    currentUser && (
+      currentUser.accountType === 'admin' ||
+      currentUser.email?.toLowerCase() === 'admin@teammatch.edu' ||
+      currentUser.email?.toLowerCase() === 'admin@teammatch.app'
+    )
+  );
   // Hash-synced landing slide (0 = #intro, 1 = #how, 2 = #about)
   const getInitialSlide = () => {
     if (typeof window === 'undefined') return 0;
@@ -2064,6 +2073,11 @@ export function App() {
             </div>
           </nav>
         </>
+      ) : isAdmin ? (
+        <AdminDashboard
+          currentUser={currentUser}
+          onLogout={handleLogout}
+        />
       ) : (
         <DashboardShell
           currentUser={currentUser}
