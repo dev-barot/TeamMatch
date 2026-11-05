@@ -1,78 +1,51 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { IsometricBuilding, GeometricAccents, CardCornerBrackets } from './ArchitecturalGraphics.jsx';
+import { messagingApi } from '../../api/messagingApi.js';
 
-export function MessagesView() {
-  const [activeConvId, setActiveConvId] = useState('aisha');
+export function MessagesView({ currentUser: _currentUser }) {
+  const [activeConvId, setActiveConvId] = useState(null);
   const [inputText, setInputText] = useState('');
+  const [conversations, setConversations] = useState([]);
 
-  const [conversations, setConversations] = useState([
-    {
-      id: 'aisha',
-      name: 'Aisha Patel',
-      project: 'Code Editor',
-      initials: 'AP',
-      time: 'Now',
-      unread: true,
-      messages: [
-        {
-          id: 1,
-          sender: 'them',
-          text: 'Hi Dev, we saw your application. Can you share a GitHub link?',
-          time: '10:24 AM',
-        },
-        {
-          id: 2,
-          sender: 'me',
-          text: 'Sure, sending it now.',
-          time: '10:26 AM',
-        },
-        {
-          id: 3,
-          sender: 'them',
-          text: 'Great! Also, are you available for a quick call this week to discuss the project details?',
-          time: '10:28 AM',
-        },
-        {
-          id: 4,
-          sender: 'me',
-          text: "Yes, I'm free on Thursday after 4 PM. Does that work for you?",
-          time: '10:30 AM',
-        },
-      ],
-    },
-    {
-      id: 'rover',
-      name: 'Rover Team',
-      project: 'Delivery Rover',
-      initials: 'RT',
-      time: '2h ago',
-      unread: false,
-      messages: [
-        {
-          id: 1,
-          sender: 'them',
-          text: 'Hello Dev! We were very impressed by your background in ROS2.',
-          time: '8:45 AM',
-        },
-      ],
-    },
-    {
-      id: 'meera',
-      name: 'Meera Kapoor',
-      project: 'Study Scheduler',
-      initials: 'MK',
-      time: 'Yesterday',
-      unread: false,
-      messages: [
-        {
-          id: 1,
-          sender: 'them',
-          text: 'Hi! Are you still open to helping out with the frontend?',
-          time: 'Yesterday',
-        },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    let ignore = false;
+    async function loadConversations() {
+      try {
+        const data = await messagingApi.listConversations();
+        if (!ignore && data?.conversations) {
+          const mapped = data.conversations.map((c) => {
+            const other = c.otherParticipant || {};
+            const otherName = other.name || 'Student';
+            const initials = otherName
+              .split(' ')
+              .map((n) => n[0])
+              .join('')
+              .slice(0, 2)
+              .toUpperCase();
+            return {
+              id: c.id,
+              name: otherName,
+              project: c.projectTitle || 'Direct Message',
+              initials: initials || 'ST',
+              time: c.lastMessageAt ? new Date(c.lastMessageAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recent',
+              unread: false,
+              messages: [],
+            };
+          });
+          setConversations(mapped);
+          if (mapped.length > 0) {
+            setActiveConvId(mapped[0].id);
+          }
+        }
+      } catch {
+        // empty fallback
+      }
+    }
+    loadConversations();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const activeConv = conversations.find((c) => c.id === activeConvId) || conversations[0];
   const messagesEndRef = useRef(null);
@@ -124,6 +97,26 @@ export function MessagesView() {
       </div>
 
       {/* Split Pane Chat Box */}
+      {conversations.length === 0 ? (
+        <div
+          style={{
+            background: '#FFFFFF',
+            border: '1.5px solid #0F1B33',
+            boxShadow: '2px 2px 0px #0F1B33',
+            padding: '4rem 2rem',
+            textAlign: 'center',
+            position: 'relative',
+          }}
+        >
+          <CardCornerBrackets corners={['topLeft', 'bottomRight']} color="#1F4FE0" size={14} thickness={2.5} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: '900', color: '#0F1B33', marginBottom: '8px' }}>
+            No conversations yet
+          </h3>
+          <p style={{ color: '#64748B', fontSize: '0.9rem', maxWidth: '440px', margin: '0 auto', lineHeight: 1.5 }}>
+            Direct messages between project creators and applicants will appear here once initiated.
+          </p>
+        </div>
+      ) : (
       <div
         style={{
           background: '#FFFFFF',
@@ -442,6 +435,7 @@ export function MessagesView() {
           </form>
         </div>
       </div>
+      )}
     </div>
   );
 }

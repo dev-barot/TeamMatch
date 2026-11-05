@@ -57,16 +57,7 @@ export function AdminDashboard({ currentUser, onLogout }) {
   const [announcements, setAnnouncements] = useState(() => {
     try {
       const saved = localStorage.getItem('tm_admin_broadcasts');
-      return saved ? JSON.parse(saved) : [
-        {
-          id: 'bc-1',
-          title: 'Spring Semester Project Showcase Deadline',
-          message: 'All final project applications must be completed before Friday 11:59 PM for faculty review.',
-          type: 'deadline',
-          createdAt: new Date().toISOString(),
-          author: 'Platform Admin',
-        },
-      ];
+      return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
     }

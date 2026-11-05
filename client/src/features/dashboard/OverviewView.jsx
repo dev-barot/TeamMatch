@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { SteppedCapacityBar } from './ArchitecturalGraphics.jsx';
+import { matchingApi } from '../../api/matchingApi.js';
+import { applicationApi } from '../../api/applicationApi.js';
+import { messagingApi } from '../../api/messagingApi.js';
+import { projectApi } from '../../api/projectApi.js';
 
 export function OverviewView({
   currentUser,
@@ -9,75 +13,110 @@ export function OverviewView({
   onOpenManageProjects,
   onSelectProject,
 }) {
-  const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : 'Dev';
+  const firstName = currentUser?.name ? currentUser.name.split(' ')[0] : 'Student';
+  const [matches, setMatches] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [skillBars, setSkillBars] = useState([]);
+  const [myProjectsCount, setMyProjectsCount] = useState(0);
 
-  const matches = [
-    {
-      id: 'FS4601',
-      score: 90,
-      scoreColor: '#1F4FE0',
-      title: 'Fintech Peer-to-Peer Microloans Platform',
-      tags: ['Skill overlap: Node.js', 'Fills skill gap: React', 'Open role: Backend'],
-      category: 'Startup',
-      specialty: 'Backend',
-    },
-    {
-      id: 'ESF04',
-      score: 83,
-      scoreColor: '#1F4FE0',
-      title: 'Campus Event Finder',
-      tags: ['Skill overlap: React', 'Fills skill gap: Node.js', 'Open role: Frontend'],
-      category: 'Open Source',
-      specialty: 'Frontend',
-    },
-    {
-      id: 'CS530',
-      score: 63,
-      scoreColor: '#F59E0B',
-      title: 'Real-Time Collaborative Code Editor',
-      tags: ['Skill overlap: React', 'Fills skill gap: Code Editor', 'Open role: Backend'],
-      category: 'Class Project',
-      specialty: 'Backend',
-    },
-  ];
+  useEffect(() => {
+    let ignore = false;
+    async function loadData() {
+      try {
+        const [matchRes, appRes, convRes, projRes] = await Promise.allSettled([
+          matchingApi.getMatchedProjects(5),
+          applicationApi.getMyApplications(),
+          messagingApi.listConversations(),
+          projectApi.browseProjects({ limit: 50 }),
+        ]);
+
+        if (ignore) return;
+
+        if (matchRes.status === 'fulfilled' && matchRes.value?.matches) {
+          const mapped = matchRes.value.matches.map((m) => {
+            const p = m.project || {};
+            const score = m.match?.score ?? m.score ?? 0;
+            return {
+              id: p.id,
+              score,
+              scoreColor: score >= 80 ? '#1F4FE0' : score >= 60 ? '#2563EB' : '#F59E0B',
+              title: p.title || 'Project',
+              tags: (m.match?.reasons || []).slice(0, 3).map((r) => typeof r === 'string' ? r : r.reason || ''),
+              category: p.category || 'General',
+              specialty: p.positions?.[0]?.specialty || 'General',
+              rawProject: p,
+            };
+          });
+          setMatches(mapped);
+        }
+
+        if (appRes.status === 'fulfilled' && appRes.value?.applications) {
+          setApplications(appRes.value.applications);
+        }
+
+        if (convRes.status === 'fulfilled' && convRes.value?.conversations) {
+          setConversations(convRes.value.conversations);
+        }
+
+        if (projRes.status === 'fulfilled' && projRes.value?.projects) {
+          const allProjects = projRes.value.projects;
+          const myProjects = allProjects.filter((p) => p.creatorId === currentUser?.id);
+          setMyProjectsCount(myProjects.length);
+
+          const counts = {};
+          allProjects.forEach((p) => {
+            const skills = Array.isArray(p.requiredSkills) ? p.requiredSkills : Array.isArray(p.skills) ? p.skills : [];
+            skills.forEach((s) => {
+              if (typeof s === 'string') {
+                const norm = s.trim();
+                if (norm) counts[norm] = (counts[norm] || 0) + 1;
+              }
+            });
+          });
+          const top = Object.entries(counts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([name, count], idx) => ({
+              name,
+              count,
+              percentage: Math.min(100, Math.round((count / Math.max(1, allProjects.length)) * 100)),
+              color: idx === 0 ? '#1F4FE0' : idx === 1 ? '#2563EB' : '#0F1B33',
+            }));
+          setSkillBars(top);
+        }
+      } catch {
+        // empty state fallback
+      }
+    }
+
+    loadData();
+    return () => {
+      ignore = true;
+    };
+  }, [currentUser]);
+
+  const strongMatchesCount = matches.filter((m) => m.score >= 70).length;
+  const applicationsCount = applications.filter((a) => a.initiatedBy === 'student').length;
+  const invitationsCount = applications.filter((a) => a.initiatedBy === 'creator').length;
+  const acceptedCount = applications.filter((a) => a.status === 'accepted').length;
+  const newMessagesCount = conversations.filter((c) => c.unread).length;
 
   const activities = [
-    {
+    ...applications.slice(0, 2).map((a) => ({
+      type: a.initiatedBy === 'creator' ? 'invite' : 'application',
+      color: '#1F4FE0',
+      filled: true,
+      text: a.initiatedBy === 'creator' ? `Invited to project "${a.project?.title || 'Team'}"` : `Applied to "${a.project?.title || 'Project'}"`,
+      time: a.createdAt ? new Date(a.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'RECENT',
+    })),
+    ...matches.slice(0, 2).map((m) => ({
       type: 'match',
       color: '#F59E0B',
       filled: true,
-      text: 'New 90-point match: Fintech Peer-to-Peer Microloans Platform',
-      time: 'JUST NOW',
-    },
-    {
-      type: 'invite',
-      color: '#0F1B33',
-      filled: false,
-      text: 'Rover Team invited you as Backend',
-      time: '2 HOURS AGO',
-    },
-    {
-      type: 'application',
-      color: '#0F1B33',
-      filled: false,
-      text: '3 students applied to your project',
-      time: 'YESTERDAY',
-    },
-    {
-      type: 'message',
-      color: '#0F1B33',
-      filled: false,
-      text: 'Aisha Patel replied about Code Editor',
-      time: 'YESTERDAY',
-    },
-  ];
-
-  const skillBars = [
-    { name: 'React', count: 3, percentage: 80, color: '#1F4FE0' },
-    { name: 'Node.js', count: 2, percentage: 55, color: '#2563EB' },
-    { name: 'Python', count: 2, percentage: 55, color: '#0F1B33' },
-    { name: 'MongoDB', count: 1, percentage: 30, color: '#0F1B33' },
-    { name: 'Figma', count: 1, percentage: 30, color: '#0F1B33' },
+      text: `New ${m.score}-point match: ${m.title}`,
+      time: 'RECENT',
+    })),
   ];
 
   return (
@@ -184,7 +223,7 @@ export function OverviewView({
                 STRONG MATCHES
               </span>
               <div style={{ fontSize: '1.75rem', fontWeight: '900', color: '#0F1B33', lineHeight: 1.1, marginTop: '2px' }}>
-                3
+                {strongMatchesCount}
               </div>
             </div>
           </div>
@@ -231,7 +270,7 @@ export function OverviewView({
                 APPLICATIONS
               </span>
               <div style={{ fontSize: '1.75rem', fontWeight: '900', color: '#0F1B33', lineHeight: 1.1, marginTop: '2px' }}>
-                1
+                {applicationsCount}
               </div>
             </div>
           </div>
@@ -278,7 +317,7 @@ export function OverviewView({
                 INVITATIONS
               </span>
               <div style={{ fontSize: '1.75rem', fontWeight: '900', color: '#0F1B33', lineHeight: 1.1, marginTop: '2px' }}>
-                1
+                {invitationsCount}
               </div>
             </div>
           </div>
@@ -322,7 +361,7 @@ export function OverviewView({
                 NEW MESSAGES
               </span>
               <div style={{ fontSize: '1.75rem', fontWeight: '900', color: '#0F1B33', lineHeight: 1.1, marginTop: '2px' }}>
-                1
+                {newMessagesCount}
               </div>
             </div>
           </div>
@@ -376,7 +415,12 @@ export function OverviewView({
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', flex: 1 }}>
-            {matches.map((item) => (
+            {matches.length === 0 ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#64748B', fontSize: '0.88rem' }}>
+                No project matches found yet. Complete your profile skills or explore campus projects to get matched!
+              </div>
+            ) : (
+              matches.map((item) => (
               <div
                 key={item.id}
                 onClick={() => {
@@ -462,7 +506,7 @@ export function OverviewView({
                   →
                 </span>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -510,7 +554,12 @@ export function OverviewView({
               }}
             />
 
-            {activities.map((act, idx) => (
+            {activities.length === 0 ? (
+              <div style={{ padding: '2.5rem 1rem', textAlign: 'center', color: '#64748B', fontSize: '0.88rem' }}>
+                No recent activity yet. When you receive matches, applications, or messages, they will appear here.
+              </div>
+            ) : (
+              activities.map((act, idx) => (
               <div key={idx} style={{ position: 'relative', marginBottom: idx !== activities.length - 1 ? '1.1rem' : 0 }}>
                 {/* Stepped diamond marker */}
                 <div
@@ -533,7 +582,7 @@ export function OverviewView({
                   {act.time}
                 </div>
               </div>
-            ))}
+            )))}
           </div>
         </div>
       </div>
@@ -563,7 +612,12 @@ export function OverviewView({
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-            {skillBars.map((sk) => (
+            {skillBars.length === 0 ? (
+              <div style={{ padding: '1.5rem', textAlign: 'center', color: '#64748B', fontSize: '0.86rem' }}>
+                No skills tracked yet.
+              </div>
+            ) : (
+              skillBars.map((sk) => (
               <div key={sk.name} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <span style={{ width: '75px', fontSize: '0.86rem', fontWeight: '700', color: '#0F1B33' }}>
                   {sk.name}
@@ -582,7 +636,7 @@ export function OverviewView({
                   {sk.count}
                 </span>
               </div>
-            ))}
+            )))}
           </div>
         </div>
 
@@ -637,7 +691,7 @@ export function OverviewView({
                 }}
               >
                 <span style={{ transform: 'rotate(-45deg)', fontWeight: '900', fontSize: '0.92rem', color: '#0F1B33' }}>
-                  2
+                  {applicationsCount}
                 </span>
               </div>
               <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#475569' }}>Applied</span>
@@ -659,7 +713,7 @@ export function OverviewView({
                 }}
               >
                 <span style={{ transform: 'rotate(-45deg)', fontWeight: '900', fontSize: '0.92rem', color: '#0F1B33' }}>
-                  1
+                  {invitationsCount}
                 </span>
               </div>
               <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#475569' }}>Invited</span>
@@ -681,7 +735,7 @@ export function OverviewView({
                 }}
               >
                 <span style={{ transform: 'rotate(-45deg)', fontWeight: '900', fontSize: '0.92rem', color: '#0F1B33' }}>
-                  0
+                  {acceptedCount}
                 </span>
               </div>
               <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#475569' }}>Accepted</span>
@@ -703,7 +757,7 @@ export function OverviewView({
                 }}
               >
                 <span style={{ transform: 'rotate(-45deg)', fontWeight: '900', fontSize: '0.92rem', color: '#FFFFFF' }}>
-                  1
+                  {myProjectsCount}
                 </span>
               </div>
               <span style={{ fontSize: '0.8rem', fontWeight: '700', color: '#0F1B33' }}>Led</span>

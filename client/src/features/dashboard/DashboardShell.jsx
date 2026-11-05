@@ -6,6 +6,7 @@ import { MessagesView } from './MessagesView.jsx';
 import { ProfileView } from './ProfileView.jsx';
 import { ProjectsGallery } from '../projects/ProjectsGallery.jsx';
 import { IconWarning, IconCheck } from '../../components/ui/Icons.jsx';
+import { messagingApi } from '../../api/messagingApi.js';
 
 export function DashboardShell({
   currentUser,
@@ -31,10 +32,31 @@ export function DashboardShell({
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'explore' | 'projects' | 'applications' | 'messages' | 'profile'
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
+  const [notifications, setNotifications] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
   const isExpanded = isHovered;
   const userMenuRef = useRef(null);
   const notifMenuRef = useRef(null);
+
+  useEffect(() => {
+    let ignore = false;
+    async function loadNotifs() {
+      try {
+        const data = await messagingApi.listNotifications();
+        if (!ignore && data?.notifications) {
+          setNotifications(data.notifications);
+        }
+      } catch {
+        // live notifications fallback
+      }
+    }
+    loadNotifs();
+    return () => {
+      ignore = true;
+    };
+  }, []);
+
+  const unreadNotifs = notifications.filter((n) => !n.isRead);
 
   const name = currentUser?.name || 'Dev Barot';
   const isAdmin = currentUser?.accountType === 'admin' ||
@@ -113,7 +135,6 @@ export function DashboardShell({
     {
       id: 'applications',
       label: 'Applications',
-      badge: 3,
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <rect x="3" y="3" width="18" height="18" rx="2" transform="rotate(45 12 12)" />
@@ -123,7 +144,6 @@ export function DashboardShell({
     {
       id: 'messages',
       label: 'Messages',
-      badge: 5,
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
           <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -256,27 +276,29 @@ export function DashboardShell({
                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
               </svg>
-              {/* Red counter badge */}
-              <span
-                style={{
-                  position: 'absolute',
-                  top: '-6px',
-                  right: '-6px',
-                  backgroundColor: '#EF4444',
-                  color: '#FFFFFF',
-                  width: '18px',
-                  height: '18px',
-                  borderRadius: '50%',
-                  fontSize: '0.68rem',
-                  fontWeight: '900',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1.5px solid #FFFFFF',
-                }}
-              >
-                3
-              </span>
+              {/* Dynamic counter badge */}
+              {unreadNotifs.length > 0 && (
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-6px',
+                    right: '-6px',
+                    backgroundColor: '#EF4444',
+                    color: '#FFFFFF',
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                    fontSize: '0.68rem',
+                    fontWeight: '900',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1.5px solid #FFFFFF',
+                  }}
+                >
+                  {unreadNotifs.length}
+                </span>
+              )}
             </button>
 
             {/* Notification Dropdown */}
@@ -286,31 +308,65 @@ export function DashboardShell({
                   position: 'absolute',
                   top: '46px',
                   right: 0,
-                  width: '300px',
+                  width: '320px',
                   backgroundColor: '#FFFFFF',
                   border: '1.5px solid #0F1B33',
                   boxShadow: '3px 3px 0px #0F1B33',
                   padding: '1rem',
                   zIndex: 50,
+                  maxHeight: '360px',
+                  overflowY: 'auto',
                 }}
               >
-                <div style={{ fontWeight: '800', fontSize: '0.88rem', marginBottom: '0.5rem', color: '#0F1B33' }}>
-                  Notifications (3 unread)
+                <div style={{ fontWeight: '800', fontSize: '0.88rem', marginBottom: '0.75rem', color: '#0F1B33', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span>Notifications {unreadNotifs.length > 0 ? `(${unreadNotifs.length} unread)` : ''}</span>
+                  {unreadNotifs.length > 0 && (
+                    <button
+                      onClick={async () => {
+                        try {
+                          await messagingApi.markAllNotificationsRead();
+                          setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+                        } catch {
+                          // mark read error
+                        }
+                      }}
+                      type="button"
+                      style={{ background: 'none', border: 'none', color: '#1F4FE0', fontSize: '0.72rem', fontWeight: '700', cursor: 'pointer', padding: 0 }}
+                    >
+                      Mark all read
+                    </button>
+                  )}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.8rem' }}>
-                  <div style={{ padding: '0.5rem', backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-                    <div style={{ fontWeight: '700', color: '#1E40AF' }}>Rover Team invited you</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748B' }}>2 hours ago</div>
+                {notifications.length === 0 ? (
+                  <div style={{ padding: '1.25rem 0', color: '#64748B', textAlign: 'center', fontSize: '0.82rem' }}>
+                    No notifications yet.
                   </div>
-                  <div style={{ padding: '0.5rem', backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-                    <div style={{ fontWeight: '700', color: '#1E40AF' }}>3 students applied to your project</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748B' }}>Yesterday</div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', fontSize: '0.8rem' }}>
+                    {notifications.map((n) => (
+                      <div
+                        key={n.id}
+                        style={{
+                          padding: '0.5rem 0.65rem',
+                          backgroundColor: n.isRead ? '#F8FAFC' : '#EFF6FF',
+                          border: `1px solid ${n.isRead ? '#E2E8F0' : '#BFDBFE'}`,
+                        }}
+                      >
+                        <div style={{ fontWeight: '700', color: n.isRead ? '#334155' : '#1E40AF', fontSize: '0.82rem' }}>
+                          {n.title || n.message || 'Notification'}
+                        </div>
+                        {n.message && n.title && (
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '2px' }}>
+                            {n.message}
+                          </div>
+                        )}
+                        <div style={{ fontSize: '0.7rem', color: '#94A3B8', marginTop: '4px' }}>
+                          {n.createdAt ? new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Recently'}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div style={{ padding: '0.5rem', backgroundColor: '#EFF6FF', border: '1px solid #BFDBFE' }}>
-                    <div style={{ fontWeight: '700', color: '#1E40AF' }}>Aisha Patel sent a message</div>
-                    <div style={{ fontSize: '0.72rem', color: '#64748B' }}>Yesterday</div>
-                  </div>
-                </div>
+                )}
               </div>
             )}
           </div>

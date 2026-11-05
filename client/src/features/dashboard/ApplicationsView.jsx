@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { IsometricBuilding, CardCornerBrackets } from './ArchitecturalGraphics.jsx';
 import { IconSearch } from '../../components/ui/Icons.jsx';
+import { applicationApi } from '../../api/applicationApi.js';
 
 export function ApplicationsView() {
   const [activeTab, setActiveTab] = useState('sent'); // 'sent' | 'invited' | 'accepted' | 'declined'
@@ -8,27 +9,35 @@ export function ApplicationsView() {
   const [roleFilter, setRoleFilter] = useState('All');
   const [sortOrder, setSortOrder] = useState('Latest First');
 
-  // Interactive mock applications matching reference screenshot
-  const [applications, setApplications] = useState([
-    {
-      id: 'app-1',
-      title: 'Real-Time Collaborative Code Editor',
-      role: 'Frontend',
-      time: 'Applied 2 days ago',
-      tags: ['React', 'TypeScript', 'WebSocket'],
-      status: 'Sent',
-      iconType: 'code',
-    },
-    {
-      id: 'app-2',
-      title: 'Autonomous Campus Delivery Rover',
-      role: 'Backend',
-      time: 'Invited 5 hours ago',
-      tags: ['Python', 'ROS2', 'Computer Vision'],
-      status: 'Invited',
-      iconType: 'robot',
-    },
-  ]);
+  // Live applications loaded from API
+  const [applications, setApplications] = useState([]);
+
+  useEffect(() => {
+    let ignore = false;
+    async function loadApps() {
+      try {
+        const data = await applicationApi.getMyApplications();
+        if (!ignore && data?.applications) {
+          const mapped = data.applications.map((app) => ({
+            id: app.id,
+            title: app.project?.title || 'Project Application',
+            role: app.specialty || 'General',
+            time: app.createdAt ? new Date(app.createdAt).toLocaleDateString() : 'Recent',
+            tags: app.project?.requiredSkills || [],
+            status: app.status === 'accepted' ? 'Accepted' : app.status === 'rejected' ? 'Declined' : app.initiatedBy === 'creator' ? 'Invited' : 'Sent',
+            iconType: 'code',
+          }));
+          setApplications(mapped);
+        }
+      } catch {
+        // empty fallback
+      }
+    }
+    loadApps();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   const counts = {
     sent: applications.filter((a) => a.status === 'Sent').length,
