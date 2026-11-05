@@ -174,16 +174,56 @@ export function AdminDashboard({ currentUser, onLogout }) {
     const pendingReports = reports.filter((r) => r.status === 'pending').length;
     const reviewedReports = reports.filter((r) => r.status === 'reviewed').length;
 
-    // Skills Demanded Frequency
+    // Dynamic System Health calculation (Composite Operational Index)
+    // 1. Service Baseline: 40% (Live platform session with active DB queries)
+    // 2. Account Integrity Factor: up to 30% (Proportion of active, non-suspended accounts)
+    // 3. Moderation & Safety Factor: up to 30% (Starts at 30%, deducts 10% per unreviewed pending report)
+    const baseAvailability = 40;
+    const accountHealthFactor = totalAccounts > 0 ? Math.round((activeAccounts / totalAccounts) * 30) : 30;
+    const safetyPenalty = Math.min(30, pendingReports * 10);
+    const safetyHealthFactor = Math.max(0, 30 - safetyPenalty);
+    const systemHealth = Math.min(100, Math.max(10, baseAvailability + accountHealthFactor + safetyHealthFactor));
+    const healthColor = systemHealth >= 90 ? '#059669' : systemHealth >= 70 ? '#D97706' : '#DC2626';
+
+    // Dynamic Matching Engine Health (0-100%)
+    // Base 50% engine readiness + 25% student candidate pool + 25% open project opportunities
+    let matchingScore = 50;
+    if (activeAccounts > 0) matchingScore += 25;
+    if (openProjects > 0) matchingScore += 25;
+    const matchingHealth = matchingScore;
+
+    // Skills Demanded Frequency (Aggregates requiredSkills from projects, with profile fallback)
     const skillCounts = {};
     projects.forEach((p) => {
-      if (Array.isArray(p.skills)) {
-        p.skills.forEach((s) => {
+      const pSkills = Array.isArray(p.requiredSkills)
+        ? p.requiredSkills
+        : Array.isArray(p.skills)
+        ? p.skills
+        : [];
+      pSkills.forEach((s) => {
+        if (typeof s === 'string') {
           const norm = s.trim();
           if (norm) skillCounts[norm] = (skillCounts[norm] || 0) + 1;
-        });
-      }
+        }
+      });
     });
+
+    // Supplement with student profile skills if project demand is empty
+    if (Object.keys(skillCounts).length === 0) {
+      accounts.forEach((a) => {
+        const aSkills = Array.isArray(a.profile?.skills)
+          ? a.profile.skills
+          : Array.isArray(a.skills)
+          ? a.skills
+          : [];
+        aSkills.forEach((s) => {
+          if (typeof s === 'string') {
+            const norm = s.trim();
+            if (norm) skillCounts[norm] = (skillCounts[norm] || 0) + 1;
+          }
+        });
+      });
+    }
 
     const topSkills = Object.entries(skillCounts)
       .map(([skill, count]) => ({ skill, count }))
@@ -202,6 +242,9 @@ export function AdminDashboard({ currentUser, onLogout }) {
       totalReports,
       pendingReports,
       reviewedReports,
+      systemHealth,
+      healthColor,
+      matchingHealth,
       topSkills,
     };
   }, [accounts, projects, reports]);
@@ -353,7 +396,8 @@ export function AdminDashboard({ currentUser, onLogout }) {
         const q = projectSearch.toLowerCase();
         const matchTitle = (p.title || '').toLowerCase().includes(q);
         const matchDesc = (p.description || '').toLowerCase().includes(q);
-        const matchSkills = Array.isArray(p.skills) && p.skills.some((s) => s.toLowerCase().includes(q));
+        const pSkills = Array.isArray(p.requiredSkills) ? p.requiredSkills : Array.isArray(p.skills) ? p.skills : [];
+        const matchSkills = pSkills.some((s) => typeof s === 'string' && s.toLowerCase().includes(q));
         if (!matchTitle && !matchDesc && !matchSkills) return false;
       }
       return true;
@@ -512,25 +556,6 @@ export function AdminDashboard({ currentUser, onLogout }) {
 
         {/* Right Header items */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', paddingRight: '2rem' }}>
-          {/* Telemetry Status Indicator */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.75rem',
-              fontWeight: '700',
-              color: '#059669',
-              backgroundColor: '#ECFDF5',
-              border: '1px solid #A7F3D0',
-              padding: '4px 10px',
-            }}
-          >
-            <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
-            API & SOCKET: ONLINE
-          </div>
-
           {/* Quick Broadcast Button */}
           <button
             onClick={() => setBroadcastModalOpen(true)}
@@ -808,7 +833,7 @@ export function AdminDashboard({ currentUser, onLogout }) {
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <CircularGauge percentage={99} size={88} strokeWidth={8} color="#059669" />
+                    <CircularGauge percentage={metrics.systemHealth} size={88} strokeWidth={8} color={metrics.healthColor} />
                     <div style={{ fontSize: '0.75rem', fontWeight: '800', color: '#475569', marginTop: '6px', fontFamily: 'var(--font-mono)' }}>
                       SYSTEM HEALTH
                     </div>
@@ -919,12 +944,12 @@ export function AdminDashboard({ currentUser, onLogout }) {
                     </span>
                     <IconCheck size={18} color="#059669" />
                   </div>
-                  <div style={{ fontSize: '2.2rem', fontWeight: '900', color: '#059669', lineHeight: 1.1, marginBottom: '0.65rem' }}>
-                    100%
+                  <div style={{ fontSize: '2.2rem', fontWeight: '900', color: metrics.matchingHealth >= 90 ? '#059669' : '#D97706', lineHeight: 1.1, marginBottom: '0.65rem' }}>
+                    {metrics.matchingHealth}%
                   </div>
-                  <SteppedCapacityBar totalSegments={5} filledSegments={5} color="#059669" />
+                  <SteppedCapacityBar totalSegments={5} filledSegments={Math.round((metrics.matchingHealth / 100) * 5)} color={metrics.matchingHealth >= 90 ? '#059669' : '#D97706'} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: '700', color: '#64748B', marginTop: '6px' }}>
-                    <span>Rule Engine R1-R7: Active</span>
+                    <span>Rule Engine: Active</span>
                     <span>Socket: Live</span>
                   </div>
                 </div>
@@ -1182,25 +1207,28 @@ export function AdminDashboard({ currentUser, onLogout }) {
                             {p.description ? p.description.slice(0, 140) + '...' : 'No description provided.'}
                           </p>
 
-                          {Array.isArray(p.skills) && p.skills.length > 0 && (
-                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                              {p.skills.map((s) => (
-                                <span
-                                  key={s}
-                                  style={{
-                                    fontSize: '0.72rem',
-                                    fontWeight: '700',
-                                    backgroundColor: '#F8FAFC',
-                                    border: '1px solid #CBD5E1',
-                                    padding: '2px 8px',
-                                    color: '#334155',
-                                  }}
-                                >
-                                  {s}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                          {(() => {
+                            const pSkills = Array.isArray(p.requiredSkills) ? p.requiredSkills : Array.isArray(p.skills) ? p.skills : [];
+                            return pSkills.length > 0 ? (
+                              <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                                {pSkills.map((s) => (
+                                  <span
+                                    key={s}
+                                    style={{
+                                      fontSize: '0.72rem',
+                                      fontWeight: '700',
+                                      backgroundColor: '#F8FAFC',
+                                      border: '1px solid #CBD5E1',
+                                      padding: '2px 8px',
+                                      color: '#334155',
+                                    }}
+                                  >
+                                    {s}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : null;
+                          })()}
                         </div>
 
                         {/* Actions */}
@@ -2014,20 +2042,23 @@ export function AdminDashboard({ currentUser, onLogout }) {
               </div>
             </div>
 
-            {Array.isArray(inspectProject.skills) && inspectProject.skills.length > 0 && (
-              <div style={{ marginBottom: '1.5rem' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: '800', color: '#475569', display: 'block', marginBottom: '6px' }}>
-                  REQUIRED SKILLS
-                </span>
-                <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
-                  {inspectProject.skills.map((s) => (
-                    <span key={s} style={{ padding: '3px 9px', backgroundColor: '#EEF2FF', border: '1px solid #C7D2FE', color: '#1E40AF', fontSize: '0.78rem', fontWeight: '700' }}>
-                      {s}
-                    </span>
-                  ))}
+            {(() => {
+              const pSkills = Array.isArray(inspectProject.requiredSkills) ? inspectProject.requiredSkills : Array.isArray(inspectProject.skills) ? inspectProject.skills : [];
+              return pSkills.length > 0 ? (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '0.78rem', fontWeight: '800', color: '#475569', display: 'block', marginBottom: '6px' }}>
+                    REQUIRED SKILLS
+                  </span>
+                  <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    {pSkills.map((s) => (
+                      <span key={s} style={{ padding: '3px 9px', backgroundColor: '#EEF2FF', border: '1px solid #C7D2FE', color: '#1E40AF', fontSize: '0.78rem', fontWeight: '700' }}>
+                        {s}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : null;
+            })()}
 
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button
