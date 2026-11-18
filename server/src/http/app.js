@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'node:path';
+import fs from 'node:fs';
 import { healthRouter } from './routes/health.js';
 import { createAuthRouter } from './routes/authRoutes.js';
 import { createStudentRouter } from './routes/studentRoutes.js';
@@ -390,6 +392,27 @@ export function createApp(customDeps = {}) {
     requireAuth,
     requireVerified,
   }));
+
+  // Production static asset serving & SPA catch-all (placed after API routes)
+  const clientDistCandidates = [
+    path.resolve(process.cwd(), 'client/dist'),
+    path.resolve(process.cwd(), '../client/dist'),
+  ];
+  const clientDistPath = clientDistCandidates.find((dir) => fs.existsSync(dir));
+
+  if (clientDistPath) {
+    app.use(express.static(clientDistPath));
+    app.get('*', (req, res, next) => {
+      const apiPrefixes = [
+        '/health', '/auth', '/students', '/projects', '/applications',
+        '/matching', '/conversations', '/notifications', '/admin', '/moderation', '/api',
+      ];
+      if (apiPrefixes.some((prefix) => req.path.startsWith(prefix))) {
+        return next();
+      }
+      res.sendFile(path.join(clientDistPath, 'index.html'));
+    });
+  }
 
   // 404 fallback
   app.use((req, res) => {

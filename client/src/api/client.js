@@ -1,4 +1,6 @@
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = import.meta.env.VITE_API_URL !== undefined
+  ? import.meta.env.VITE_API_URL
+  : (import.meta.env.DEV ? 'http://localhost:4000' : '');
 
 export async function apiRequest(endpoint, { method = 'GET', body, headers = {} } = {}) {
   const token = localStorage.getItem('tm_access_token');

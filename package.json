@@ -8,6 +8,8 @@
     "client"
   ],
   "scripts": {
+    "build": "npm run build -w client",
+    "start": "node server/src/main.js",
     "dev": "concurrently -n \"server,client\" -c \"cyan,magenta\" \"npm run dev -w server\" \"npm run dev -w client\"",
     "test": "npm run test --workspaces",
     "lint": "npm run lint --workspaces",
