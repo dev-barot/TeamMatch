@@ -65,7 +65,7 @@ export function MatchScoreBadge({ match, compact = false }) {
         }}
       >
         <IconSpark size={12} color={colors.text} />
-        <span>{score} PTS MATCH</span>
+        <span style={{ textTransform: 'uppercase' }}>{score} pts match</span>
       </button>
 
       {/* Explainable Match Reasons Popover */}

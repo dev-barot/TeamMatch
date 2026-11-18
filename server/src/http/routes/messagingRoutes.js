@@ -83,7 +83,7 @@ export function createMessagingRouter({
       const message = await sendMessageUseCase.execute({
         conversationId: req.params.id,
         senderId: req.user.id,
-        content: parse.data.content,
+        content: parse.data.content || parse.data.body,
       });
       res.status(201).json(message.toJSON());
     } catch (err) {

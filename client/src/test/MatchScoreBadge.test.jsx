@@ -33,7 +33,7 @@ describe('MatchScoreBadge', () => {
     fireEvent.click(screen.getByText(/75 pts match/i));
     expect(screen.getByText(/Skill Overlap/i)).toBeInTheDocument();
     expect(screen.getByText(/Specialty Match/i)).toBeInTheDocument();
-    expect(screen.getByText(/Availability/i)).toBeInTheDocument();
+    expect(screen.getByText(/Availability —/i)).toBeInTheDocument();
   });
 
   it('popover shows point values (+30, +25, +20) for each reason', () => {

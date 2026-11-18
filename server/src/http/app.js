@@ -400,7 +400,7 @@ export function createApp(customDeps = {}) {
   ];
   const clientDistPath = clientDistCandidates.find((dir) => fs.existsSync(dir));
 
-  if (clientDistPath) {
+  if (process.env.NODE_ENV === 'production' && clientDistPath) {
     app.use(express.static(clientDistPath));
     app.get('*', (req, res, next) => {
       const apiPrefixes = [
