@@ -309,8 +309,9 @@ export function createApp(customDeps = {}) {
   // Middlewares
   const requireAuth = createRequireAuth(tokenSigner);
 
-  // Base routes
-  app.get('/', (req, res) => {
+  // Base routes — only serve API info when NOT serving the SPA
+  app.get('/', (req, res, next) => {
+    if (process.env.NODE_ENV === 'production') return next();
     res.status(200).json({
       name: 'TeamMatch API Server',
       status: 'active',
