@@ -24,6 +24,9 @@
   ],
   "author": "dev-barot",
   "license": "ISC",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "devDependencies": {
     "concurrently": "^10.0.6"
   },
